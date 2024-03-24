@@ -5,12 +5,10 @@ public class ProgramVisitor : LparseBaseVisitor<Programm>, IProgramVisitor<Progr
   public override Programm VisitProgram(LparseParser.ProgramContext context)
   {
     Programm programm = new Programm();
-    Console.WriteLine("BABY");
     if (context.statements() != null)
     {
-      Console.WriteLine("selam?");
       var statementsVisitor = new StatementsVisitor();
-      programm.Atoms = statementsVisitor.Visit(context.statements());
+      programm.Facts = statementsVisitor.Visit(context.statements());
     }
 
     return programm;

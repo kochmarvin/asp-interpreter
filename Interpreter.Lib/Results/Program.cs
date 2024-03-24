@@ -2,13 +2,13 @@ namespace Interpreter.Lib.Results;
 
 public class Programm
 {
-  public List<Atom> Atoms { get; set; }
+  public List<Fact> Facts { get; set; } = [];
 
   public override string ToString()
   {
     string program = "";
 
-    foreach(var atom in Atoms) {
+    foreach(var atom in Facts) {
       program += atom.ToString();
     }
 
