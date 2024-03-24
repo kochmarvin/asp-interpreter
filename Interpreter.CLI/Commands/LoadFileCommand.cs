@@ -18,6 +18,7 @@ namespace Interpreter.CLI.Commands
 			}
 
 			string filePath = args[1];
+      Console.WriteLine(filePath);
 
 			if (!filePath.EndsWith(".lp"))
 			{

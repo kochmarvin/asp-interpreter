@@ -28,6 +28,7 @@ namespace Interpreter.CLI
 				case ":q":
 				case ":query":
 					return new QueryCommand();
+				case ":h":
 				case ":help":
 					return new HelpCommand();
 				default:
