@@ -1,32 +1,34 @@
-using Interpreter.Lib.Results;
-using static LparseParser;
+using Interpreter.Lib.Results.Objects.Terms;
 
-public class TermVisitor : LparseBaseVisitor<List<string>>
+public class TermVisitor : LparseBaseVisitor<Term>
 {
-  public override List<string> VisitTerms(LparseParser.TermsContext context)
+  public override Term VisitTerm(LparseParser.TermContext context)
   {
-    List<string> arguments = [];
-
-    foreach (var argument in context.term())
+    if (context.terms() != null)
     {
-      if (argument.ID() != null)
-      {
-        arguments.Add(argument.ID().GetText());
-      }
+      string name = context.ID().GetText();
+      name = context.MINUS() != null ? "-" + name : name;
+      List<Term> subTerms = new TermsVisitor().Visit(context.terms());
 
-      if (argument.ANONYMOUS_VARIABLE() != null)
-      {
-        arguments.Add("_");
-      }
-
-      if (argument.VARIABLE() != null)
-      {
-        arguments.Add(argument.VARIABLE().GetText());
-      }
-
-      // can ein term einen term besitzen?
+      return new FunctionTerm(name, subTerms);
     }
 
-    return arguments;
+    if (context.ID() != null)
+    {
+      return new Variable(context.ID().GetText());
+    }
+
+    // TODO maybe remove?
+    if (context.ANONYMOUS_VARIABLE() != null)
+    {
+      return new Variable("_");
+    }
+
+    if (context.VARIABLE() != null)
+    {
+      return new Variable(context.VARIABLE().GetText());
+    }
+
+    return null;
   }
 }

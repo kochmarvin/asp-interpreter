@@ -1,16 +1,17 @@
+using Interpreter.Lib.Results.Objects.Rule;
+
 namespace Interpreter.Lib.Results;
 
-public class ProgramVisitor : LparseBaseVisitor<Programm>, IProgramVisitor<Programm>
+public class ProgramVisitor : LparseBaseVisitor<List<ProgramRule>>, IProgramVisitor<List<ProgramRule>>
 {
-  public override Programm VisitProgram(LparseParser.ProgramContext context)
+  public override List<ProgramRule> VisitProgram(LparseParser.ProgramContext context)
   {
-    Programm programm = new Programm();
     if (context.statements() != null)
     {
       var statementsVisitor = new StatementsVisitor();
-      programm.Facts = statementsVisitor.Visit(context.statements());
+      return statementsVisitor.Visit(context.statements());
     }
 
-    return programm;
+    throw new InvalidOperationException("Could not parse Programm");
   }
 }

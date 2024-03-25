@@ -6,52 +6,51 @@ using System.Threading.Tasks;
 
 namespace Interpreter.CLI
 {
-	public class CommandLineInterpreter
-	{
-		private readonly CommandFactory _commandFactory;
-		private CommandManager _commandManager;
+  public class CommandLineInterpreter
+  {
+    private readonly CommandFactory _commandFactory;
+    private CommandManager _commandManager;
 
-        public CommandLineInterpreter(CommandManager manager)
+    public CommandLineInterpreter(CommandManager manager)
+    {
+      _commandFactory = new CommandFactory();
+      _commandManager = manager;
+    }
+
+    public void Run()
+    {
+      while (true)
+      {
+        Console.Write(">");
+        var input = Console.ReadLine()?.Trim();
+        if (string.IsNullOrEmpty(input))
+          continue;
+
+        if (input.StartsWith(":"))
         {
-            _commandFactory = new CommandFactory();
-			_commandManager = manager;
+          ExecuteCommand(input);
+          return;
         }
+        
+        Console.WriteLine("Invalid command. Use ':help' to see available commands.");
+      }
+    }
 
-        public void Run()
-        {
-			while (true)
-			{
-				Console.Write(">");
-				var input = Console.ReadLine()?.Trim();
-				if (string.IsNullOrEmpty(input))
-					continue;
+    private void ExecuteCommand(string command)
+    {
+      var parts = command.Split(' ');
+      var cmd = parts[0].ToLower();
 
-				if (input.StartsWith(":"))
-				{
-					ExecuteCommand(input);
-				}
-				else
-				{
-					Console.WriteLine("Invalid command. Use ':help' to see available commands.");
-				}
-			}
-		}
+      ICommand cmdObject = _commandFactory.CreateCommand(cmd);
 
-		private void ExecuteCommand(string command)
-		{
-			var parts = command.Split(' ');
-			var cmd = parts[0].ToLower();
+      if (cmdObject != null)
+      {
+        cmdObject.Execute(parts, _commandManager);
+        return;
+      }
 
-			ICommand cmdObject = _commandFactory.CreateCommand(cmd);
+      Console.WriteLine($"Unknown command: {cmd}. Use ':help' to see available commands.");
 
-			if (cmdObject != null)
-			{
-				cmdObject.Execute(parts, _commandManager);
-			}
-			else
-			{
-				Console.WriteLine($"Unknown command: {cmd}. Use ':help' to see available commands.");
-			}
-		}
-	}
+    }
+  }
 }

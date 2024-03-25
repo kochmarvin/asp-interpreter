@@ -1,6 +1,6 @@
 namespace Interpreter.Lib.Results.Objects.Terms;
 
-public class Function(string name, List<Term> arguments) : Term
+public class FunctionTerm(string name, List<Term> arguments) : Term
 {
   public string Name { get; } = name;
   public List<Term> Arguments { get; } = arguments;

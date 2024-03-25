@@ -3,7 +3,7 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.Literals;
 
-public class Comparison(Term left, Relation relation, Term right) : Literal
+public class ComparisonLiteral(Term left, Relation relation, Term right) : Literal
 {
   public Term Left { get; } = left;
   public Relation Reltation { get; } = relation;

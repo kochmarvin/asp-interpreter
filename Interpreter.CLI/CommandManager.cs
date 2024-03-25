@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Interpreter.Lib.Results;
+using Interpreter.Lib.Results.Objects.Rule;
 
 namespace Interpreter.CLI
 {
@@ -23,8 +25,12 @@ namespace Interpreter.CLI
       var tree = parser.program();
 
       var programVisitor = new ProgramVisitor();
-      Programm p = programVisitor.Visit(tree);
-      Console.WriteLine(p.ToString());
+      List<ProgramRule> rules = programVisitor.Visit(tree);
+
+      foreach (var r in rules)
+      {
+        Console.WriteLine(r);
+      }
     }
   }
 }
