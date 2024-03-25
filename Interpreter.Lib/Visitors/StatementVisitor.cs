@@ -6,6 +6,8 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Rule;
 using static LparseParser;
 
+namespace Interpreter.Lib.Visitors;
+
 public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
 {
   public override List<ProgramRule> VisitStatements(LparseParser.StatementsContext context)

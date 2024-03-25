@@ -1,6 +1,6 @@
-namespace Interpreter.Lib.Results;
-
 using Antlr4.Runtime.Tree;
+
+namespace Interpreter.Lib.Visitors;
 
 public interface IProgramVisitor<T> : IParseTreeVisitor<T>
 {

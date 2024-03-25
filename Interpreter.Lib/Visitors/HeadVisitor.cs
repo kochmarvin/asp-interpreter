@@ -4,6 +4,8 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Terms;
 using static LparseParser;
 
+namespace Interpreter.Lib.Visitors;
+
 public class HeadVisitor : LparseBaseVisitor<HeadLiteral>
 {
   public override HeadLiteral VisitHead(LparseParser.HeadContext context)
@@ -26,7 +28,7 @@ public class HeadVisitor : LparseBaseVisitor<HeadLiteral>
     if (context.choice() != null)
     {
       List<Atom> atoms = [];
-      
+
       foreach (var choice in context.choice().choice_elements().choice_element())
       {
         Classical_literalContext classic = choice.classical_literal();

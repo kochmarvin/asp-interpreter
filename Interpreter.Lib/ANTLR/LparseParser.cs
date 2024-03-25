@@ -112,6 +112,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_program; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterProgram(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitProgram(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitProgram(this);
@@ -178,6 +188,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_statements; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterStatements(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitStatements(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitStatements(this);
@@ -235,6 +255,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_query; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterQuery(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitQuery(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitQuery(this);
@@ -280,6 +310,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_statement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitStatement(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -379,6 +419,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_head; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterHead(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitHead(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitHead(this);
@@ -447,6 +497,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_body; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterBody(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitBody(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -559,6 +619,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_disjunction; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterDisjunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitDisjunction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDisjunction(this);
@@ -628,6 +698,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_choice; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterChoice(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitChoice(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -712,6 +792,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_choice_elements; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterChoice_elements(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitChoice_elements(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitChoice_elements(this);
@@ -771,6 +861,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_choice_element; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterChoice_element(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitChoice_element(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -837,6 +937,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_aggregate; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterAggregate(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitAggregate(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -913,6 +1023,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_aggregate_elements; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterAggregate_elements(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitAggregate_elements(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAggregate_elements(this);
@@ -972,6 +1092,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_aggregate_element; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterAggregate_element(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitAggregate_element(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -1045,6 +1175,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_naf_literals; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterNaf_literals(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitNaf_literals(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNaf_literals(this);
@@ -1104,6 +1244,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_naf_literal; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterNaf_literal(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitNaf_literal(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -1171,6 +1321,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_classical_literal; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterClassical_literal(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitClassical_literal(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -1250,6 +1410,16 @@ public partial class LparseParser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_builtin_atom; } }
 		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterBuiltin_atom(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitBuiltin_atom(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBuiltin_atom(this);
@@ -1295,6 +1465,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_binop; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterBinop(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitBinop(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -1349,6 +1529,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_terms; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterTerms(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitTerms(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -1421,6 +1611,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_term; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterTerm(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitTerm(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;
@@ -1556,6 +1756,16 @@ public partial class LparseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_arithop; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.EnterArithop(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILparseListener typedListener = listener as ILparseListener;
+			if (typedListener != null) typedListener.ExitArithop(this);
+		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILparseVisitor<TResult> typedVisitor = visitor as ILparseVisitor<TResult>;

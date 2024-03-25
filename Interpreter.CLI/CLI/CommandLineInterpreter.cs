@@ -23,15 +23,18 @@ namespace Interpreter.CLI
       {
         Console.Write(">");
         var input = Console.ReadLine()?.Trim();
+        
         if (string.IsNullOrEmpty(input))
+        {
           continue;
+        }
 
         if (input.StartsWith(":"))
         {
           ExecuteCommand(input);
-          return;
+          continue;
         }
-        
+
         Console.WriteLine("Invalid command. Use ':help' to see available commands.");
       }
     }

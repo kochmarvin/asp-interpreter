@@ -6,6 +6,8 @@ using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Terms;
 using static LparseParser;
 
+namespace Interpreter.Lib.Visitors;
+
 public class BodyVisitor : LparseBaseVisitor<List<BodyLiteral>>
 {
   public override List<BodyLiteral> VisitBody(LparseParser.BodyContext context)

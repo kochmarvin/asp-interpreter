@@ -1,6 +1,6 @@
 using Interpreter.Lib.Results.Objects.Rule;
 
-namespace Interpreter.Lib.Results;
+namespace Interpreter.Lib.Visitors;
 
 public class ProgramVisitor : LparseBaseVisitor<List<ProgramRule>>, IProgramVisitor<List<ProgramRule>>
 {

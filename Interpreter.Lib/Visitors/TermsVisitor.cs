@@ -1,6 +1,8 @@
 
 using Interpreter.Lib.Results.Objects.Terms;
 
+namespace Interpreter.Lib.Visitors;
+
 public class TermsVisitor : LparseBaseVisitor<List<Term>>
 {
   public override List<Term> VisitTerms(LparseParser.TermsContext context)
