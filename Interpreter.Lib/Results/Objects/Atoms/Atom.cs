@@ -7,6 +7,14 @@ public class Atom(string name, List<Term> args)
   public string Name { get; } = name;
   public List<Term> Args { get; } = args;
 
+  public string Signature
+  {
+    get
+    {
+      return $"{Name},{Args.Count}";
+    }
+  }
+
   public override string ToString()
   {
     if (Args.Count == 0)

@@ -3,7 +3,7 @@ grammar Lparse;
 // Lexer rules
 NAF : 'not';
 NUMBER : '0' | [1-9][0-9]* ;
-ID : [a-z]+ ;
+ID : [a-z][A-Za-z]*;
 
 VARIABLE : [A-Z][A-Za-z0-9_]* ;
 ANONYMOUS_VARIABLE : '_' ;
@@ -38,7 +38,6 @@ WS : [ \t\r\n]+ -> skip ;
 
 // Parser rules
 program : statements query? | query ;
-
 statements : statement (statement)* ;
 
 query : classical_literal QUERY_MARK ;

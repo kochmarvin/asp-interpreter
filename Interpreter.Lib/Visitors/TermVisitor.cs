@@ -20,6 +20,11 @@ public class TermVisitor : LparseBaseVisitor<Term>
       return new Variable(context.ID().GetText());
     }
 
+    if (context.NUMBER() != null)
+    {
+      return new Number(int.Parse(context.NUMBER().GetText()));
+    }
+
     // TODO maybe remove?
     if (context.ANONYMOUS_VARIABLE() != null)
     {

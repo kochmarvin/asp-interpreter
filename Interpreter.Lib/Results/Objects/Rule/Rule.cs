@@ -7,7 +7,7 @@ namespace Interpreter.Lib.Results.Objects.Rule;
 public class ProgramRule(HeadLiteral head, List<BodyLiteral> body)
 {
   public HeadLiteral Head { get; } = head;
-  public List<BodyLiteral> Body { get; } = body;
+  public List<BodyLiteral> Body { get; set; } = body;
   public override string ToString()
   {
     var headString = Head.ToString();
