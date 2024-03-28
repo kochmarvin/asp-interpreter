@@ -9,6 +9,8 @@ using Interpreter.Lib.Results;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Listeners;
 using Interpreter.Lib.Visitors;
+using Interpreter.Lib.Graph;
+using Interpreter.Lib.Grounder;
 
 namespace Interpreter.CLI
 {
@@ -35,6 +37,10 @@ namespace Interpreter.CLI
         var programVisitor = new ProgramVisitor();
         List<ProgramRule> rules = programVisitor.Visit(tree);
 
+        DependencyGraph graph = new DependencyGraph(rules);
+        Grounder grounder = new Grounder(graph);
+        grounder.Test();
+
         foreach (var r in rules)
         {
           Console.WriteLine(r);
@@ -43,7 +49,7 @@ namespace Interpreter.CLI
       catch (Exception e)
       {
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(e.Message);
+        Console.WriteLine(e.StackTrace);
         Console.ResetColor();
       }
     }

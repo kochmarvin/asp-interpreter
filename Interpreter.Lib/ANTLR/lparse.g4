@@ -3,7 +3,7 @@ grammar Lparse;
 // Lexer rules
 NAF : 'not';
 NUMBER : '0' | [1-9][0-9]* ;
-ID : [a-z][A-Za-z]*;
+ID : [a-z][A-Za-z_]*;
 
 VARIABLE : [A-Z][A-Za-z0-9_]* ;
 ANONYMOUS_VARIABLE : '_' ;
