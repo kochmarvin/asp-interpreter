@@ -14,16 +14,27 @@ namespace Interpreter.CLI.Commands
 			if (args.Length < 2)
 			{
 				Console.WriteLine("Error: No file path provided.");
-				return; 
+				return;
 			}
 
-			string filePath = args[1];
-      Console.WriteLine(filePath);
+			string command = string.Join(" ", args[1..]);
+
+			int firstQuoteIndex = command.IndexOf('"');
+			int secondQuoteIndex = command.IndexOf('"', firstQuoteIndex + 1);
+
+			if (firstQuoteIndex == -1 || secondQuoteIndex == -1)
+			{
+				Console.WriteLine("Error: Invalid file path format. Use double quotes to encapsulate the file path.");
+				return;
+			}
+
+			string filePath = command.Substring(firstQuoteIndex + 1, secondQuoteIndex - firstQuoteIndex - 1);
+			Console.WriteLine(filePath);
 
 			if (!filePath.EndsWith(".lp"))
 			{
 				Console.WriteLine("Error: Invalid file format. Only files with .lp extension are supported.");
-				return; 
+				return;
 			}
 
 			manager.FilePath = filePath;
