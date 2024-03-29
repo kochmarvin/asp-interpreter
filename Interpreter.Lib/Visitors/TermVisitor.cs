@@ -20,15 +20,9 @@ public class TermVisitor : LparseBaseVisitor<Term>
       return new Variable(context.ID().GetText());
     }
 
-    // case for negative number
-    if (context.MINUS() != null && context.term().Length > 0 && context.term()[0].NUMBER() != null)
-    {
-      return new Number(int.Parse(context.term()[0].NUMBER().GetText()) * -1);
-    }
-
     if (context.NUMBER() != null)
     {
-      return new Number(int.Parse(context.NUMBER().GetText()));
+      return new Number(int.Parse(context.NUMBER().GetText()) * (context.MINUS() != null ? -1 : 1));
     }
 
     // TODO maybe remove?

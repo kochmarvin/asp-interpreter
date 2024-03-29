@@ -78,11 +78,10 @@ binop : EQUAL | UNEQUAL | LESS | GREATER | LESS_OR_EQ | GREATER_OR_EQ ;
 terms : term (COMMA term)* ;
 
 term : ID (PAREN_OPEN terms PAREN_CLOSE)?
-     | NUMBER
+     | (MINUS)? NUMBER
      | VARIABLE
      | ANONYMOUS_VARIABLE
      | PAREN_OPEN term PAREN_CLOSE
-     | MINUS term
      | term arithop term ;
 
 arithop : PLUS | MINUS | TIMES | DIV ;
