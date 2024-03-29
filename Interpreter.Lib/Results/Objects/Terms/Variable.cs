@@ -1,10 +1,34 @@
+
 namespace Interpreter.Lib.Results.Objects.Terms;
 
 public class Variable(string name) : Term
 {
   public string Name { get; } = name;
 
-  public override string ToString() {
+  public override Term Apply(Dictionary<string, Term> substitutions)
+  {
+    if (substitutions.TryGetValue(Name, out Term term))
+    {
+      return term;
+    }
+
+    return this;
+  }
+
+  public override bool Match(Term other, Dictionary<string, Term> substiutionen)
+  {
+    if (substiutionen.TryGetValue(Name, out Term t))
+    {
+      return t == other;
+    }
+
+    substiutionen.Add(Name, other);
+
+    return true;
+  }
+
+  public override string ToString()
+  {
     return Name;
   }
 }

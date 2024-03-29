@@ -11,6 +11,11 @@ using Interpreter.Lib.Listeners;
 using Interpreter.Lib.Visitors;
 using Interpreter.Lib.Graph;
 using Interpreter.Lib.Grounder;
+using Interpreter.Lib.Results.Objects.HeadLiterals;
+using Interpreter.Lib.Results.Objects.Atoms;
+using Interpreter.Lib.Results.Objects.Terms;
+using Interpreter.Lib.Results.Objects.BodyLiterals;
+using Interpreter.Lib.Results.Objects.Literals;
 
 namespace Interpreter.CLI
 {
@@ -39,9 +44,9 @@ namespace Interpreter.CLI
 
         DependencyGraph graph = new DependencyGraph(rules);
         Grounder grounder = new Grounder(graph);
-        grounder.Test();
 
-        foreach (var r in rules)
+
+        foreach (var r in grounder.Ground())
         {
           Console.WriteLine(r);
         }

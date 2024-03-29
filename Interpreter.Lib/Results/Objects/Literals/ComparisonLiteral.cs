@@ -9,6 +9,13 @@ public class ComparisonLiteral(Term left, Relation relation, Term right) : Liter
   public Relation Reltation { get; } = relation;
   public Term Right { get; } = right;
 
+  public override Literal Apply(Dictionary<string, Term> substitutions)
+  {
+    Term appliedLeft = Left.Apply(substitutions);
+    Term appliedRight = Right.Apply(substitutions);
+    return new ComparisonLiteral(appliedLeft, Reltation, appliedRight);
+  }
+
   public override string ToString()
   {
     return $"{Left}{RelationExtensions.ToSymbol(Reltation)}{Right}";
