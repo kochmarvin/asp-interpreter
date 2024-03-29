@@ -1,12 +1,13 @@
 namespace Tests.Lexer;
 
 using Antlr4.Runtime;
+using Interpreter.Lib.Results.Objects.Rule;
 using NUnit.Framework;
 
 [TestFixture]
 public class LexerTests
 {
-  public string _baseURL = "../../../Lexer/Files/";
+  public string _baseURL = "../../../Files/";
   private IList<IToken> GetTokens(string input)
   {
     var inputStream = new AntlrInputStream(input);
