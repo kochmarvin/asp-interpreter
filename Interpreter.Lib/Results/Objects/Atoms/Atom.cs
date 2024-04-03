@@ -12,7 +12,7 @@ public class Atom(string name, List<Term> args) : IMatch<Atom>, IApplier<Atom>
   {
     get
     {
-      return $"{Name},{Args.Count}";
+      return $"{Name}/{Args.Count}";
     }
   }
 

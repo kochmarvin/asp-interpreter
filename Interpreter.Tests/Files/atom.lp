@@ -1,0 +1,1 @@
+informatiker(marvin) :- mensch(marvin).
