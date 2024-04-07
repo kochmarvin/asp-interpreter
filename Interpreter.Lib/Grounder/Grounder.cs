@@ -35,7 +35,7 @@ public class Grounder
   // TODO wurde zu einer doppel liste gechanged checken ob das eh nichts kaputt macht
   public List<List<ProgramRule>> GenerateGroundingSequence()
   {
-     var sequence = new List<List<ProgramRule>>();
+    var sequence = new List<List<ProgramRule>>();
 
     foreach (var scc in Graph.CreateGraph())
     {
@@ -97,8 +97,21 @@ public class Grounder
 
   private List<Dictionary<string, Term>> Matches(Dictionary<string, Term> substitutions, Literal literal)
   {
-    // TODO find matches 
+    if (literal is AtomLiteral atomLiteral)
+    {
+      return MatchAtomLiteral(substitutions, atomLiteral);
+    }
+
     // TODO comparison
     return [];
+  }
+
+  private List<Dictionary<string, Term>> MatchAtomLiteral(Dictionary<string, Term> substitutions, AtomLiteral atomLiteral)
+  {
+    var substituationList = new List<Dictionary<string, Term>>();
+
+    // TODO search for matches 
+
+    return substituationList;
   }
 }
