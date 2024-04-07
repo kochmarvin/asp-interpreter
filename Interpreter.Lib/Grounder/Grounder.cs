@@ -110,7 +110,26 @@ public class Grounder
   {
     var substituationList = new List<Dictionary<string, Term>>();
 
-    // TODO search for matches 
+    if (!atomLiteral.Positive)
+    {
+      substituationList.Add(substitutions);
+      return substituationList;
+    }
+
+    var newAtom = atomLiteral.Atom.Apply(substitutions);
+    foreach (var visited in _visited)
+    {
+      var newSubstituation = new Dictionary<string, Term>();
+
+      if (!newAtom.Match(visited, newSubstituation)) continue;
+
+      foreach (var substituation in substitutions)
+      {
+        newSubstituation.Add(substituation.Key, substituation.Value);
+      }
+
+      substituationList.Add(newSubstituation);
+    }
 
     return substituationList;
   }
