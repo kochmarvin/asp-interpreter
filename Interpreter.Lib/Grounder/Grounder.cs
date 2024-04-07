@@ -32,20 +32,19 @@ public class Grounder
     return groundedProgram;
   }
 
-  // TODO wurde zu einer doppel liste gechanged checken ob das eh nicht fickt
+  // TODO wurde zu einer doppel liste gechanged checken ob das eh nichts kaputt macht
   public List<List<ProgramRule>> GenerateGroundingSequence()
   {
     var sequence = new List<List<ProgramRule>>();
 
-    foreach (var scc in Graph.CreateGraph())
-    {
-      foreach (var posScc in new DependencyGraph(scc).CreateGraph(true))
+    for(int i = 0; i < Graph.CreateGraph().Count; i++){
+
+      foreach (var posScc in new DependencyGraph(Graph.CreateGraph()[i]).CreateGraph(true))
       {
         sequence.Add(posScc);
       }
     }
-
-    sequence.Reverse();
+    
     return sequence;
   }
 
