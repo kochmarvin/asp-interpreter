@@ -63,11 +63,6 @@ public class Grounder
       {
         _visited.Add(atomHead.Atom);
       }
-
-      if (rule.Head is ChoiceHead choiceHead)
-      {
-        choiceHead.Atoms.ForEach(_visited.Add);
-      }
     }
 
     return groundedSubProgram;
