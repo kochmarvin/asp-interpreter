@@ -35,16 +35,17 @@ public class Grounder
   // TODO wurde zu einer doppel liste gechanged checken ob das eh nichts kaputt macht
   public List<List<ProgramRule>> GenerateGroundingSequence()
   {
-    var sequence = new List<List<ProgramRule>>();
+     var sequence = new List<List<ProgramRule>>();
 
-    for(int i = 0; i < Graph.CreateGraph().Count; i++){
-
-      foreach (var posScc in new DependencyGraph(Graph.CreateGraph()[i]).CreateGraph(true))
+    foreach (var scc in Graph.CreateGraph())
+    {
+      foreach (var posScc in new DependencyGraph(scc).CreateGraph(true))
       {
         sequence.Add(posScc);
       }
     }
-    
+
+    sequence.Reverse();
     return sequence;
   }
 
@@ -96,40 +97,8 @@ public class Grounder
 
   private List<Dictionary<string, Term>> Matches(Dictionary<string, Term> substitutions, Literal literal)
   {
-    if (literal is AtomLiteral atomLiteral)
-    {
-      return MatchAtomLiteral(substitutions, atomLiteral);
-    }
-
+    // TODO find matches 
     // TODO comparison
     return [];
-  }
-
-  private List<Dictionary<string, Term>> MatchAtomLiteral(Dictionary<string, Term> substitutions, AtomLiteral atomLiteral)
-  {
-    var substituationList = new List<Dictionary<string, Term>>();
-
-    if (!atomLiteral.Positive)
-    {
-      substituationList.Add(substitutions);
-      return substituationList;
-    }
-
-    var newAtom = atomLiteral.Atom.Apply(substitutions);
-    foreach (var visited in _visited)
-    {
-      var newSubstituation = new Dictionary<string, Term>();
-
-      if (!newAtom.Match(visited, newSubstituation)) continue;
-
-      foreach (var substituation in substitutions)
-      {
-        newSubstituation.Add(substituation.Key, substituation.Value);
-      }
-
-      substituationList.Add(newSubstituation);
-    }
-
-    return substituationList;
   }
 }
