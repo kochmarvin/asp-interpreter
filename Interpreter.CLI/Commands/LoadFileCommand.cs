@@ -18,18 +18,29 @@ namespace Interpreter.CLI.Commands
 				return;
 			}
 
-			string command = string.Join(" ", args[1..]);
-
-			int firstQuoteIndex = command.IndexOf('"');
-			int secondQuoteIndex = command.IndexOf('"', firstQuoteIndex + 1);
-
-			if (firstQuoteIndex == -1 || secondQuoteIndex == -1)
+			string filePath;
+			if (args[1].Contains('"'))
 			{
-				Console.WriteLine("Error: Invalid file path format. Use double quotes to encapsulate the file path.");
-				return;
+
+				string command = string.Join(" ", args[1..]);
+
+				int firstQuoteIndex = command.IndexOf('"');
+				int secondQuoteIndex = command.IndexOf('"', firstQuoteIndex + 1);
+
+				if (firstQuoteIndex == -1 || secondQuoteIndex == -1)
+				{
+					Console.WriteLine("Error: Invalid file path format. Use double quotes to encapsulate the file path.");
+					return;
+				}
+
+				filePath = command.Substring(firstQuoteIndex + 1, secondQuoteIndex - firstQuoteIndex - 1);
+
+			}
+			else
+			{
+				filePath = args[1];
 			}
 
-			string filePath = command.Substring(firstQuoteIndex + 1, secondQuoteIndex - firstQuoteIndex - 1);
 			Console.WriteLine(filePath);
 
 			if (!filePath.EndsWith(".lp"))
