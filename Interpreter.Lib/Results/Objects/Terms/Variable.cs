@@ -15,11 +15,21 @@ public class Variable(string name) : Term
     return this;
   }
 
+  public override bool HasVariable()
+  {
+    if (string.IsNullOrEmpty(Name))
+    {
+      return false;
+    }
+
+    return Char.IsUpper(Name[0]);
+  }
+
   public override bool Match(Term other, Dictionary<string, Term> substiutionen)
   {
     if (substiutionen.TryGetValue(Name, out Term t))
     {
-      return t == other;
+      return ((Variable)t).Name == ((Variable)other).Name;
     }
 
     substiutionen.Add(Name, other);
