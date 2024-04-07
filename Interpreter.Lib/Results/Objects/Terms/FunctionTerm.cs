@@ -18,7 +18,6 @@ public class FunctionTerm(string name, List<Term> arguments) : Term
     if (Name != converted.Name || Arguments.Count != converted.Arguments.Count)
     {
       return false;
-
     }
 
     for (int i = 0; i < Arguments.Count; i++)
