@@ -8,11 +8,11 @@ using static LparseParser;
 
 namespace Interpreter.Lib.Visitors;
 
-public class BodyVisitor : LparseBaseVisitor<List<BodyLiteral>>
+public class BodyVisitor : LparseBaseVisitor<List<Body>>
 {
-  public override List<BodyLiteral> VisitBody(LparseParser.BodyContext context)
+  public override List<Body> VisitBody(LparseParser.BodyContext context)
   {
-    List<BodyLiteral> literals = [];
+    List<Body> literals = [];
 
     foreach (Naf_literalContext naf_Literal in context.naf_literal())
     {

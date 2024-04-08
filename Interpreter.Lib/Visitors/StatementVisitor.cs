@@ -15,8 +15,8 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
     List<ProgramRule> atoms = [];
     foreach (var statementContext in context.statement())
     {
-      HeadLiteral headLiteral = new Headless();
-      List<BodyLiteral> bodyLiterals = [];
+      Head headLiteral = new Headless();
+      List<Body> bodyLiterals = [];
 
       HeadContext head = statementContext.head();
       BodyContext body = statementContext.body();

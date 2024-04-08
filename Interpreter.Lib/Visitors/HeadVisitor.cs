@@ -6,9 +6,9 @@ using static LparseParser;
 
 namespace Interpreter.Lib.Visitors;
 
-public class HeadVisitor : LparseBaseVisitor<HeadLiteral>
+public class HeadVisitor : LparseBaseVisitor<Head>
 {
-  public override HeadLiteral VisitHead(LparseParser.HeadContext context)
+  public override Head VisitHead(LparseParser.HeadContext context)
   {
     if (context.disjunction() != null)
     {

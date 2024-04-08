@@ -3,11 +3,11 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.BodyLiterals;
 
-public class LiteralBody(Literal literal) : BodyLiteral
+public class LiteralBody(Literal literal) : Body
 {
   public Literal Literal { get; } = literal;
 
-  public override BodyLiteral Apply(Dictionary<string, Term> substitutions)
+  public override Body Apply(Dictionary<string, Term> substitutions)
   {
     Literal appliedLiteral = Literal.Apply(substitutions);
     return new LiteralBody(appliedLiteral);
