@@ -284,7 +284,9 @@ public class Grounding(DependencyGraph graph)
     var newAtom = atomLiteral.Atom.Apply(substitutions);
     foreach (var visited in _visited)
     {
-      var newSubstituation = new Dictionary<string, Term>(substitutions);
+
+      // TODO foreach maybe can be removed when new Dictionary<string, Term>(substitutions)
+      var newSubstituation = new Dictionary<string, Term>();
  
       // If the new atom does not match with the visited node, name etc. skip it. Match also adds new substituations
       if (!newAtom.Match(visited, newSubstituation)) continue;
