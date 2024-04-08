@@ -43,7 +43,7 @@ namespace Interpreter.CLI
         List<ProgramRule> rules = programVisitor.Visit(tree);
 
         DependencyGraph graph = new DependencyGraph(rules);
-        Grounder grounder = new Grounder(graph);
+        Grounding grounder = new Grounding(graph);
 
 
         foreach (var r in grounder.Ground())
