@@ -98,7 +98,7 @@ public class DependencyGraph
     }
   }
 
-  private int OrderPredicate(BodyLiteral body)
+  private int OrderPredicate(Body body)
   {
     if (body is not LiteralBody)
     {

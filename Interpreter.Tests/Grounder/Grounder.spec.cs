@@ -28,8 +28,10 @@ public class GrounderTests
 
     DependencyGraph graph = new DependencyGraph(rules);
     Grounding grounder = new Grounding(graph);
+    var grounded = grounder.Ground();
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
 
-    foreach (var r in grounder.GroundNew())
+    foreach (var r in grounded)
     {
       Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
@@ -53,7 +55,32 @@ public class GrounderTests
     DependencyGraph graph = new DependencyGraph(rules);
     Grounding grounder = new Grounding(graph);
 
-    foreach (var r in grounder.GroundNew())
+    var grounded = grounder.Ground();
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
+
+
+  [Test]
+  public void GrounderCircluarTest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("circular.lp");
+
+    List<string> expected = [
+      "mensch(marvin).",
+      "single(marvin):-mensch(marvin),notmarried(marvin).",
+      "married(marvin):-mensch(marvin),notsingle(marvin)."
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
     {
       Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
