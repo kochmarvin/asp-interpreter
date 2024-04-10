@@ -16,6 +16,8 @@ using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Terms;
 using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
+using Interpreter.Lib.Solver;
+using Interpreter.Lib.Solver.defaults;
 
 namespace Interpreter.CLI
 {
@@ -44,12 +46,16 @@ namespace Interpreter.CLI
 
         DependencyGraph graph = new DependencyGraph(rules);
         Grounding grounder = new Grounding(graph);
+        var groundedProgram = grounder.Ground();
 
-
-        foreach (var r in grounder.Ground())
+        Console.WriteLine("==[Grounded Program]==");
+        foreach (var r in groundedProgram)
         {
           Console.WriteLine(r);
         }
+
+        SatEngine satEnginesatEngine = new SatEngine(groundedProgram, true);
+        var answerSets = satEnginesatEngine.Execute();
       }
       catch (Exception e)
       {
