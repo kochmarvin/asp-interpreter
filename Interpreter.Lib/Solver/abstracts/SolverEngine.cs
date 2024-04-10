@@ -9,5 +9,5 @@ public abstract class SolverEngine(IPreparer preparer, ITransformer transformer,
   public ITransformer Transformer { get; } = transformer;
   public ISolver Solver { get; } = solver;
 
-  public abstract List<List<Atom>> Execute();
+  public abstract List<List<Atom>>? Execute();
 }

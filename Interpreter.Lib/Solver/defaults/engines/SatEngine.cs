@@ -9,7 +9,7 @@ public class SatEngine(List<ProgramRule> program, bool verbose = false) : Solver
 {
   public List<ProgramRule> Program { get; } = program;
 
-  public override List<List<Atom>> Execute()
+  public override List<List<Atom>>? Execute()
   {
     var preperation = Preparer.Prepare(Program);
 
@@ -33,9 +33,8 @@ public class SatEngine(List<ProgramRule> program, bool verbose = false) : Solver
     }
 
     var transformed = Transformer.TransformToFormular(preperation);
-    // If solve returns null it is unsatisviable
-    var solved = Solver.Solve(transformed) ?? throw new InvalidOperationException("UNSATISFIABLE");
-
+    var solved = Solver.Solve(transformed);
+    
     return Transformer.ReTransform(solved);
   }
 }
