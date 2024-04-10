@@ -55,7 +55,27 @@ namespace Interpreter.CLI
         }
 
         SatEngine satEnginesatEngine = new SatEngine(groundedProgram, true);
+
+        Console.WriteLine("Solving...");
         var answerSets = satEnginesatEngine.Execute();
+
+        if (answerSets == null)
+        {
+          Console.WriteLine("UNSATISFIABLE");
+        }
+        else
+        {
+          for (int i = 0; i < answerSets.Count; i++)
+          {
+            Console.WriteLine("Answer: " + (i + 1));
+            string atoms = string.Join(", ", answerSets[i].Select(x => x.ToString()));
+            Console.WriteLine("{ " + atoms + " }");
+          }
+
+          Console.WriteLine("SATISFIABLE");
+          Console.WriteLine("");
+          Console.WriteLine("Models: " + answerSets.Count);
+        }
       }
       catch (Exception e)
       {
