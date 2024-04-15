@@ -6,9 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ExcludeFromCodeCoverage>ANTLR/**/*</ExcludeFromCodeCoverage>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
     <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
+    <ExcludeFromCodeCoverage Include="$(ExcludeFromCodeCoverage)" />
   </ItemGroup>
 
 </Project>
