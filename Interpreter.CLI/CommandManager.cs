@@ -72,6 +72,18 @@ namespace Interpreter.CLI
             Console.WriteLine("{ " + atoms + " }");
           }
 
+          /*
+
+            1 -1
+            -1 2
+            1 3 -3
+            2 3 4
+            -3 1 6
+            -6
+
+
+          */
+
           Console.WriteLine("SATISFIABLE");
           Console.WriteLine("");
           Console.WriteLine("Models: " + answerSets.Count);
