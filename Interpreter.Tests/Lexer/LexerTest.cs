@@ -88,7 +88,7 @@ public class LexerTests
         }, "Expected Parseexception to be thrown for invalid input.");
   }
 
-   [Test]
+  [Test]
   public void TestEmptyParanthesesInput()
   {
     Assert.Throws<ParseException>(() =>
@@ -99,7 +99,7 @@ public class LexerTests
         }, "Expected Parseexception to be thrown for invalid input.");
   }
 
-     [Test]
+  [Test]
   public void TestEmptyParantheses2Input()
   {
     Assert.Throws<ParseException>(() =>
