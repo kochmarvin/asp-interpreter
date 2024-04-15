@@ -33,8 +33,23 @@ public class SatEngine(List<ProgramRule> program, bool verbose = false) : Solver
     }
 
     var transformed = Transformer.TransformToFormular(preperation);
+
+    if (verbose)
+    {
+      Console.WriteLine("");
+      Console.WriteLine("==[Transformed formular]==");
+      Console.WriteLine("");
+      foreach (var r in transformed)
+      {
+        foreach (var k in r)
+        {
+          Console.Write(k + " ");
+        }
+        Console.WriteLine();
+      }
+    }
+
     var solved = Solver.Solve(transformed);
-    
     return Transformer.ReTransform(solved);
   }
 }

@@ -118,6 +118,36 @@ public class Preparer : IPreparer
               // if it is not positive and we do not know that it exists as a fact we skip it
               if (!_trueFacts.Contains(atomLiteral.Atom.ToString()))
               {
+
+                bool remove = true;
+                foreach (var head in program.Select(rule => rule.Head))
+                {
+                  if (head is ChoiceHead choiceToCheck)
+                  {
+                    var found = choiceToCheck.Atoms.Where((atom) => atom.ToString() == atomLiteral.Atom.ToString()).ToList();
+
+                    if (found.Count > 0)
+                    {
+                      remove = false;
+                      break;
+                    }
+                  }
+
+                  if (head is AtomHead atomToCheck && atomToCheck.Atom.ToString() == atomLiteral.Atom.ToString())
+                  {
+                    remove = false;
+                    break;
+
+                  }
+                }
+
+                if (remove)
+                {
+                  rule.Body.RemoveAt(j);
+                  j--;
+                  changes++;
+                }
+
                 continue;
               }
 
