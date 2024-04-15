@@ -7,6 +7,9 @@ using Interpreter.Lib.Solver.Interfaces;
 
 namespace Interpreter.Lib.Solver.defaults;
 
+/*
+  TODO Circle detection and adding XOR
+*/
 public class SatTransformer : ITransformer
 {
   private Preperation? _preperation;
@@ -31,134 +34,33 @@ public class SatTransformer : ITransformer
 
       if (rule.Head is Headless headless)
       {
-        int foundIndex;
-        if (!_mappedAtoms.TryGetValue(headless.ToString(), out foundIndex))
-        {
-          _mappedAtoms.Add(headless.ToString(), ++index);
-          _reMappedAtoms.Add(index, headless.ToString());
-          foundIndex = index;
-        }
 
+        int foundIndex = GetIndexOfString(headless.ToString(), ref index);
         logicalRule.Add(foundIndex);
-        formular.Add([foundIndex * -1]);
-
-        foreach (var body in rule.Body)
-        {
-          if (body is LiteralBody literalBody)
-          {
-            var literal = literalBody.Literal;
-
-            if (literal is AtomLiteral atomLiteral)
-            {
-              if (!_mappedAtoms.TryGetValue(atomLiteral.Atom.ToString(), out foundIndex))
-              {
-                _mappedAtoms.Add(atomLiteral.Atom.ToString(), ++index);
-                _mappedRules.Add(atomLiteral.Atom.ToString(), atomLiteral.Atom);
-                _reMappedAtoms.Add(index, atomLiteral.Atom.ToString());
-                foundIndex = index;
-              }
-
-              if (!atomLiteral.Positive)
-              {
-                logicalRule.Add(foundIndex);
-              }
-              else
-              {
-                logicalRule.Add(foundIndex * -1);
-              }
-            }
-
-          }
-        }
 
         // We say that the newley created headless rule is not allowed to happen
+        formular.Add([foundIndex * -1]);
+        TransformBodyLiterals(rule.Body, logicalRule, ref index);
       }
 
       if (rule.Head is AtomHead atomHead)
       {
-        int foundIndex;
-        if (!_mappedAtoms.TryGetValue(atomHead.Atom.ToString(), out foundIndex))
-        {
-          _mappedAtoms.Add(atomHead.Atom.ToString(), ++index);
-          _mappedRules.Add(atomHead.Atom.ToString(), atomHead.Atom);
-          _reMappedAtoms.Add(index, atomHead.Atom.ToString());
-          foundIndex = index;
-        }
+        int foundIndex = GetIndexOfString(atomHead.Atom.ToString(), ref index, atomHead.Atom);
 
         logicalRule.Add(foundIndex);
-
-        foreach (var body in rule.Body)
-        {
-          if (body is LiteralBody literalBody)
-          {
-            var literal = literalBody.Literal;
-
-            if (literal is AtomLiteral atomLiteral)
-            {
-              if (!_mappedAtoms.TryGetValue(atomLiteral.Atom.ToString(), out foundIndex))
-              {
-                _mappedAtoms.Add(atomLiteral.Atom.ToString(), ++index);
-                _mappedRules.Add(atomLiteral.Atom.ToString(), atomLiteral.Atom);
-                _reMappedAtoms.Add(index, atomLiteral.Atom.ToString());
-                foundIndex = index;
-              }
-
-              if (!atomLiteral.Positive)
-              {
-                logicalRule.Add(foundIndex);
-              }
-              else
-              {
-                logicalRule.Add(foundIndex * -1);
-              }
-            }
-          }
-        }
+        TransformBodyLiterals(rule.Body, logicalRule, ref index);
       }
 
       if (rule.Head is ChoiceHead choiceHead)
       {
         foreach (var choice in choiceHead.Atoms)
         {
-          int foundIndex;
-          if (!_mappedAtoms.TryGetValue(choice.ToString(), out foundIndex))
-          {
-            _mappedAtoms.Add(choice.ToString(), ++index);
-            _mappedRules.Add(choice.ToString(), choice);
-            _reMappedAtoms.Add(index, choice.ToString());
-            foundIndex = index;
-          }
+          int foundIndex = GetIndexOfString(choice.ToString(), ref index, choice);
 
           logicalRule.Add(foundIndex);
           logicalRule.Add(foundIndex * -1);
 
-          foreach (var body in rule.Body)
-          {
-            if (body is LiteralBody literalBody)
-            {
-              var literal = literalBody.Literal;
-
-              if (literal is AtomLiteral atomLiteral)
-              {
-                if (!_mappedAtoms.TryGetValue(atomLiteral.Atom.ToString(), out foundIndex))
-                {
-                  _mappedAtoms.Add(atomLiteral.Atom.ToString(), ++index);
-                  _mappedRules.Add(atomLiteral.Atom.ToString(), atomLiteral.Atom);
-                  _reMappedAtoms.Add(index, atomLiteral.Atom.ToString());
-                  foundIndex = index;
-                }
-
-                if (!atomLiteral.Positive)
-                {
-                  logicalRule.Add(foundIndex);
-                }
-                else
-                {
-                  logicalRule.Add(foundIndex * -1);
-                }
-              }
-            }
-          }
+          TransformBodyLiterals(rule.Body, logicalRule, ref index);
         }
       }
 
@@ -215,5 +117,41 @@ public class SatTransformer : ITransformer
     }
 
     return transformed;
+  }
+
+  private int GetIndexOfString(string signature, ref int index, Atom? atom = null)
+  {
+    int foundIndex;
+    if (!_mappedAtoms.TryGetValue(signature, out foundIndex))
+    {
+      _mappedAtoms.Add(signature, ++index);
+      _reMappedAtoms.Add(index, signature);
+      if (atom != null)
+      {
+        _mappedRules.Add(signature, atom);
+      }
+      foundIndex = index;
+    }
+
+    return foundIndex;
+  }
+
+  private void TransformBodyLiterals(List<Body> bodies, List<int> logicalRule, ref int index)
+  {
+    foreach (var body in bodies)
+    {
+      if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral atomLiteral)
+      {
+        int foundIndex = GetIndexOfString(atomLiteral.Atom.ToString(), ref index, atomLiteral.Atom);
+
+        if (!atomLiteral.Positive)
+        {
+          logicalRule.Add(foundIndex);
+          continue;
+        }
+
+        logicalRule.Add(foundIndex * -1);
+      }
+    }
   }
 }
