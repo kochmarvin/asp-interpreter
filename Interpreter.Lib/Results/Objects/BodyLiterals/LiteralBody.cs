@@ -13,7 +13,7 @@ public class LiteralBody(Literal literal) : Body
     return new LiteralBody(appliedLiteral);
   }
 
-  public override string ToString()
+  public override string? ToString()
   {
     return Literal.ToString();
   }
