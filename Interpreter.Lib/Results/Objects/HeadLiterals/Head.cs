@@ -7,7 +7,7 @@ public abstract class Head : IApplier<Head>
 {
   public abstract Head Apply(Dictionary<string, Term> substitutions);
 
-  public override string ToString()
+  public override string? ToString()
   {
     return base.ToString();
   }

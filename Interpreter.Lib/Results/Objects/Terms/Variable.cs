@@ -7,27 +7,17 @@ public class Variable(string name) : Term
 
   public override Term Apply(Dictionary<string, Term> substitutions)
   {
-    if (substitutions.TryGetValue(Name, out Term term))
+    if (substitutions.TryGetValue(Name, out Term? term))
     {
       return term;
     }
 
     return this;
   }
-
-  public override bool HasVariable()
-  {
-    if (string.IsNullOrEmpty(Name))
-    {
-      return false;
-    }
-
-    return Char.IsUpper(Name[0]);
-  }
-
+  
   public override bool Match(Term other, Dictionary<string, Term> substiutionen)
   {
-    if (substiutionen.TryGetValue(Name, out Term t))
+    if (substiutionen.TryGetValue(Name, out Term? t))
     {
       return ((Variable)t).Name == ((Variable)other).Name;
     }

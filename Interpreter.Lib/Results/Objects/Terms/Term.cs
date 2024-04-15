@@ -8,10 +8,8 @@ public abstract class Term : IMatch<Term>, IApplier<Term>
 
   public abstract bool Match(Term other, Dictionary<string, Term> substiutionen);
 
-  public override string ToString()
+  public override string? ToString()
   {
     return base.ToString();
   }
-
-  public abstract bool HasVariable();
 }

@@ -7,7 +7,7 @@ public abstract class Literal : IApplier<Literal>
 {
   public abstract Literal Apply(Dictionary<string, Term> substitutions);
 
-  public override string ToString()
+  public override string? ToString()
   {
     return base.ToString();
   }
