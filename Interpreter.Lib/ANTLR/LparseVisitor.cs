@@ -92,24 +92,6 @@ public interface ILparseVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitChoice_element([NotNull] LparseParser.Choice_elementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LparseParser.aggregate"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAggregate([NotNull] LparseParser.AggregateContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="LparseParser.aggregate_elements"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAggregate_elements([NotNull] LparseParser.Aggregate_elementsContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="LparseParser.aggregate_element"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAggregate_element([NotNull] LparseParser.Aggregate_elementContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="LparseParser.naf_literals"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

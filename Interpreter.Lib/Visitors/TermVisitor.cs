@@ -25,12 +25,6 @@ public class TermVisitor : LparseBaseVisitor<Term>
       return new Number(int.Parse(context.NUMBER().GetText()) * (context.MINUS() != null ? -1 : 1));
     }
 
-    // TODO maybe remove?
-    if (context.ANONYMOUS_VARIABLE() != null)
-    {
-      return new Variable("_");
-    }
-
     if (context.VARIABLE() != null)
     {
       return new Variable(context.VARIABLE().GetText());

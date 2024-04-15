@@ -131,36 +131,6 @@ public interface ILparseListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitChoice_element([NotNull] LparseParser.Choice_elementContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LparseParser.aggregate"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterAggregate([NotNull] LparseParser.AggregateContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LparseParser.aggregate"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitAggregate([NotNull] LparseParser.AggregateContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LparseParser.aggregate_elements"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterAggregate_elements([NotNull] LparseParser.Aggregate_elementsContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LparseParser.aggregate_elements"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitAggregate_elements([NotNull] LparseParser.Aggregate_elementsContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LparseParser.aggregate_element"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterAggregate_element([NotNull] LparseParser.Aggregate_elementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LparseParser.aggregate_element"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitAggregate_element([NotNull] LparseParser.Aggregate_elementContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.naf_literals"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

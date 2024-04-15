@@ -156,42 +156,6 @@ public partial class LparseBaseListener : ILparseListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitChoice_element([NotNull] LparseParser.Choice_elementContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LparseParser.aggregate"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAggregate([NotNull] LparseParser.AggregateContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LparseParser.aggregate"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAggregate([NotNull] LparseParser.AggregateContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LparseParser.aggregate_elements"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAggregate_elements([NotNull] LparseParser.Aggregate_elementsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LparseParser.aggregate_elements"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAggregate_elements([NotNull] LparseParser.Aggregate_elementsContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LparseParser.aggregate_element"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAggregate_element([NotNull] LparseParser.Aggregate_elementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LparseParser.aggregate_element"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAggregate_element([NotNull] LparseParser.Aggregate_elementContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.naf_literals"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

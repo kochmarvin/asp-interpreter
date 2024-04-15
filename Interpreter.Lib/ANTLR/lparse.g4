@@ -6,19 +6,16 @@ NUMBER : '0' | [1-9][0-9]* ;
 ID : [a-z][A-Za-z_]*;
 
 VARIABLE : [A-Z][A-Za-z0-9_]* ;
-ANONYMOUS_VARIABLE : '_' ;
 DOT : '.' ;
 COMMA : ',' ;
 QUERY_MARK : '?' ;
 COLON : ':' ;
 SEMICOLON : ';' ;
-OR : '|' ;
 CONS : ':-' ;
 PLUS : '+' ;
 MINUS : '-' ;
 TIMES : '*' ;
 DIV : '/' ;
-AT : '@' ;
 PAREN_OPEN : '(' ;
 PAREN_CLOSE : ')' ;
 SQUARE_OPEN : '[' ;
@@ -47,23 +44,15 @@ statement : CONS body? DOT
 
 head : disjunction | choice ;
 
-body : (naf_literal | NAF? aggregate) (COMMA (naf_literal | NAF? aggregate))* ;
+body : (naf_literal) (COMMA (naf_literal))* ;
 
-disjunction : classical_literal (OR classical_literal)* ;
+disjunction : classical_literal ;
 
 choice : (term binop)? CURLY_OPEN choice_elements? CURLY_CLOSE (binop term)? ;
 
 choice_elements : choice_element (SEMICOLON choice_element)* ;
 
 choice_element : classical_literal (COLON naf_literals)? ;
-
-aggregate : (term binop)? CURLY_OPEN aggregate_elements CURLY_CLOSE (binop term)? ;
-
-aggregate_elements : aggregate_element (SEMICOLON aggregate_element)* ;
-
-aggregate_element : terms COLON naf_literals
-                  | terms                  
-                  | COLON naf_literals ;   
 
 naf_literals : naf_literal (COMMA naf_literal)* ;
 
@@ -80,7 +69,6 @@ terms : term (COMMA term)* ;
 term : ID (PAREN_OPEN terms PAREN_CLOSE)?
      | (MINUS)? NUMBER
      | VARIABLE
-     | ANONYMOUS_VARIABLE
      | PAREN_OPEN term PAREN_CLOSE
      | term arithop term ;
 

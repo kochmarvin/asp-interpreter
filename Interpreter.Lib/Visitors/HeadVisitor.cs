@@ -12,7 +12,7 @@ public class HeadVisitor : LparseBaseVisitor<Head>
   {
     if (context.disjunction() != null)
     {
-      Classical_literalContext classic = context.disjunction().classical_literal()[0];
+      Classical_literalContext classic = context.disjunction().classical_literal();
       string name = classic.ID().GetText();
       name = classic.MINUS() != null ? "-" + name : name;
 
