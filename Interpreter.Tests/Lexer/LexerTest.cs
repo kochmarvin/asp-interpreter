@@ -93,11 +93,23 @@ public class LexerTests
   {
     Assert.Throws<ParseException>(() =>
         {
-          var inputStream = new AntlrInputStream("ma()");
+          var inputStream = new AntlrInputStream("ma(}}})");
           StartParser(inputStream);
 
         }, "Expected Parseexception to be thrown for invalid input.");
   }
+
+     [Test]
+  public void TestEmptyParantheses2Input()
+  {
+    Assert.Throws<ParseException>(() =>
+        {
+          var inputStream = new AntlrInputStream("()");
+          StartParser(inputStream);
+
+        }, "Expected Parseexception to be thrown for invalid input.");
+  }
+
 
   private void StartParser(AntlrInputStream input)
   {
