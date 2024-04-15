@@ -124,7 +124,22 @@ public class GrounderTests
       "node(6).",
       "knoten(4):-node(4),4>3.",
       "knoten(5):-node(5),5>3.",
-      "knoten(6):-node(6),6>3."
+      "knoten(6):-node(6),6>3.",
+      "knoten(3):-node(3),3>=3.",
+      "knoten(4):-node(4),4>=3.",
+      "knoten(5):-node(5),5>=3.",
+      "knoten(6):-node(6),6>=3.",
+      "knoten(1):-node(1),1<=3.",
+      "knoten(2):-node(2),2<=3.",
+      "knoten(3):-node(3),3<=3.",
+      "knoten(1):-node(1),1<3.",
+      "knoten(2):-node(2),2<3.",
+      "knoten(3):-node(3),3==3.",
+      "knoten(1):-node(1),1!=3.",
+      "knoten(2):-node(2),2!=3.",
+      "knoten(4):-node(4),4!=3.",
+      "knoten(5):-node(5),5!=3.",
+      "knoten(6):-node(6),6!=3.",
     ];
 
     DependencyGraph graph = new DependencyGraph(rules);

@@ -6,3 +6,8 @@ node(5).
 node(6).
 
 knoten(X) :- node(X), X > 3.
+knoten(X) :- node(X), X >= 3.
+knoten(X) :- node(X), X <= 3.
+knoten(X) :- node(X), X < 3.
+knoten(X) :- node(X), X = 3.
+knoten(X) :- node(X), X <> 3.
