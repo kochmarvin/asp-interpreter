@@ -109,4 +109,33 @@ public class GrounderTests
       Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
+
+  [Test]
+  public void Comparissontest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("comparisson.lp");
+
+    List<string> expected = [
+      "node(1).",
+      "node(2).",
+      "node(3).",
+      "node(4).",
+      "node(5).",
+      "node(6).",
+      "knoten(4):-node(4),4>3.",
+      "knoten(5):-node(5),5>3.",
+      "knoten(6):-node(6),6>3."
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
 }
