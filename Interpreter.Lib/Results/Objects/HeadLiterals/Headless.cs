@@ -9,6 +9,11 @@ public class Headless : Head
     return this;
   }
 
+  public override bool HasVariables()
+  {
+    return false;
+  }
+
   public override string ToString()
   {
     return "";

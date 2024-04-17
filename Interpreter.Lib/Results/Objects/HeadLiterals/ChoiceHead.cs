@@ -15,6 +15,19 @@ public class ChoiceHead(List<Atom> atoms) : Head
     return new ChoiceHead(appliedChoices);
   }
 
+  public override bool HasVariables()
+  {
+    foreach (var atom in Atoms)
+    {
+      if (atom.HasVariables())
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public override string ToString()
   {
     var headString = Atoms.Select(bl => bl.ToString());

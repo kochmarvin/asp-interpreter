@@ -22,6 +22,19 @@ public class FunctionTerm(string name, List<Term> arguments) : Term
     return false;
   }
 
+  public override bool HasVariables()
+  {
+    foreach (var term in Arguments)
+    {
+      if (term.HasVariables())
+      {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
   public override bool Match(Term other, Dictionary<string, Term> substiutionen)
   {
     FunctionTerm converted = (FunctionTerm)other;

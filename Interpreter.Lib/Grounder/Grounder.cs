@@ -7,14 +7,14 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
- 
+
 namespace Interpreter.Lib.Grounder;
- 
+
 public class Grounding(DependencyGraph graph)
 {
   private readonly List<Atom> _visited = [];
   public DependencyGraph Graph { get; } = graph;
- 
+
   /// <summary>
   /// This function creates the grounding secence of the program
   /// </summary>
@@ -23,7 +23,7 @@ public class Grounding(DependencyGraph graph)
   public List<List<ProgramRule>> GenerateGroundingSequence()
   {
     var sequence = new List<List<ProgramRule>>();
- 
+
     foreach (var scc in Graph.CreateGraph())
     {
       foreach (var posScc in new DependencyGraph(scc).CreateGraph(true))
@@ -31,12 +31,12 @@ public class Grounding(DependencyGraph graph)
         sequence.Add(posScc);
       }
     }
- 
+
     // Most important step, why exactly this happens is unclear.
     sequence.Reverse();
     return sequence;
   }
- 
+
   /// <summary>
   /// This functions generates the dependecy graph and grounds every rule 
   /// in the correct sequence. After that it cleans the grounded rules and returns a 
@@ -46,19 +46,20 @@ public class Grounding(DependencyGraph graph)
   public List<ProgramRule> Ground()
   {
     var groundedProgram = new List<ProgramRule>();
- 
+
     foreach (var subProgram in GenerateGroundingSequence())
     {
       // Add Range is just a simpler way to add it to the list. You could also loop through it and add one by one
       groundedProgram.AddRange(GroundSubProgram(subProgram));
     }
- 
+
     List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram);
+
     GroundCleanUp(groundedProgram, availableAtoms);
- 
+
     return groundedProgram;
   }
- 
+
   /// <summary>
   /// This function goes throught each rule and (fact) and stores the
   /// head of the rule into a list, beacause it is going to be an initial 
@@ -75,16 +76,16 @@ public class Grounding(DependencyGraph graph)
       {
         availableAtoms.AddRange(choiceHead.Atoms.Select(atom => atom.ToString()));
       }
- 
+
       if (rule.Head is AtomHead atomHead)
       {
         availableAtoms.Add(atomHead.Atom.ToString());
       }
     }
- 
+
     return availableAtoms;
   }
- 
+
   /// <summary>
   /// This function goes through all rules one by one and looks if each
   /// atom in its body contains as a head. If it does not exist as a head it removes
@@ -100,14 +101,14 @@ public class Grounding(DependencyGraph graph)
     do
     {
       changes = 0;
- 
+
       for (int i = 0; i < groundedProgram.Count; i++)
       {
         foreach (var body in groundedProgram[i].Body)
         {
           // Change this if there somehow comes a new body type like aggregations
           var literal = ((LiteralBody)body).Literal;
- 
+
           if (literal is AtomLiteral atomLiteral && atomLiteral.Positive)
           {
             // Check if the rule we are lookign at is in the valid rules, if not 
@@ -116,10 +117,10 @@ public class Grounding(DependencyGraph graph)
             {
               continue;
             }
- 
+
             // Now we now that we are making change, because we delete rules and modify the valid atoms
             changes++;
- 
+
             // if it is a choice head remove every possible choice from the valid atoms.
             if (groundedProgram[i].Head is ChoiceHead choiceHead)
             {
@@ -127,15 +128,15 @@ public class Grounding(DependencyGraph graph)
               // TODO maybe change for better readability
               choiceHead.Atoms.Select(atom => atom.ToString()).ToList().ForEach((atom) => availableAtoms.Remove(atom.ToString()));
             }
- 
+
             // if it is a normal head just remove it.
             if (groundedProgram[i].Head is AtomHead atomHead)
             {
               availableAtoms.Remove(atomHead.Atom.ToString());
             }
- 
+
             groundedProgram.RemoveAt(i);
- 
+
             // go back in the for loop because the whole list shrunk by one
             i--;
           }
@@ -143,7 +144,7 @@ public class Grounding(DependencyGraph graph)
       }
     } while (changes != 0);
   }
- 
+
   /// <summary>
   /// This function grounds a subprogram, a subprogram therefore is a 
   /// set of rules linked by the dependecy graph,
@@ -153,7 +154,7 @@ public class Grounding(DependencyGraph graph)
   private List<ProgramRule> GroundSubProgram(List<ProgramRule> subPorgram)
   {
     var groundedSubProgram = new List<ProgramRule>();
- 
+
     foreach (var rule in subPorgram)
     {
       // If the body is zero we dont need to ground anything because its header a bodyless choice or a fact
@@ -162,10 +163,17 @@ public class Grounding(DependencyGraph graph)
         groundedSubProgram.Add(rule);
         continue;
       }
- 
+
+      // TODO check if this is valid behaviour.
+      if (!rule.HasVariables())
+      {
+        groundedSubProgram.Add(rule);
+        continue;
+      }
+
       groundedSubProgram.AddRange(GroundRule(rule));
     }
- 
+
     // Add every rule head to visited for future substitutions
     foreach (var rule in groundedSubProgram)
     {
@@ -174,16 +182,16 @@ public class Grounding(DependencyGraph graph)
         // Due to linq very short way to write this
         choiceHead.Atoms.ForEach(_visited.Add);
       }
- 
+
       if (rule.Head is AtomHead atomHead)
       {
         _visited.Add(atomHead.Atom);
       }
     }
- 
+
     return groundedSubProgram;
   }
- 
+
   /// <summary>
   /// This function grounds a rule. Recursivly with index beeing the literal of the body.
   /// </summary>
@@ -196,12 +204,12 @@ public class Grounding(DependencyGraph graph)
     // If the substitution is null the initialize it with a new dict.
     substitutions ??= [];
     var groundedRules = new List<ProgramRule>();
- 
+
     if (index >= rule.Body.Count)
     {
       groundedRules.Add(rule.Apply(substitutions));
     }
- 
+
     // Also change this if there is somehow a new body
     if (index < rule.Body.Count && rule.Body[index] is LiteralBody lit)
     {
@@ -211,10 +219,10 @@ public class Grounding(DependencyGraph graph)
         groundedRules.AddRange(GroundRule(rule, foundSubstituations, index + 1));
       }
     }
- 
+
     return groundedRules;
   }
- 
+
   private List<Dictionary<string, Term>> FindMatches(Dictionary<string, Term> substitutions, Literal literal)
   {
     // If the literal is an atom literal so everything except exception
@@ -222,13 +230,13 @@ public class Grounding(DependencyGraph graph)
     {
       return MatchAtomLiteral(substitutions, atomLiteral);
     }
- 
+
     // If the literal is a comparisson X = Y, Y <> X
     if (literal is ComparisonLiteral comparisonLiteral)
     {
       var left = comparisonLiteral.Left.Apply(substitutions);
       var right = comparisonLiteral.Right.Apply(substitutions);
- 
+
       // Here we check if the comparisson is valid because if it fails
       // we wont store the substiturions for it.
       if (EvaluateComparisson(left, comparisonLiteral.Reltation, right))
@@ -236,11 +244,11 @@ public class Grounding(DependencyGraph graph)
         return [substitutions];
       }
     }
- 
+
     return [];
   }
- 
- 
+
+
   /// <summary>
   //  This function evaluates the truth value of the relation operation
   /// </summary>
@@ -261,7 +269,7 @@ public class Grounding(DependencyGraph graph)
       _ => false,
     };
   }
- 
+
   /// <summary>
   /// This function searches for all matches for an atom literal.
   /// </summary>
@@ -271,7 +279,7 @@ public class Grounding(DependencyGraph graph)
   private List<Dictionary<string, Term>> MatchAtomLiteral(Dictionary<string, Term> substitutions, AtomLiteral atomLiteral)
   {
     var substituationList = new List<Dictionary<string, Term>>();
- 
+
     // If it is not positive (not ...) we just assume that it is a possible value.
     // This is important for circular dependecy rules.
     if (!atomLiteral.Positive)
@@ -279,7 +287,7 @@ public class Grounding(DependencyGraph graph)
       substituationList.Add(substitutions);
       return substituationList;
     }
- 
+
     // Cloneig the atom of the literal by appliend substiutian
     var newAtom = atomLiteral.Atom.Apply(substitutions);
     foreach (var visited in _visited)
@@ -287,19 +295,19 @@ public class Grounding(DependencyGraph graph)
 
       // TODO foreach maybe can be removed when new Dictionary<string, Term>(substitutions)
       var newSubstituation = new Dictionary<string, Term>();
- 
+
       // If the new atom does not match with the visited node, name etc. skip it. Match also adds new substituations
       if (!newAtom.Match(visited, newSubstituation)) continue;
- 
+
       // TODO write more test and check if can be removed first test seem to work with out that
       foreach (var substituation in substitutions)
       {
         newSubstituation.Add(substituation.Key, substituation.Value);
       }
- 
+
       substituationList.Add(newSubstituation);
     }
- 
+
     return substituationList;
   }
 }

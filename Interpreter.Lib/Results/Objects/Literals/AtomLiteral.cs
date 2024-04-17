@@ -1,4 +1,6 @@
 namespace Interpreter.Lib.Results.Objects.Literals;
+
+using Interpreter.Lib.Results.Interfaces;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Terms;
 
@@ -11,6 +13,11 @@ public class AtomLiteral(bool positive, Atom atom) : Literal
   {
     Atom appliedAtom = Atom.Apply(substitutions);
     return new AtomLiteral(Positive, appliedAtom);
+  }
+
+  public override bool HasVariables()
+  {
+    return Atom.HasVariables();
   }
 
   public override string ToString()
