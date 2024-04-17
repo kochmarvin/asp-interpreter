@@ -23,6 +23,7 @@ public class SatTransformer : ITransformer
 
   public List<List<int>> TransformToFormular(Preperation preperation)
   {
+    _preperation = preperation;
     List<ConjunctiveNormalForm.Expression> expressions = [];
 
     int index = 0;
