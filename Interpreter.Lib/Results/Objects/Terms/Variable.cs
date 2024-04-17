@@ -15,17 +15,7 @@ public class Variable(string name) : Term
     return this;
   }
 
-  public override bool HasVariable()
-  {
-    if (string.IsNullOrEmpty(Name))
-    {
-      return false;
-    }
-
-    return Char.IsUpper(Name[0]);
-  }
-
-  public override bool HasVariables()
+   public override bool HasVariables()
   {
     if (string.IsNullOrEmpty(Name))
     {

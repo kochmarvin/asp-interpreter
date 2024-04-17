@@ -10,11 +10,6 @@ public class Number(int value) : Term
     return this;
   }
 
-  public override bool HasVariable()
-  {
-    return false;
-  }
-
   public override bool HasVariables()
   {
     return false;

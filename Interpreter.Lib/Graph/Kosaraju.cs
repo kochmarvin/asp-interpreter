@@ -2,6 +2,7 @@ using QuickGraph;
 
 namespace Interpreter.Lib.Graph;
 
+// This alogrithm is to find the strongly connected components within a directed graph
 public class Kosaraju<T>(AdjacencyGraph<T, Edge<T>> graph)
 {
   public AdjacencyGraph<T, Edge<T>> Graph { get; } = graph;
@@ -50,12 +51,12 @@ public class Kosaraju<T>(AdjacencyGraph<T, Edge<T>> graph)
     stack.Push(v);
   }
 
-  private void DFSUtil(T v, HashSet<T> visited, List<T> component, AdjacencyGraph<T, Edge<T>> transpose)
+  private void DFSUtil(T visitor, HashSet<T> visited, List<T> component, AdjacencyGraph<T, Edge<T>> transpose)
   {
-    visited.Add(v);
-    component.Add(v);
+    visited.Add(visitor);
+    component.Add(visitor);
 
-    foreach (var edge in transpose.OutEdges(v))
+    foreach (var edge in transpose.OutEdges(visitor))
     {
       if (visited.Contains(edge.Target))
       {

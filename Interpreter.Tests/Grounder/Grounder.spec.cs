@@ -85,4 +85,118 @@ public class GrounderTests
       Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
+
+  [Test]
+  public void SchraubTest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("schraub.lp");
+
+    List<string> expected = [
+      "{a}.",
+      "b:-a.",
+      "{c}:-nota.",
+      "d:-notb,notc.",
+      ":-c,nota."
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
+
+  [Test]
+  public void ComparissonTest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("comparisson.lp");
+
+    List<string> expected = [
+      "node(1).",
+      "node(2).",
+      "node(3).",
+      "node(4).",
+      "node(5).",
+      "node(6).",
+      "knoten(4):-node(4),4>3.",
+      "knoten(5):-node(5),5>3.",
+      "knoten(6):-node(6),6>3.",
+      "knoten(3):-node(3),3>=3.",
+      "knoten(4):-node(4),4>=3.",
+      "knoten(5):-node(5),5>=3.",
+      "knoten(6):-node(6),6>=3.",
+      "knoten(1):-node(1),1<=3.",
+      "knoten(2):-node(2),2<=3.",
+      "knoten(3):-node(3),3<=3.",
+      "knoten(1):-node(1),1<3.",
+      "knoten(2):-node(2),2<3.",
+      "knoten(3):-node(3),3==3.",
+      "knoten(1):-node(1),1!=3.",
+      "knoten(2):-node(2),2!=3.",
+      "knoten(4):-node(4),4!=3.",
+      "knoten(5):-node(5),5!=3.",
+      "knoten(6):-node(6),6!=3.",
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
+
+  [Test]
+  public void MultiChoiceBodyTest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("multichoice_body.lp");
+
+    List<string> expected = [
+      "mensch(marvin).",
+      "mensch(julia).",
+      "{informatiker(marvin);student(marvin)}:-mensch(marvin).",
+      "{informatiker(julia);student(julia)}:-mensch(julia).",
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
+
+  [Test]
+  public void NestedTest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("nested.lp");
+
+    List<string> expected = [
+      "marvin(findet(julia(cool))).",
+      "findetJuliaCool(marvin(findet(findet(julia(cool)))),julia(cool)):-marvin(findet(julia(cool))),marvin(findet(julia(cool)))."
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
 }

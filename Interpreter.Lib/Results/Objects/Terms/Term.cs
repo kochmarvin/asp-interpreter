@@ -13,7 +13,5 @@ public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables
     return base.ToString();
   }
 
-  public abstract bool HasVariable();
-
   public abstract bool HasVariables();
 }
