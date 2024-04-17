@@ -18,7 +18,7 @@ public class ComparisonLiteral(Term left, Relation relation, Term right) : Liter
 
   public override bool HasVariables()
   {
-    return Left.HasVariable() || Right.HasVariable();
+    return Left.HasVariables() || Right.HasVariables();
   }
 
   public override string ToString()
