@@ -65,6 +65,15 @@ namespace Interpreter.CLI
         }
         else
         {
+          Console.WriteLine();
+          Console.ForegroundColor = ConsoleColor.DarkYellow;
+          foreach (var warning in grounder.Warnings)
+          {
+            Console.WriteLine("info: atom does not occur in any rule head: \n" + warning);
+            Console.WriteLine();
+          }
+          Console.ResetColor();
+
           for (int i = 0; i < answerSets.Count; i++)
           {
             Console.WriteLine("Answer: " + (i + 1));
@@ -78,8 +87,8 @@ namespace Interpreter.CLI
             -1 2
             1 3 -3
             2 3 4
-            -3 1 6
-            -6
+            -3 1 5
+            -5
 
 
           */

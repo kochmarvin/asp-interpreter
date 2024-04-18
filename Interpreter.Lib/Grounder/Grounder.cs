@@ -13,7 +13,13 @@ namespace Interpreter.Lib.Grounder;
 public class Grounding(DependencyGraph graph)
 {
   private readonly List<Atom> _visited = [];
+  private readonly List<string> _warnings = [];
   public DependencyGraph Graph { get; } = graph;
+
+  /// <summary>
+  /// This is a list of atomliterals that have not been found in a head, just for print out
+  /// </summary>
+  public List<string> Warnings { get { return _warnings; } }
 
   /// <summary>
   /// This function creates the grounding secence of the program
@@ -54,6 +60,8 @@ public class Grounding(DependencyGraph graph)
     }
 
     List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram);
+
+    _warnings.RemoveAll(availableAtoms.Contains);
 
     GroundCleanUp(groundedProgram, availableAtoms);
 
@@ -165,11 +173,11 @@ public class Grounding(DependencyGraph graph)
       }
 
       // TODO check if this is valid behaviour.
-      if (!rule.HasVariables())
-      {
-        groundedSubProgram.Add(rule);
-        continue;
-      }
+      // if (!rule.HasVariables())
+      // {
+      //   groundedSubProgram.Add(rule);
+      //   continue;
+      // }
 
       groundedSubProgram.AddRange(GroundRule(rule));
     }
@@ -280,6 +288,8 @@ public class Grounding(DependencyGraph graph)
   {
     var substituationList = new List<Dictionary<string, Term>>();
 
+    _warnings.Add(atomLiteral.Atom.ToString());
+
     // If it is not positive (not ...) we just assume that it is a possible value.
     // This is important for circular dependecy rules.
     if (!atomLiteral.Positive)
@@ -290,9 +300,9 @@ public class Grounding(DependencyGraph graph)
 
     // Cloneig the atom of the literal by appliend substiutian
     var newAtom = atomLiteral.Atom.Apply(substitutions);
+
     foreach (var visited in _visited)
     {
-
       // TODO foreach maybe can be removed when new Dictionary<string, Term>(substitutions)
       var newSubstituation = new Dictionary<string, Term>();
 
@@ -308,8 +318,8 @@ public class Grounding(DependencyGraph graph)
       substituationList.Add(newSubstituation);
     }
 
-
-    if (substituationList.Count == 0) {
+    if (substituationList.Count == 0)
+    {
       substituationList.Add([]);
     }
 
