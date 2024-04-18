@@ -75,22 +75,9 @@ public class SatTransformer : ITransformer
 
           _preperation.Remainder.RemoveAll(orRules.Contains);
 
-          Console.WriteLine("====[OR RUles]====");
-          Console.WriteLine("This: " + rule.ToString());
-          foreach (var orRule in orRules)
-          {
-            Console.WriteLine(orRule.ToString());
-          }
-          Console.WriteLine("====[OR RUles]====");
-
           expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, orRules.SelectMany(orRule => orRule.Body).ToList(), ref index));
         }
       }
-    }
-
-    foreach (var key in _mappedAtoms.Keys)
-    {
-      Console.WriteLine(key + " = " + _mappedAtoms[key]);
     }
 
     List<List<int>> results = [];
@@ -196,12 +183,8 @@ public class SatTransformer : ITransformer
 
     var headExpression = CNFWrapper.CreateVariable(headIndex);
 
-    Console.WriteLine(orBodies.Count);
-    Console.WriteLine(bodies.Count == 1 && orBodies.Count == 0 && fictionalIndex == -1);
-
     if (bodies.Count == 1 && orBodies.Count == 0 && fictionalIndex == -1)
     {
-      Console.WriteLine("HALLO");
       return CNFWrapper.NewExpression()
       .SetEquality(headExpression, AtomLiteralExpression(bodies[0], ref index)).Create();
     }
@@ -210,8 +193,6 @@ public class SatTransformer : ITransformer
 
     if (bodies.Count == 1 && orBodies.Count >= 1 && fictionalIndex == -1)
     {
-      Console.WriteLine("BODIES " + bodies.Count);
-      Console.WriteLine("ORBODIES " + orBodies.Count);
       expression = expression.SetOr(AtomLiteralExpression(bodies[0], ref index), AtomLiteralExpression(orBodies[0], ref index));
     }
 

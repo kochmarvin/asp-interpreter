@@ -205,8 +205,6 @@ public class Grounding(DependencyGraph graph)
     substitutions ??= [];
     var groundedRules = new List<ProgramRule>();
 
-    Console.WriteLine("GROUNDING " + rule);
-
     if (index >= rule.Body.Count)
     {
       groundedRules.Add(rule.Apply(substitutions));
@@ -218,7 +216,6 @@ public class Grounding(DependencyGraph graph)
       // Here we look if there are any matches with the current literal and the current substituations
       foreach (var foundSubstituations in FindMatches(substitutions, lit.Literal))
       {
-        Console.WriteLine("HALLOI");
         groundedRules.AddRange(GroundRule(rule, foundSubstituations, index + 1));
       }
     }
@@ -228,7 +225,6 @@ public class Grounding(DependencyGraph graph)
 
   private List<Dictionary<string, Term>> FindMatches(Dictionary<string, Term> substitutions, Literal literal)
   {
-    Console.WriteLine("FIND MATCHES " + literal);
     // If the literal is an atom literal so everything except exception
     if (literal is AtomLiteral atomLiteral)
     {
@@ -294,8 +290,6 @@ public class Grounding(DependencyGraph graph)
 
     // Cloneig the atom of the literal by appliend substiutian
     var newAtom = atomLiteral.Atom.Apply(substitutions);
-    Console.WriteLine("NEW ATOM " + newAtom);
-    Console.WriteLine("VISITED " + _visited.Count);
     foreach (var visited in _visited)
     {
 
@@ -304,7 +298,6 @@ public class Grounding(DependencyGraph graph)
 
       // If the new atom does not match with the visited node, name etc. skip it. Match also adds new substituations
       if (!newAtom.Match(visited, newSubstituation)) continue;
-      Console.WriteLine("MATCH");
 
       // TODO write more test and check if can be removed first test seem to work with out that
       foreach (var substituation in substitutions)
@@ -315,13 +308,6 @@ public class Grounding(DependencyGraph graph)
       substituationList.Add(newSubstituation);
     }
 
-
-    Console.WriteLine("List " + substituationList.Count);
-    foreach(var subs in substituationList) {
-      foreach(var sub in subs) {
-        Console.WriteLine(sub.Key + " ; " + sub.Value);
-      }
-    }
 
     if (substituationList.Count == 0) {
       substituationList.Add([]);
