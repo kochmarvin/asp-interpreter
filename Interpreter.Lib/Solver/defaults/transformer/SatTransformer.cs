@@ -7,6 +7,7 @@ using Interpreter.Lib.Solver.Interfaces;
 using Interpreter.FunctionalLib;
 using System.Linq.Expressions;
 using Microsoft.FSharp.Collections;
+using Antlr4.Runtime.Atn;
 
 namespace Interpreter.Lib.Solver.defaults;
 
@@ -27,8 +28,10 @@ public class SatTransformer : ITransformer
     List<ConjunctiveNormalForm.Expression> expressions = [];
 
     int index = 0;
-    foreach (var rule in preperation.Remainder)
+
+    for (int i = 0; i < preperation.Remainder.Count; i++)
     {
+      var rule = preperation.Remainder[i];
       if (rule.Head is Headless headless)
       {
         expressions.Add(TransformHeadless(rule.Body, ref index));
@@ -48,7 +51,7 @@ public class SatTransformer : ITransformer
 
           if (rule.Body.Count > 0)
           {
-            expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, ref index, notIndex));
+            expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, [], ref index, notIndex));
           }
         }
       }
@@ -59,9 +62,35 @@ public class SatTransformer : ITransformer
 
         if (rule.Body.Count > 0)
         {
-          expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, ref index));
+          var orRules = preperation.Remainder.
+          Where(watchRule => watchRule != rule).
+          Where(rule => rule.Head is AtomHead).
+          Where(
+            rule =>
+            {
+              var ruleHead = rule.Head as AtomHead;
+              return ruleHead?.Atom.ToString() == atomHead.Atom.ToString();
+            }
+          ).ToList();
+
+          _preperation.Remainder.RemoveAll(orRules.Contains);
+
+          Console.WriteLine("====[OR RUles]====");
+          Console.WriteLine("This: " + rule.ToString());
+          foreach (var orRule in orRules)
+          {
+            Console.WriteLine(orRule.ToString());
+          }
+          Console.WriteLine("====[OR RUles]====");
+
+          expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, orRules.SelectMany(orRule => orRule.Body).ToList(), ref index));
         }
       }
+    }
+
+    foreach (var key in _mappedAtoms.Keys)
+    {
+      Console.WriteLine(key + " = " + _mappedAtoms[key]);
     }
 
     List<List<int>> results = [];
@@ -158,7 +187,7 @@ public class SatTransformer : ITransformer
   }
 
 
-  private ConjunctiveNormalForm.Expression TransformBodyLiterals(int headIndex, List<Body> bodies, ref int index, int fictionalIndex = -1)
+  private ConjunctiveNormalForm.Expression TransformBodyLiterals(int headIndex, List<Body> bodies, List<Body> orBodies, ref int index, int fictionalIndex = -1)
   {
     if (headIndex == -1)
     {
@@ -167,13 +196,25 @@ public class SatTransformer : ITransformer
 
     var headExpression = CNFWrapper.CreateVariable(headIndex);
 
-    if (bodies.Count == 1 && fictionalIndex == -1)
+    Console.WriteLine(orBodies.Count);
+    Console.WriteLine(bodies.Count == 1 && orBodies.Count == 0 && fictionalIndex == -1);
+
+    if (bodies.Count == 1 && orBodies.Count == 0 && fictionalIndex == -1)
     {
+      Console.WriteLine("HALLO");
       return CNFWrapper.NewExpression()
       .SetEquality(headExpression, AtomLiteralExpression(bodies[0], ref index)).Create();
     }
 
     CNFWrapper expression = CNFWrapper.NewExpression();
+
+    if (bodies.Count == 1 && orBodies.Count >= 1 && fictionalIndex == -1)
+    {
+      Console.WriteLine("BODIES " + bodies.Count);
+      Console.WriteLine("ORBODIES " + orBodies.Count);
+      expression = expression.SetOr(AtomLiteralExpression(bodies[0], ref index), AtomLiteralExpression(orBodies[0], ref index));
+    }
+
     if (bodies.Count >= 1 && fictionalIndex != -1)
     {
       expression = expression.SetAnd(AtomLiteralExpression(bodies[0], ref index), CNFWrapper.CreateNegativeVariable(fictionalIndex));
@@ -192,9 +233,13 @@ public class SatTransformer : ITransformer
       expression = expression.AddAnd(bodyExpression);
     }
 
-    Console.WriteLine("JZ KOMMT CREATE MIT " + bodies.Count + " & " + fictionalIndex + " KOPF: " + headIndex);
+    for (int i = 1; i < orBodies.Count; i++)
+    {
+      var bodyExpression = AtomLiteralExpression(orBodies[i], ref index);
+      expression = expression.AddOr(bodyExpression);
+    }
+
     var y = expression.Create();
-    Console.WriteLine("GESCHAFFT");
 
     return CNFWrapper.NewExpression().SetEquality(headExpression, y).Create();
   }
