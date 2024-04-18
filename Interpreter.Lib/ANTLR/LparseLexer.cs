@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /Users/marvinkoch/Desktop/asp-interpreter/Interpreter.Lib/ANTLR/Lparse.g4 by ANTLR 4.13.1
+// Generated from /Users/marvinkoch/Desktop/asp-interpreter/Interpreter.Lib/ANTLR/lparse.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -86,7 +86,7 @@ public partial class LparseLexer : Lexer {
 		}
 	}
 
-	public override string GrammarFileName { get { return "Lparse.g4"; } }
+	public override string GrammarFileName { get { return "lparse.g4"; } }
 
 	public override string[] RuleNames { get { return ruleNames; } }
 
