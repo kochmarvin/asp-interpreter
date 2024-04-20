@@ -38,22 +38,6 @@ public class Atom(string name, List<Term> args) : IMatch<Atom>, IApplier<Atom>, 
     return hasVariables;
   }
 
-  public bool HasVariables()
-  {
-    bool hasVariables = false;
-
-    foreach (var term in Args)
-    {
-      if (term.HasVariables())
-      {
-        hasVariables = true;
-        break;
-      }
-    }
-
-    return hasVariables;
-  }
-
   public bool Match(Atom other, Dictionary<string, Term> substiutionen)
   {
     if (Name != other.Name || Args.Count != other.Args.Count)

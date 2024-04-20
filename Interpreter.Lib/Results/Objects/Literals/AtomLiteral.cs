@@ -14,11 +14,6 @@ public class AtomLiteral(bool positive, Atom atom) : Literal
     Atom appliedAtom = Atom.Apply(substitutions);
     return new AtomLiteral(Positive, appliedAtom);
   }
-  
-  public override bool HasVariables()
-  {
-    return Atom.HasVariables();
-  }
 
   public override bool HasVariables()
   {
