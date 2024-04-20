@@ -105,6 +105,20 @@ public class Grounding(DependencyGraph graph)
   /// <param name="availableAtoms">The heads of each rule.</param>
   private void GroundCleanUp(List<ProgramRule> groundedProgram, List<string> availableAtoms)
   {
+    List<string> _seen = [];
+
+    for (int i = 0; i < groundedProgram.Count; i++)
+    {
+      if (_seen.Contains(groundedProgram[i].ToString()))
+      {
+        groundedProgram.RemoveAt(i);
+        i--;
+        continue;
+      }
+
+      _seen.Add(groundedProgram[i].ToString());
+    }
+
     int changes = 0;
     do
     {
@@ -215,7 +229,8 @@ public class Grounding(DependencyGraph graph)
 
     if (index >= rule.Body.Count)
     {
-      groundedRules.Add(rule.Apply(substitutions));
+      var newRule = rule.Apply(substitutions);
+      groundedRules.Add(newRule);
     }
 
     // Also change this if there is somehow a new body
@@ -292,10 +307,9 @@ public class Grounding(DependencyGraph graph)
 
     // If it is not positive (not ...) we just assume that it is a possible value.
     // This is important for circular dependecy rules.
-    if (!atomLiteral.Positive)
+    if (!atomLiteral.Positive && !atomLiteral.Atom.Apply(substitutions).HasVariables())
     {
       substituationList.Add(substitutions);
-      return substituationList;
     }
 
     // Cloneig the atom of the literal by appliend substiutian
@@ -303,17 +317,11 @@ public class Grounding(DependencyGraph graph)
 
     foreach (var visited in _visited)
     {
-      // TODO foreach maybe can be removed when new Dictionary<string, Term>(substitutions)
-      var newSubstituation = new Dictionary<string, Term>();
+
+      var newSubstituation = new Dictionary<string, Term>(substitutions);
 
       // If the new atom does not match with the visited node, name etc. skip it. Match also adds new substituations
       if (!newAtom.Match(visited, newSubstituation)) continue;
-
-      // TODO write more test and check if can be removed first test seem to work with out that
-      foreach (var substituation in substitutions)
-      {
-        newSubstituation.Add(substituation.Key, substituation.Value);
-      }
 
       substituationList.Add(newSubstituation);
     }

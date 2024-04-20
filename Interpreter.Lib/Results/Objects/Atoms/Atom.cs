@@ -20,7 +20,22 @@ public class Atom(string name, List<Term> args) : IMatch<Atom>, IApplier<Atom>, 
   {
     var appliedArgs = Args.Select(arg => arg.Apply(substitutions)).ToList();
     return new Atom(Name, appliedArgs);
+  }
 
+  public bool HasVariables()
+  {
+    bool hasVariables = false;
+
+    foreach (var term in Args)
+    {
+      if (term.HasVariables())
+      {
+        hasVariables = true;
+        break;
+      }
+    }
+
+    return hasVariables;
   }
 
   public bool HasVariables()
