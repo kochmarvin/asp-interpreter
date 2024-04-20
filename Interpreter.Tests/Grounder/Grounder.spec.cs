@@ -199,4 +199,55 @@ public class GrounderTests
       Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
+
+  [Test]
+  public void NoVarsTest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("no_vars.lp");
+
+    List<string> expected = [
+      "a:-notb.",
+      "b:-nota.",
+      "x:-a,notc.",
+      "x:-y.",
+      "y:-x,b."
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
+
+  [Test]
+  public void Fastest()
+  {
+    List<ProgramRule> rules = Utils.ParseProgram("fastest.lp");
+
+    List<string> expected = [
+      "vehicle(bike).",
+      "vehicle(skateboard).",
+      "faster(bike,skateboard).",
+      "is_faster(bike,skateboard):-faster(bike,skateboard).",
+      "fastest(bike):-vehicle(bike),notis_faster(bike,bike).",
+      "fastest(skateboard):-vehicle(skateboard),notis_faster(bike,skateboard)."
+    ];
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounder = new Grounding(graph);
+
+    var grounded = grounder.Ground();
+
+    Assert.That(grounded, Has.Count.EqualTo(expected.Count));
+    foreach (var r in grounded)
+    {
+      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+    }
+  }
 }
