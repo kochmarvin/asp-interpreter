@@ -10,6 +10,11 @@ public class Number(int value) : Term
     return this;
   }
 
+  public override bool HasVariables()
+  {
+    return false;
+  }
+
   public override bool Match(Term other, Dictionary<string, Term> substiutionen)
   {
     return Value == ((Number)other).Value;

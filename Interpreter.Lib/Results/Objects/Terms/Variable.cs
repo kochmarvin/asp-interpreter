@@ -14,7 +14,17 @@ public class Variable(string name) : Term
 
     return this;
   }
-  
+
+  public override bool HasVariables()
+  {
+    if (string.IsNullOrEmpty(Name))
+    {
+      return false;
+    }
+
+    return char.IsUpper(Name[0]);
+  }
+
   public override bool Match(Term other, Dictionary<string, Term> substiutionen)
   {
     if (substiutionen.TryGetValue(Name, out Term? t))

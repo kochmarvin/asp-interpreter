@@ -13,6 +13,11 @@ public class AtomHead(Atom atom) : Head
     return new AtomHead(Atom.Apply(substitutions));
   }
 
+  public override bool HasVariables()
+  {
+    return Atom.HasVariables();
+  }
+
   public override string ToString()
   {
     return Atom.ToString() + " ";

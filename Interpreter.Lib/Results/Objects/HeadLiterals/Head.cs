@@ -3,9 +3,11 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.HeadLiterals;
 
-public abstract class Head : IApplier<Head>
+public abstract class Head : IApplier<Head>, IHasVariables
 {
   public abstract Head Apply(Dictionary<string, Term> substitutions);
+
+  public abstract bool HasVariables();
 
   public override string? ToString()
   {

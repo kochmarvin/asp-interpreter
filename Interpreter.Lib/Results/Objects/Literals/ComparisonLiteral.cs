@@ -16,6 +16,11 @@ public class ComparisonLiteral(Term left, Relation relation, Term right) : Liter
     return new ComparisonLiteral(appliedLeft, Reltation, appliedRight);
   }
 
+  public override bool HasVariables()
+  {
+    return Left.HasVariables() || Right.HasVariables();
+  }
+
   public override string ToString()
   {
     return $"{Left}{RelationExtensions.ToSymbol(Reltation)}{Right}";

@@ -2,7 +2,7 @@ using Interpreter.Lib.Results.Interfaces;
 
 namespace Interpreter.Lib.Results.Objects.Terms;
 
-public abstract class Term : IMatch<Term>, IApplier<Term>
+public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables
 {
   public abstract Term Apply(Dictionary<string, Term> substitutions);
 
@@ -12,4 +12,6 @@ public abstract class Term : IMatch<Term>, IApplier<Term>
   {
     return base.ToString();
   }
+
+  public abstract bool HasVariables();
 }

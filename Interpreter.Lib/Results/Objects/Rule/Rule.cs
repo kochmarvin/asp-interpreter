@@ -6,7 +6,7 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.Rule;
 
-public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>
+public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>, IHasVariables
 {
   public Head Head { get; } = head;
   public List<Body> Body { get; set; } = body;
@@ -20,6 +20,24 @@ public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>
       appliedBody.Add(bodyLiteral.Apply(substitutions));
     }
     return new ProgramRule(appliedHead, appliedBody);
+  }
+
+  public bool HasVariables()
+  {
+    if (Head.HasVariables())
+    {
+      return true;
+    }
+
+    foreach (var bodyLiteral in Body)
+    {
+      if (bodyLiteral.HasVariables())
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public override string ToString()
