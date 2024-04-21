@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Interpreter.Lib.Logger;
 
 namespace Interpreter.CLI
 {
@@ -23,7 +24,7 @@ namespace Interpreter.CLI
       {
         Console.Write(">");
         var input = Console.ReadLine()?.Trim();
-        
+
         if (string.IsNullOrEmpty(input))
         {
           continue;
@@ -35,7 +36,7 @@ namespace Interpreter.CLI
           continue;
         }
 
-        Console.WriteLine("Invalid command. Use ':help' to see available commands.");
+        Logger.Error("Invalid command. Use ':help' to see available commands.");
       }
     }
 
@@ -51,9 +52,8 @@ namespace Interpreter.CLI
         cmdObject.Execute(parts, _commandManager);
         return;
       }
-
-      Console.WriteLine($"Unknown command: {cmd}. Use ':help' to see available commands.");
-
+      
+      Logger.Error($"Unknown command: {cmd}. Use ':help' to see available commands.");
     }
   }
 }
