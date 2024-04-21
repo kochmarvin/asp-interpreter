@@ -5,7 +5,7 @@ using Interpreter.Lib.Solver.defaults;
 
 namespace Interpreter.Lib.Solver.defaults;
 
-public class SatEngine(List<ProgramRule> program, bool verbose = false) : SolverEngine(new Preparer(), new SatTransformer(), new DPLL())
+public class SatEngine(List<ProgramRule> program, bool verbose = false) : SolverEngine(new Preparer(), new SatTransformer(), new DPLLSolver())
 {
   public List<ProgramRule> Program { get; } = program;
 
@@ -49,7 +49,7 @@ public class SatEngine(List<ProgramRule> program, bool verbose = false) : Solver
       }
     }
 
-    var solved = Solver.Solve(transformed);
-    return Transformer.ReTransform(solved);
+    var solved = Solver.FindAllSolutions(transformed);
+    return Transformer.ReTransform(solved.Select(sr => sr.Assignments).ToList());
   }
 }

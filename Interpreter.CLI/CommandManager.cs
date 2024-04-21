@@ -59,7 +59,7 @@ namespace Interpreter.CLI
         Console.WriteLine("Solving...");
         var answerSets = satEnginesatEngine.Execute();
 
-        if (answerSets == null)
+        if (answerSets.Count == 0)
         {
           Console.WriteLine("UNSATISFIABLE");
         }

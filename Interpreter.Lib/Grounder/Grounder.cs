@@ -58,10 +58,10 @@ public class Grounding(DependencyGraph graph)
       // Add Range is just a simpler way to add it to the list. You could also loop through it and add one by one
       groundedProgram.AddRange(GroundSubProgram(subProgram));
     }
+    List<string> availableHeads = [];
+    List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram, availableHeads);
 
-    List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram);
-
-    _warnings.RemoveAll(availableAtoms.Contains);
+    _warnings.RemoveAll(availableHeads.Contains);
 
     GroundCleanUp(groundedProgram, availableAtoms);
 
@@ -75,7 +75,7 @@ public class Grounding(DependencyGraph graph)
   /// </summary>
   /// <param name="groundedProgram">The initial grounded Program.</param>
   /// <returns>All heads as a string list.</returns>
-  private List<string> GenerateAvailableAtoms(List<ProgramRule> groundedProgram)
+  private List<string> GenerateAvailableAtoms(List<ProgramRule> groundedProgram, List<string> headNamesOnly)
   {
     List<string> availableAtoms = [];
     foreach (var rule in groundedProgram)
@@ -83,11 +83,13 @@ public class Grounding(DependencyGraph graph)
       if (rule.Head is ChoiceHead choiceHead)
       {
         availableAtoms.AddRange(choiceHead.Atoms.Select(atom => atom.ToString()));
+        headNamesOnly.AddRange(choiceHead.Atoms.Select(atom => atom.Name));
       }
 
       if (rule.Head is AtomHead atomHead)
       {
         availableAtoms.Add(atomHead.Atom.ToString());
+        headNamesOnly.Add(atomHead.Atom.Name);
       }
     }
 
@@ -230,6 +232,7 @@ public class Grounding(DependencyGraph graph)
     if (index >= rule.Body.Count)
     {
       var newRule = rule.Apply(substitutions);
+
       groundedRules.Add(newRule);
     }
 
@@ -303,7 +306,7 @@ public class Grounding(DependencyGraph graph)
   {
     var substituationList = new List<Dictionary<string, Term>>();
 
-    _warnings.Add(atomLiteral.Atom.ToString());
+    _warnings.Add(atomLiteral.Atom.Name);
 
     // If it is not positive (not ...) we just assume that it is a possible value.
     // This is important for circular dependecy rules.

@@ -89,6 +89,11 @@ public class SatTransformer : ITransformer
       results.AddRange(ConvertFSharpListToList(list));
     }
 
+    foreach (var map in _mappedAtoms)
+    {
+      Console.WriteLine(map.Key + " <=> " + map.Value);
+    }
+
     return results;
   }
 
@@ -100,9 +105,9 @@ public class SatTransformer : ITransformer
       throw new InvalidOperationException("You have to Transform the data first to retransform it!");
     }
 
-    if (results == null)
+    if (results.Count == 0)
     {
-      return null;
+      return [];
     }
 
     List<List<Atom>> transformed = [];
