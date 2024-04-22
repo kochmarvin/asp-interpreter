@@ -1,4 +1,6 @@
 using System.Data;
+using Interpreter.Lib.Graph;
+using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
@@ -26,7 +28,6 @@ public class Preparer : IPreparer
     List<ProgramRule> factuallyTrue = [];
     List<string> _notAllowed = [];
     List<string> _trueFacts = [];
-
 
     // Specificasion of all rules we cannot remove, because they are in a headless rule.
     // And this has to do the solver due to increasing complexity of the preparerer
@@ -174,6 +175,107 @@ public class Preparer : IPreparer
       }
     } while (changes != 0);
 
-    return new Preperation(factuallyTrue, program);
+    var loopRules = FindLoopRules(program);
+
+    Console.WriteLine("==[Loop-Rules]==");
+    foreach (var rule in loopRules)
+    {
+      Console.WriteLine(rule);
+    }
+
+    return new Preperation(factuallyTrue, program, loopRules);
+  }
+
+
+  public List<LoopRule> FindLoopRules(List<ProgramRule> program)
+  {
+    Console.WriteLine("==[Loops]==");
+    DependencyGraph g = new DependencyGraph(program);
+    List<LoopRule> loopRules = [];
+    Dictionary<string, LoopRule> rules = [];
+
+    foreach (var subGraph in g.CreateGraph(true))
+    {
+      LoopRule loopRule = new();
+      HashSet<string> heads = [];
+      List<Atom> headsReference = [];
+
+      foreach (var rule in subGraph)
+      {
+        if (rule.Head is ChoiceHead choices)
+        {
+          headsReference.AddRange(choices.Atoms);
+          choices.Atoms.ForEach(atom => heads.Add(atom.ToString()));
+        }
+
+        if (rule.Head is AtomHead atomHead)
+        {
+          headsReference.Add(atomHead.Atom);
+          heads.Add(atomHead.Atom.ToString());
+
+          Console.WriteLine("CURRENT: " + atomHead.Atom.ToString());
+          Console.WriteLine("CURRENT: " + rule.ToString());
+
+          if (rules.TryGetValue(atomHead.Atom.ToString(), out LoopRule loop))
+          {
+            loopRule = loop;
+            Console.WriteLine("FOUND TAHT SHIT THING");
+            Console.WriteLine("NOW " + loopRule);
+            List<AtomLiteral> literals = [];
+            rule.Body.ForEach(body =>
+            {
+              Console.WriteLine(body);
+              if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral al)
+              {
+                literals.Add(al);
+              }
+            }
+            );
+
+            loop.AddBody(literals);
+
+            Console.WriteLine("NEW " + loop);
+          }
+        }
+      }
+
+      foreach (var s in heads)
+      {
+        Console.WriteLine("SEEN HEAD - " + s);
+      }
+
+      foreach (var rule in subGraph)
+      {
+        foreach (var body in rule.Body)
+        {
+          if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral atomLiteral)
+          {
+            if (!atomLiteral.Positive)
+            {
+              continue;
+            }
+
+            if (!heads.Contains(atomLiteral.Atom.ToString()))
+            {
+              continue;
+            }
+
+            foreach (var reference in headsReference)
+            {
+              loopRule.AddHead(reference);
+              Console.WriteLine(loopRule.ToString());
+              rules.TryAdd(reference.ToString(), loopRule);
+            }
+          }
+        }
+      }
+    }
+
+    foreach (var pair in rules)
+    {
+      loopRules.Add(pair.Value);
+    }
+
+    return loopRules;
   }
 }

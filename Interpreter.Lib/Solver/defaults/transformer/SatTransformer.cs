@@ -27,8 +27,7 @@ public class SatTransformer : ITransformer
     _preperation = preperation;
     List<ConjunctiveNormalForm.Expression> expressions = [];
 
-    int index = 0;
-
+    int index = 1;
     for (int i = 0; i < preperation.Remainder.Count; i++)
     {
       var rule = preperation.Remainder[i];
@@ -80,6 +79,36 @@ public class SatTransformer : ITransformer
       }
     }
 
+    foreach (var loopRule in _preperation.LoopRules)
+    {
+
+      CNFWrapper expresion = CNFWrapper.NewExpression();
+      ConjunctiveNormalForm.Expression left;
+      ConjunctiveNormalForm.Expression right;
+      if (loopRule.Head.Count > 1)
+      {
+        expresion = CNFWrapper.NewExpression().SetOr
+        (CNFWrapper.CreateVariable(_mappedAtoms[loopRule.Head[0].ToString()]),
+          CNFWrapper.CreateVariable(_mappedAtoms[loopRule.Head[1].ToString()])
+        );
+
+        for (int i = 2; i < loopRule.Head.Count; i++)
+        {
+          expresion.AddOr(CNFWrapper.CreateVariable(_mappedAtoms[loopRule.Head[i].ToString()]));
+        }
+
+        left = expresion.Create();
+      }
+      else
+      {
+        left = CNFWrapper.CreateVariable(_mappedAtoms[loopRule.Head[0].ToString()]);
+      }
+
+      right = LoopRuleOrBody(loopRule.Body, ref index);
+
+      expressions.Add(CNFWrapper.NewExpression().SetImplication(left, right).Create());
+    }
+
     List<List<int>> results = [];
     foreach (var expression in expressions)
     {
@@ -94,7 +123,51 @@ public class SatTransformer : ITransformer
       Console.WriteLine(map.Key + " <=> " + map.Value);
     }
 
-    return results;
+    results.Add([-1]);
+
+    return results.Distinct(new ListComparer<int>()).ToList();
+  }
+
+  private ConjunctiveNormalForm.Expression LoopRuleOrBody(List<List<AtomLiteral>> atomLiterals, ref int index)
+  {
+    if (atomLiterals.Count == 0)
+    {
+      return CNFWrapper.CreateNegativeVariable(CNFWrapper.CreateNegativeVariable(1));
+    }
+
+    if (atomLiterals.Count == 1)
+    {
+      return LoopRuleAndBody(atomLiterals[0], ref index);
+    }
+
+    CNFWrapper expression = CNFWrapper.NewExpression();
+    expression.SetOr(LoopRuleAndBody(atomLiterals[0], ref index), LoopRuleAndBody(atomLiterals[1], ref index));
+
+    for (int i = 2; i < atomLiterals.Count; i++)
+    {
+      expression.AddOr(LoopRuleAndBody(atomLiterals[i], ref index));
+    }
+
+    return expression.Create();
+  }
+
+  private ConjunctiveNormalForm.Expression LoopRuleAndBody(List<AtomLiteral> atomLiterals, ref int index)
+  {
+    if (atomLiterals.Count == 1)
+    {
+      return LoopAtomLiteralExpression(atomLiterals[0], ref index);
+    }
+
+    CNFWrapper expression = CNFWrapper.NewExpression();
+    expression.SetAnd(LoopAtomLiteralExpression(atomLiterals[0], ref index),
+    LoopAtomLiteralExpression(atomLiterals[1], ref index));
+
+    for (int i = 2; i < atomLiterals.Count; i++)
+    {
+      expression.AddAnd(LoopAtomLiteralExpression(atomLiterals[i], ref index));
+    }
+
+    return expression.Create();
   }
 
 
@@ -144,7 +217,22 @@ public class SatTransformer : ITransformer
       transformed.Add(answers);
     }
 
-    return transformed;
+    List<List<Atom>> uniqueAtomLists = transformed.Select(list =>
+           list.GroupBy(atom => atom.ToString())
+               .Select(g => g.First())
+               .ToList()
+       ).ToList();
+
+    HashSet<string> uniqueListRepresentations = new(
+        uniqueAtomLists.Select(list => string.Join(",", list.Select(atom => atom.ToString())))
+    );
+
+    List<List<Atom>> distinctAtomLists = uniqueAtomLists
+        .Where(list => uniqueListRepresentations.Contains(string.Join(",", list.Select(atom => atom.ToString()))))
+        .ToList();
+
+
+    return distinctAtomLists;
   }
 
   private List<List<int>> ConvertFSharpListToList(FSharpList<FSharpList<int>> fsharpListOfLists)
@@ -278,6 +366,11 @@ public class SatTransformer : ITransformer
   private ConjunctiveNormalForm.Expression AtomLiteralExpression(Body body, ref int index)
   {
     var atomLiteral = GetAtomOfBody(body);
+    return LoopAtomLiteralExpression(atomLiteral, ref index);
+  }
+
+  private ConjunctiveNormalForm.Expression LoopAtomLiteralExpression(AtomLiteral atomLiteral, ref int index)
+  {
     int foundIndex = GetIndexOfString(atomLiteral.Atom.ToString(), ref index, atomLiteral.Atom);
     return CreateDynamicVariable(atomLiteral, foundIndex);
   }
