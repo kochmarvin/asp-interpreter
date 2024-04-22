@@ -64,6 +64,7 @@ public class SatTransformer : ITransformer
           var orRules = preperation.Remainder.
           Where(watchRule => watchRule != rule).
           Where(rule => rule.Head is AtomHead).
+          Where(rule => rule.Body.Count > 0).
           Where(
             rule =>
             {
@@ -72,9 +73,14 @@ public class SatTransformer : ITransformer
             }
           ).ToList();
 
+          foreach (var x in orRules)
+          {
+            Console.WriteLine("OR RULE " + x);
+          }
+
           _preperation.Remainder.RemoveAll(orRules.Contains);
 
-          expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, orRules.SelectMany(orRule => orRule.Body).ToList(), ref index));
+          expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, orRules, ref index));
         }
       }
     }
@@ -104,7 +110,11 @@ public class SatTransformer : ITransformer
         left = CNFWrapper.CreateVariable(_mappedAtoms[loopRule.Head[0].ToString()]);
       }
 
+      Console.WriteLine("LIIIINKS" + left);
+
       right = LoopRuleOrBody(loopRule.Body, ref index);
+
+      Console.WriteLine("RECHTS " + right);
 
       expressions.Add(CNFWrapper.NewExpression().SetImplication(left, right).Create());
     }
@@ -112,6 +122,7 @@ public class SatTransformer : ITransformer
     List<List<int>> results = [];
     foreach (var expression in expressions)
     {
+      Console.WriteLine("EXP = " + expression);
       var cnf = ConjunctiveNormalForm.createCNF(expression);
       var list = ConjunctiveNormalForm.cnfToList(cnf);
 
@@ -267,7 +278,7 @@ public class SatTransformer : ITransformer
   }
 
 
-  private ConjunctiveNormalForm.Expression TransformBodyLiterals(int headIndex, List<Body> bodies, List<Body> orBodies, ref int index, int fictionalIndex = -1)
+  private ConjunctiveNormalForm.Expression TransformBodyLiterals(int headIndex, List<Body> bodies, List<ProgramRule> orBodies, ref int index, int fictionalIndex = -1)
   {
     if (headIndex == -1)
     {
@@ -286,7 +297,8 @@ public class SatTransformer : ITransformer
 
     if (bodies.Count == 1 && orBodies.Count >= 1 && fictionalIndex == -1)
     {
-      expression = expression.SetOr(AtomLiteralExpression(bodies[0], ref index), AtomLiteralExpression(orBodies[0], ref index));
+      Console.WriteLine("DA DARFST DU REIN WENN DU N C BIST !! " + bodies[0]);
+      expression = expression.SetOr(AtomLiteralExpression(bodies[0], ref index), TransformAnd(orBodies[0], ref index));
     }
 
     if (bodies.Count >= 1 && fictionalIndex != -1)
@@ -300,22 +312,65 @@ public class SatTransformer : ITransformer
       var rightExpression = AtomLiteralExpression(bodies[1], ref index);
       expression = CNFWrapper.NewExpression().SetAnd(leftExpression, rightExpression);
     }
-
-    for (int i = 2; i < bodies.Count; i++)
+    
+    int andStartIndex = fictionalIndex != -1 ? 1 : 2;
+    for (int i = andStartIndex; i < bodies.Count; i++)
     {
       var bodyExpression = AtomLiteralExpression(bodies[i], ref index);
       expression = expression.AddAnd(bodyExpression);
     }
 
-    for (int i = 1; i < orBodies.Count; i++)
+    int orStartIndex = bodies.Count == 1 ? 1 : 0; 
+    for (int i = orStartIndex; i < orBodies.Count; i++)
     {
-      var bodyExpression = AtomLiteralExpression(orBodies[i], ref index);
-      expression = expression.AddOr(bodyExpression);
+      Console.WriteLine("LEZZ GOO ein oder " + orBodies[i]);
+      expression = expression.AddOr(TransformOrBodie(orBodies, ref index));
     }
 
     var y = expression.Create();
 
     return CNFWrapper.NewExpression().SetEquality(headExpression, y).Create();
+  }
+
+  private ConjunctiveNormalForm.Expression TransformOrBodie(List<ProgramRule> orBodies, ref int index)
+  {
+    if (orBodies.Count == 1)
+    {
+      return TransformAnd(orBodies[0], ref index);
+    }
+
+    CNFWrapper orExpression = CNFWrapper.NewExpression();
+
+    orExpression.SetOr(TransformAnd(orBodies[0], ref index), TransformAnd(orBodies[1], ref index));
+
+    for (int i = 2; i < orBodies.Count; i++)
+    {
+      orExpression.AddOr(TransformAnd(orBodies[0], ref index));
+    }
+
+    return orExpression.Create();
+  }
+
+  public ConjunctiveNormalForm.Expression TransformAnd(ProgramRule rule, ref int index)
+  {
+    if (rule.Body.Count == 1)
+    {
+      return AtomLiteralExpression(rule.Body[0], ref index);
+    }
+
+    CNFWrapper expression = CNFWrapper.NewExpression();
+
+    expression.SetAnd(
+      AtomLiteralExpression(rule.Body[0], ref index),
+      AtomLiteralExpression(rule.Body[1], ref index)
+    );
+
+    for (int i = 2; i < rule.Body.Count; i++)
+    {
+      expression.AddAnd(AtomLiteralExpression(rule.Body[i], ref index));
+    }
+
+    return expression.Create();
   }
 
   private AtomLiteral GetAtomOfBody(Body body)
