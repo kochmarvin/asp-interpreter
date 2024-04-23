@@ -86,7 +86,6 @@ public class Preparer : IPreparer
           _trueFacts.Add(atomHead.Atom.ToString());
 
           // also remove it from the program because it is always going to be true
-          Logger.Logger.Debug("Always true not found remove " + rule.Body[i] + " from " + rule);
           program.RemoveAt(i);
 
           // tell the loop we made a change to the program.

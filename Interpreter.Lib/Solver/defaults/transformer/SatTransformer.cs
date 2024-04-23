@@ -230,8 +230,10 @@ public class SatTransformer : ITransformer
     }
 
     List<List<Atom>> uniqueAtomLists = transformed.Select(list =>
-           list.GroupBy(atom => atom.ToString())
+           list
+               .GroupBy(atom => atom.ToString())
                .Select(g => g.First())
+               .OrderByDescending(atom => atom.ToString())
                .ToList()
        ).ToList();
 
@@ -298,7 +300,6 @@ public class SatTransformer : ITransformer
 
     if (bodies.Count == 1 && orBodies.Count >= 1 && fictionalIndex == -1)
     {
-      Console.WriteLine("DA DARFST DU REIN WENN DU N C BIST !! " + bodies[0]);
       expression = expression.SetOr(AtomLiteralExpression(bodies[0], ref index), TransformAnd(orBodies[0], ref index));
     }
 
@@ -324,7 +325,6 @@ public class SatTransformer : ITransformer
     int orStartIndex = bodies.Count == 1 ? 1 : 0;
     for (int i = orStartIndex; i < orBodies.Count; i++)
     {
-      Console.WriteLine("LEZZ GOO ein oder " + orBodies[i]);
       expression = expression.AddOr(TransformOrBodie(orBodies, ref index));
     }
 
