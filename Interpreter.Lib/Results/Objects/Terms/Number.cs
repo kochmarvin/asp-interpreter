@@ -10,6 +10,11 @@ public class Number(int value) : Term
     return this;
   }
 
+  public override List<string> GetVariables()
+  {
+    return [];
+  }
+
   public override bool HasVariables()
   {
     return false;

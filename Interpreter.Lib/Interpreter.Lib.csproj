@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
     <ExcludeFromCodeCoverage Include="$(ExcludeFromCodeCoverage)" />
   </ItemGroup>

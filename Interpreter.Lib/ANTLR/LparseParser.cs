@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /Users/marvinkoch/Desktop/asp-interpreter/Interpreter.Lib/ANTLR/Lparse.g4 by ANTLR 4.13.1
+// Generated from Lparse.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -40,7 +40,7 @@ public partial class LparseParser : Parser {
 		SEMICOLON=9, CONS=10, PLUS=11, MINUS=12, TIMES=13, DIV=14, PAREN_OPEN=15, 
 		PAREN_CLOSE=16, SQUARE_OPEN=17, SQUARE_CLOSE=18, CURLY_OPEN=19, CURLY_CLOSE=20, 
 		EQUAL=21, UNEQUAL=22, LESS=23, GREATER=24, LESS_OR_EQ=25, GREATER_OR_EQ=26, 
-		COMMENT=27, WS=28;
+		LINE_COMMENT=27, WS=28;
 	public const int
 		RULE_program = 0, RULE_statements = 1, RULE_query = 2, RULE_statement = 3, 
 		RULE_head = 4, RULE_body = 5, RULE_disjunction = 6, RULE_choice = 7, RULE_choice_elements = 8, 
@@ -63,7 +63,7 @@ public partial class LparseParser : Parser {
 		"COLON", "SEMICOLON", "CONS", "PLUS", "MINUS", "TIMES", "DIV", "PAREN_OPEN", 
 		"PAREN_CLOSE", "SQUARE_OPEN", "SQUARE_CLOSE", "CURLY_OPEN", "CURLY_CLOSE", 
 		"EQUAL", "UNEQUAL", "LESS", "GREATER", "LESS_OR_EQ", "GREATER_OR_EQ", 
-		"COMMENT", "WS"
+		"LINE_COMMENT", "WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -144,7 +144,7 @@ public partial class LparseParser : Parser {
 				State = 38;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if (_la==ID || _la==MINUS) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 36894L) != 0)) {
 					{
 					State = 37;
 					query();
@@ -243,8 +243,8 @@ public partial class LparseParser : Parser {
 	}
 
 	public partial class QueryContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public Classical_literalContext classical_literal() {
-			return GetRuleContext<Classical_literalContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public BodyContext body() {
+			return GetRuleContext<BodyContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode QUERY_MARK() { return GetToken(LparseParser.QUERY_MARK, 0); }
 		public QueryContext(ParserRuleContext parent, int invokingState)
@@ -278,7 +278,7 @@ public partial class LparseParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 50;
-			classical_literal();
+			body();
 			State = 51;
 			Match(QUERY_MARK);
 			}
@@ -1511,7 +1511,7 @@ public partial class LparseParser : Parser {
 		0,34,179,1,0,0,0,36,38,3,2,1,0,37,39,3,4,2,0,38,37,1,0,0,0,38,39,1,0,0,
 		0,39,42,1,0,0,0,40,42,3,4,2,0,41,36,1,0,0,0,41,40,1,0,0,0,42,1,1,0,0,0,
 		43,47,3,6,3,0,44,46,3,6,3,0,45,44,1,0,0,0,46,49,1,0,0,0,47,45,1,0,0,0,
-		47,48,1,0,0,0,48,3,1,0,0,0,49,47,1,0,0,0,50,51,3,24,12,0,51,52,5,7,0,0,
+		47,48,1,0,0,0,48,3,1,0,0,0,49,47,1,0,0,0,50,51,3,10,5,0,51,52,5,7,0,0,
 		52,5,1,0,0,0,53,55,5,10,0,0,54,56,3,10,5,0,55,54,1,0,0,0,55,56,1,0,0,0,
 		56,57,1,0,0,0,57,68,5,5,0,0,58,60,3,8,4,0,59,61,5,10,0,0,60,59,1,0,0,0,
 		60,61,1,0,0,0,61,63,1,0,0,0,62,64,3,10,5,0,63,62,1,0,0,0,63,64,1,0,0,0,

@@ -1,3 +1,4 @@
+using System.Data;
 using Interpreter.Lib.Results;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
@@ -46,6 +47,6 @@ public class HeadVisitor : LparseBaseVisitor<Head>
       return new ChoiceHead(atoms);
     }
 
-    return null;
+    throw new SyntaxErrorException("Please revisit every head you made a mistake.");
   }
 }

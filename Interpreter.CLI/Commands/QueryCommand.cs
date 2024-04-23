@@ -17,7 +17,7 @@ namespace Interpreter.CLI.Commands
         return;
       }
 
-      string query = args[1];
+      string query = string.Join(" ", args, 1, args.Length - 1);
 
       if (manager.FilePath == null)
       {

@@ -13,6 +13,11 @@ public class LiteralBody(Literal literal) : Body
     return new LiteralBody(appliedLiteral);
   }
 
+  public override List<string> GetVariables()
+  {
+    return Literal.GetVariables();
+  }
+
   public override bool HasVariables()
   {
     return Literal.HasVariables();

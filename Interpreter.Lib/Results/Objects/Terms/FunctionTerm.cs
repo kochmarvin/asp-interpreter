@@ -12,6 +12,11 @@ public class FunctionTerm(string name, List<Term> arguments) : Term
 
   }
 
+  public override List<string> GetVariables()
+  {
+    return Arguments.SelectMany(term => term.GetVariables()).ToList();
+  }
+
   public override bool HasVariables()
   {
     foreach (var term in Arguments)
@@ -21,7 +26,7 @@ public class FunctionTerm(string name, List<Term> arguments) : Term
         return true;
       }
     }
-    
+
     return false;
   }
 

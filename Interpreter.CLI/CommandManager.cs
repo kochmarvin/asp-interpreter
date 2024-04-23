@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using Antlr4.Runtime;
-using Interpreter.Lib.Results;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Listeners;
 using Interpreter.Lib.Visitors;
 using Interpreter.Lib.Graph;
 using Interpreter.Lib.Grounder;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
-using Interpreter.Lib.Results.Objects.Atoms;
-using Interpreter.Lib.Results.Objects.Terms;
-using Interpreter.Lib.Results.Objects.BodyLiterals;
-using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Solver;
 using Interpreter.Lib.Solver.defaults;
 using Interpreter.Lib.Logger;
+using Interpreter.Lib.Results.Objects;
 
 namespace Interpreter.CLI;
 public class CommandManager
@@ -64,10 +55,7 @@ public class CommandManager
       }
       else
       {
-        foreach (var warning in grounder.Warnings)
-        {
-          Logger.Warning("atom does not occur in any rule head: \n" + warning);
-        }
+        PrintWarnings(grounder.Warnings);
 
         for (int i = 0; i < answerSets.Count; i++)
         {
@@ -99,33 +87,67 @@ public class CommandManager
       return;
     }
 
-    var parsedQuery = new ProgramRule(new AtomHead(new Atom("query", [new Variable("X")])), [new LiteralBody(new AtomLiteral(true, new Atom("adjacent", [new Variable("X"), new Variable("green")])))]);
-
-    QuerySolver querySolver = new QuerySolver(parsedQuery, _store.AnswerSets, new Preparer());
-    var answers = querySolver.Answers();
-
-    string rules = "Query Solution --------------------------------\n";
-    for (int i = 0; i < answers.Count; i++)
+    try
     {
-      rules += "\nSet " + i + "\n";
+      var inputStream = new AntlrInputStream(query + "?");
+      var lexer = new LparseLexer(inputStream);
+      var tokens = new CommonTokenStream(lexer);
 
-      if (answers[i].Count == 0)
-      {
-        rules += "false. \n";
-        continue;
-      }
+      var parser = new LparseParser(tokens);
+      parser.RemoveErrorListeners();
+      parser.AddErrorListener(new SyntaxErrorListener());
 
-      foreach (var answer in answers[i])
+      var tree = parser.program();
+
+      var programVisitor = new QueryVisitor();
+      Query parsedQuery = programVisitor.VisitQuery(tree);
+      List<string> variables = [.. parsedQuery.Variables];
+
+      QuerySolver querySolver = new QuerySolver(parsedQuery, _store.AnswerSets, new Preparer());
+      var answers = querySolver.Answers();
+
+      string rules = "Query Solution\n--------------------------------";
+      for (int i = 0; i < answers.Count; i++)
       {
-        if (answer.Head is AtomHead atomHead && atomHead.Atom.Args.Count == 0)
+        rules += "\nSet " + i + "\n";
+
+        if (answers[i].Count == 0)
         {
-          rules += "true. \n";
+          rules += "false. \n";
           continue;
         }
 
-        rules += "" + answer + "\n";
+        foreach (var answer in answers[i])
+        {
+          if (answer.Head is AtomHead atomHead && atomHead.Atom.Args.Count == 0)
+          {
+            rules += "true. \n";
+            continue;
+          }
+
+          AtomHead head = (AtomHead)answer.Head;
+          for (int j = 0; j < head.Atom.Args.Count; j++)
+          {
+            rules += variables[j] + " = " + head.Atom.Args[j] + " ";
+          }
+          rules += "\n";
+        }
       }
+      Logger.Information(rules + "--------------------------------");
     }
-    Logger.Information(rules + "--------------------------------");
+    catch (Exception e)
+    {
+      Logger.Error(e.Message);
+      Logger.Debug(e.StackTrace ?? "");
+    }
+  }
+
+
+  private void PrintWarnings(List<string> warnings)
+  {
+    foreach (var warning in warnings)
+    {
+      Logger.Warning("atom does not occur in any rule head: \n" + warning);
+    }
   }
 }

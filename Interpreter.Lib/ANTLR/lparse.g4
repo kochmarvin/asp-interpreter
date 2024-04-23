@@ -30,14 +30,15 @@ LESS_OR_EQ : '<=' ;
 GREATER_OR_EQ : '>=' ;
 
 // Lexer rules for skipping comments and whitespace
-COMMENT : '%' (~[\r\n])* '\r'? '\n' -> skip ;
+LINE_COMMENT : '%' ~[\r\n]* -> skip;
+
 WS : [ \t\r\n]+ -> skip ;
 
 // Parser rules
 program : statements query? | query ;
 statements : statement (statement)* ;
 
-query : classical_literal QUERY_MARK ;
+query : body QUERY_MARK ;
 
 statement : CONS body? DOT
           | head CONS? body? DOT ;

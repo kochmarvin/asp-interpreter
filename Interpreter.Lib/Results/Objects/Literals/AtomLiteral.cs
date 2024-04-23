@@ -15,6 +15,11 @@ public class AtomLiteral(bool positive, Atom atom) : Literal
     return new AtomLiteral(Positive, appliedAtom);
   }
 
+  public override List<string> GetVariables()
+  {
+    return Atom.GetVariables();
+  }
+
   public override bool HasVariables()
   {
     return Atom.HasVariables();
