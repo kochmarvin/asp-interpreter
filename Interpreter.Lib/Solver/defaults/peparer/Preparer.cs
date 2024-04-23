@@ -1,5 +1,6 @@
 using System.Data;
 using Interpreter.Lib.Graph;
+using Interpreter.Lib.Logger;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
@@ -24,7 +25,7 @@ public class Preparer : IPreparer
   /// <returns>The preperation with all rules that have to get solved.</returns>
   public Preperation Prepare(List<ProgramRule> program)
   {
-
+    var watch = StopWatch.Start();
     List<ProgramRule> factuallyTrue = [];
     List<string> _notAllowed = [];
     List<string> _trueFacts = [];
@@ -40,6 +41,7 @@ public class Preparer : IPreparer
         // Removing all Comparison Literals in a rule because they are just for grounding
         if (literal is ComparisonLiteral)
         {
+          Logger.Logger.Debug("Remove " + headlessRule.Body[i] + " from " + headlessRule);
           headlessRule.Body.RemoveAt(i);
           i--;
           continue;
@@ -84,6 +86,7 @@ public class Preparer : IPreparer
           _trueFacts.Add(atomHead.Atom.ToString());
 
           // also remove it from the program because it is always going to be true
+          Logger.Logger.Debug("Always true not found remove " + rule.Body[i] + " from " + rule);
           program.RemoveAt(i);
 
           // tell the loop we made a change to the program.
@@ -100,6 +103,7 @@ public class Preparer : IPreparer
           // TODO check if assumtion is correct
           if (body?.Literal is ComparisonLiteral)
           {
+            Logger.Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
             rule.Body.RemoveAt(j);
             changes++;
             j--;
@@ -144,6 +148,7 @@ public class Preparer : IPreparer
 
                 if (remove)
                 {
+                  Logger.Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
                   rule.Body.RemoveAt(j);
                   j--;
                   changes++;
@@ -175,21 +180,26 @@ public class Preparer : IPreparer
       }
     } while (changes != 0);
 
+
+
     var loopRules = FindLoopRules(program);
 
-    Console.WriteLine("==[Loop-Rules]==");
+    string rules = "Loop Rules \n--------------------------------\n";
     foreach (var rule in loopRules)
     {
-      Console.WriteLine(rule);
+      rules += rule.ToString() + "\n";
     }
+    Logger.Logger.Debug(rules + "--------------------------------");
 
+    Logger.Logger.Debug("Minimized program for solver. \n"
+           + "Duration was " + watch.Stop());
     return new Preperation(factuallyTrue, program, loopRules);
   }
 
 
   public List<LoopRule> FindLoopRules(List<ProgramRule> program)
   {
-    Console.WriteLine("==[Loops]==");
+    var watch = StopWatch.Start();
     DependencyGraph g = new DependencyGraph(program);
     List<LoopRule> loopRules = [];
     Dictionary<string, LoopRule> rules = [];
@@ -206,6 +216,7 @@ public class Preparer : IPreparer
         {
           headsReference.AddRange(choices.Atoms);
           choices.Atoms.ForEach(atom => heads.Add(atom.ToString()));
+          // TODO checken ob da noch was her gehört
         }
 
         if (rule.Head is AtomHead atomHead)
@@ -213,18 +224,12 @@ public class Preparer : IPreparer
           headsReference.Add(atomHead.Atom);
           heads.Add(atomHead.Atom.ToString());
 
-          Console.WriteLine("CURRENT: " + atomHead.Atom.ToString());
-          Console.WriteLine("CURRENT: " + rule.ToString());
-
           if (rules.TryGetValue(atomHead.Atom.ToString(), out LoopRule loop))
           {
             loopRule = loop;
-            Console.WriteLine("FOUND TAHT SHIT THING");
-            Console.WriteLine("NOW " + loopRule);
             List<AtomLiteral> literals = [];
             rule.Body.ForEach(body =>
             {
-              Console.WriteLine(body);
               if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral al)
               {
                 literals.Add(al);
@@ -233,15 +238,8 @@ public class Preparer : IPreparer
             );
 
             loop.AddBody(literals);
-
-            Console.WriteLine("NEW " + loop);
           }
         }
-      }
-
-      foreach (var s in heads)
-      {
-        Console.WriteLine("SEEN HEAD - " + s);
       }
 
       foreach (var rule in subGraph)
@@ -263,7 +261,6 @@ public class Preparer : IPreparer
             foreach (var reference in headsReference)
             {
               loopRule.AddHead(reference);
-              Console.WriteLine(loopRule.ToString());
               rules.TryAdd(reference.ToString(), loopRule);
             }
           }
@@ -275,6 +272,9 @@ public class Preparer : IPreparer
     {
       loopRules.Add(pair.Value);
     }
+
+    Logger.Logger.Debug("Added looprules for solver. \n"
+           + "Duration was " + watch.Stop());
 
     return loopRules;
   }

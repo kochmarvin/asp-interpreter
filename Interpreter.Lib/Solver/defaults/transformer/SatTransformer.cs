@@ -8,6 +8,7 @@ using Interpreter.FunctionalLib;
 using System.Linq.Expressions;
 using Microsoft.FSharp.Collections;
 using Antlr4.Runtime.Atn;
+using Interpreter.Lib.Logger;
 
 namespace Interpreter.Lib.Solver.defaults;
 
@@ -16,6 +17,7 @@ namespace Interpreter.Lib.Solver.defaults;
 */
 public class SatTransformer : ITransformer
 {
+
   private Preperation? _preperation;
   private Dictionary<string, int> _mappedAtoms = [];
   private Dictionary<int, int> _choiceNotState = [];
@@ -24,6 +26,7 @@ public class SatTransformer : ITransformer
 
   public List<List<int>> TransformToFormular(Preperation preperation)
   {
+    var watch = StopWatch.Start();
     _preperation = preperation;
     List<ConjunctiveNormalForm.Expression> expressions = [];
 
@@ -73,11 +76,13 @@ public class SatTransformer : ITransformer
             }
           ).ToList();
 
-          foreach (var x in orRules)
-          {
-            Console.WriteLine("OR RULE " + x);
-          }
 
+          string rules = "Or Rules for " + rule + " \n--------------------------------\n";
+          foreach (var orRule in orRules)
+          {
+            rules += orRule.ToString() + "\n";
+          }
+          Logger.Logger.Debug(rules + "--------------------------------");
           _preperation.Remainder.RemoveAll(orRules.Contains);
 
           expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, orRules, ref index));
@@ -110,19 +115,14 @@ public class SatTransformer : ITransformer
         left = CNFWrapper.CreateVariable(_mappedAtoms[loopRule.Head[0].ToString()]);
       }
 
-      Console.WriteLine("LIIIINKS" + left);
-
       right = LoopRuleOrBody(loopRule.Body, ref index);
-
-      Console.WriteLine("RECHTS " + right);
-
       expressions.Add(CNFWrapper.NewExpression().SetImplication(left, right).Create());
     }
 
     List<List<int>> results = [];
     foreach (var expression in expressions)
     {
-      Console.WriteLine("EXP = " + expression);
+      Logger.Logger.Debug(expression.ToString());
       var cnf = ConjunctiveNormalForm.createCNF(expression);
       var list = ConjunctiveNormalForm.cnfToList(cnf);
 
@@ -131,11 +131,12 @@ public class SatTransformer : ITransformer
 
     foreach (var map in _mappedAtoms)
     {
-      Console.WriteLine(map.Key + " <=> " + map.Value);
+      Logger.Logger.Debug(map.Key + " is equivalent to " + map.Value);
     }
 
     results.Add([-1]);
-
+    Logger.Logger.Debug("Created CNF for programm. \n"
+               + "Duration was " + watch.Stop());
     return results.Distinct(new ListComparer<int>()).ToList();
   }
 
@@ -312,7 +313,7 @@ public class SatTransformer : ITransformer
       var rightExpression = AtomLiteralExpression(bodies[1], ref index);
       expression = CNFWrapper.NewExpression().SetAnd(leftExpression, rightExpression);
     }
-    
+
     int andStartIndex = fictionalIndex != -1 ? 1 : 2;
     for (int i = andStartIndex; i < bodies.Count; i++)
     {
@@ -320,7 +321,7 @@ public class SatTransformer : ITransformer
       expression = expression.AddAnd(bodyExpression);
     }
 
-    int orStartIndex = bodies.Count == 1 ? 1 : 0; 
+    int orStartIndex = bodies.Count == 1 ? 1 : 0;
     for (int i = orStartIndex; i < orBodies.Count; i++)
     {
       Console.WriteLine("LEZZ GOO ein oder " + orBodies[i]);

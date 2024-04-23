@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Interpreter.Lib.Logger;
 
 namespace Interpreter.CLI.Commands
 {
@@ -12,7 +13,7 @@ namespace Interpreter.CLI.Commands
 		{
 			if (args.Length < 2)
 			{
-				Console.WriteLine("Error: No query provided.");
+				Logger.Error("No query provided.");
 				return;
 			}
 
@@ -20,12 +21,13 @@ namespace Interpreter.CLI.Commands
 
 			if (manager.FilePath == null)
 			{
-				Console.WriteLine("Error: No file has been loaded. Please load a file before executing a query.");
+				Logger.Error("No file has been loaded. Please load a file before executing a query.");
+        return;
 			}
 
 			// Implement query validation logic
 
-			Console.WriteLine($"Executing query: {query}");
+			Logger.Information($"Executing query: {query}");
 		}
 	}
 }

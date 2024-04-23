@@ -18,6 +18,7 @@ using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Solver;
 using Interpreter.Lib.Solver.defaults;
+using Interpreter.Lib.Logger;
 
 namespace Interpreter.CLI
 {
@@ -27,7 +28,7 @@ namespace Interpreter.CLI
 
     public void LoadFile(string filePath)
     {
-      Console.WriteLine($"Loading/Reloading file {filePath}");
+      Logger.Information($"Loading/Reloading file {filePath}");
       try
       {
         var inputStream = new AntlrInputStream(File.ReadAllText(filePath));
@@ -44,41 +45,32 @@ namespace Interpreter.CLI
         var programVisitor = new ProgramVisitor();
         List<ProgramRule> rules = programVisitor.Visit(tree);
 
+        StopWatch watch = StopWatch.Start();
+
+        Logger.Information("Solving...");
         DependencyGraph graph = new DependencyGraph(rules);
         Grounding grounder = new Grounding(graph);
         var groundedProgram = grounder.Ground();
 
-        Console.WriteLine("==[Grounded Program]==");
-        foreach (var r in groundedProgram)
-        {
-          Console.WriteLine(r);
-        }
-
         SatEngine satEnginesatEngine = new SatEngine(groundedProgram, true);
 
-        Console.WriteLine("Solving...");
         var answerSets = satEnginesatEngine.Execute();
 
         if (answerSets.Count == 0)
         {
-          Console.WriteLine("UNSATISFIABLE");
+          Logger.Information("UNSATISFIABLE " + "\n\nDuration: " + watch.Stop());
         }
         else
         {
-          Console.WriteLine();
-          Console.ForegroundColor = ConsoleColor.DarkYellow;
           foreach (var warning in grounder.Warnings)
           {
-            Console.WriteLine("info: atom does not occur in any rule head: \n" + warning);
-            Console.WriteLine();
+            Logger.Warning("atom does not occur in any rule head: \n" + warning);
           }
-          Console.ResetColor();
 
           for (int i = 0; i < answerSets.Count; i++)
           {
-            Console.WriteLine("Answer: " + (i + 1));
             string atoms = string.Join(", ", answerSets[i].Select(x => x.ToString()));
-            Console.WriteLine("{ " + atoms + " }");
+            Logger.Information("\nAnswer: " + (i + 1) + " \n" + "{ " + atoms + " }\n");
           }
 
           /*
@@ -90,19 +82,15 @@ namespace Interpreter.CLI
             -3 1 5
             -5
 
-
           */
 
-          Console.WriteLine("SATISFIABLE");
-          Console.WriteLine("");
-          Console.WriteLine("Models: " + answerSets.Count);
+          Logger.Information("SATISFIABLE \n\nModels: " + answerSets.Count + "\nDuration: " + watch.Stop());
         }
       }
       catch (Exception e)
       {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(e.StackTrace);
-        Console.ResetColor();
+        Logger.Error(e.Message);
+        Logger.Debug(e.StackTrace ?? "");
       }
     }
   }

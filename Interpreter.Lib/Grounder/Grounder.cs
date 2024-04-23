@@ -7,6 +7,8 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
+using Interpreter.Lib.Logger;
+using System.Diagnostics;
 
 namespace Interpreter.Lib.Grounder;
 
@@ -28,6 +30,7 @@ public class Grounding(DependencyGraph graph)
   // TODO wurde zu einer doppel liste gechanged checken ob das eh nichts kaputt macht
   public List<List<ProgramRule>> GenerateGroundingSequence()
   {
+    var watch = StopWatch.Start();
     var sequence = new List<List<ProgramRule>>();
 
     foreach (var scc in Graph.CreateGraph())
@@ -37,9 +40,21 @@ public class Grounding(DependencyGraph graph)
         sequence.Add(posScc);
       }
     }
-
     // Most important step, why exactly this happens is unclear.
     sequence.Reverse();
+    Logger.Logger.Debug("Created dependecy graph. \n"
+    + "Creation duration was " + watch.Stop());
+
+    foreach (var list in sequence)
+    {
+      string rules = "--------------------------------\n";
+      foreach (var rule in list)
+      {
+        rules += rule.ToString() + "\n";
+      }
+      Logger.Logger.Debug(rules + "--------------------------------");
+    }
+
     return sequence;
   }
 
@@ -51,6 +66,8 @@ public class Grounding(DependencyGraph graph)
   /// <returns>A variable free program.</returns>
   public List<ProgramRule> Ground()
   {
+    Logger.Logger.Debug("Start grounding process \n");
+    var watch = StopWatch.Start();
     var groundedProgram = new List<ProgramRule>();
 
     foreach (var subProgram in GenerateGroundingSequence())
@@ -64,6 +81,16 @@ public class Grounding(DependencyGraph graph)
     _warnings.RemoveAll(availableHeads.Contains);
 
     GroundCleanUp(groundedProgram, availableAtoms);
+
+    Logger.Logger.Debug("Created grounded program. \n"
+        + "Creation duration was " + watch.Stop());
+
+    string rules = "--------------------------------\n";
+    foreach (var rule in groundedProgram)
+    {
+      rules += rule.ToString() + "\n";
+    }
+    Logger.Logger.Debug(rules + "--------------------------------");
 
     return groundedProgram;
   }
@@ -107,6 +134,7 @@ public class Grounding(DependencyGraph graph)
   /// <param name="availableAtoms">The heads of each rule.</param>
   private void GroundCleanUp(List<ProgramRule> groundedProgram, List<string> availableAtoms)
   {
+    Logger.Logger.Debug("Cleaning up grounded program.");
     List<string> _seen = [];
 
     for (int i = 0; i < groundedProgram.Count; i++)

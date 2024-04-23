@@ -13,41 +13,39 @@ public class SatEngine(List<ProgramRule> program, bool verbose = false) : Solver
   {
     var preperation = Preparer.Prepare(Program);
 
-    if (verbose)
-    {
-      Console.WriteLine("");
-      Console.WriteLine("==[Factually true]==");
-      Console.WriteLine("");
-      foreach (var r in preperation.FactuallyTrue)
-      {
-        Console.WriteLine(r);
-      }
+    Logger.Logger.Debug("Created prepared Program.");
 
-      Console.WriteLine("");
-      Console.WriteLine("==[Remainder]==");
-      Console.WriteLine("");
-      foreach (var r in preperation.Remainder)
-      {
-        Console.WriteLine(r);
-      }
+    string rules = "Factually True \n--------------------------------\n";
+    foreach (var rule in preperation.FactuallyTrue)
+    {
+      rules += rule.ToString() + "\n";
     }
+    Logger.Logger.Debug(rules + "--------------------------------");
+
+    rules = "Remainder for solver \n--------------------------------\n";
+    foreach (var rule in preperation.Remainder)
+    {
+      rules += rule.ToString() + "\n";
+    }
+    Logger.Logger.Debug(rules + "--------------------------------");
 
     var transformed = Transformer.TransformToFormular(preperation);
 
-    if (verbose)
+    Logger.Logger.Debug("Created cnf for solver.");
+
+
+    rules = "CNF in integer format \n--------------------------------\n";
+    foreach (var r in transformed)
     {
-      Console.WriteLine("");
-      Console.WriteLine("==[Transformed formular]==");
-      Console.WriteLine("");
-      foreach (var r in transformed)
+      string rule = "";
+      foreach (var k in r)
       {
-        foreach (var k in r)
-        {
-          Console.Write(k + " ");
-        }
-        Console.WriteLine();
+        rule += k + " ";
       }
+
+      rules += rule + "\n";
     }
+    Logger.Logger.Debug(rules + "--------------------------------");
 
     var solved = Solver.FindAllSolutions(transformed);
     return Transformer.ReTransform(solved.Select(sr => sr.Assignments).ToList());

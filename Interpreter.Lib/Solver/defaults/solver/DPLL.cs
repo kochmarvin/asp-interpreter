@@ -1,3 +1,4 @@
+using Interpreter.Lib.Logger;
 using Interpreter.Lib.Solver.Interfaces;
 
 namespace Interpreter.Lib.Solver.defaults;
@@ -18,17 +19,22 @@ public class DPLLSolver : ISolver
 
   public List<SatResult> FindAllSolutions(List<List<int>> formula)
   {
+    var watch = StopWatch.Start();
     var allSolutions = new List<SatResult>();
     var lockObject = new object();
     FindAllSolutionsRecursive(formula, [], allSolutions, lockObject);
+    Logger.Logger.Debug("Found all possible solutions. \n"
+           + "Duration was " + watch.Stop());
     return allSolutions;
   }
 
   private void FindAllSolutionsRecursive(List<List<int>> formula, List<int> assignments, List<SatResult> allSolutions, object lockObject)
   {
+    Logger.Logger.Debug("Starting finding solutions process");
     SatResult result = DPLL(formula, []);
     if (!result.Satisfiable)
     {
+      Logger.Logger.Debug("Killing process due of finding unsatisfiable");
       return;
     }
 
