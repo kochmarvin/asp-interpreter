@@ -183,7 +183,7 @@ public class SatTransformer : ITransformer
   }
 
 
-  public List<List<Atom>>? ReTransform(List<List<int>> results)
+  public List<List<Atom>> ReTransform(List<List<int>> results)
   {
     if (_preperation == null)
     {

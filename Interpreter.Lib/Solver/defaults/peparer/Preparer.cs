@@ -50,7 +50,7 @@ public class Preparer : IPreparer
         // Add literal to the naughty list so they dont get removed
         if (literal is AtomLiteral atomLiteral)
         {
-          _notAllowed.Add(literal.ToString());
+          _notAllowed.Add(literal.ToString() ?? "");
         }
       }
     }
@@ -223,7 +223,7 @@ public class Preparer : IPreparer
           headsReference.Add(atomHead.Atom);
           heads.Add(atomHead.Atom.ToString());
 
-          if (rules.TryGetValue(atomHead.Atom.ToString(), out LoopRule loop))
+          if (rules.TryGetValue(atomHead.Atom.ToString(), out LoopRule? loop))
           {
             loopRule = loop;
             List<AtomLiteral> literals = [];

@@ -12,7 +12,6 @@ namespace Interpreter.CLI.Commands
   {
     public void Execute(string[] args, CommandManager manager)
     {
-      manager.LoadFile("/Users/marvinkoch/Desktop/x.lp");
       if (args.Length < 2)
       {
         Logger.Error("No file path provided.");
@@ -48,6 +47,7 @@ namespace Interpreter.CLI.Commands
         return;
       }
 
+      filePath = "/Users/marvinkoch/Desktop/x.lp";
       manager.FilePath = filePath;
       manager.LoadFile(filePath);
     }

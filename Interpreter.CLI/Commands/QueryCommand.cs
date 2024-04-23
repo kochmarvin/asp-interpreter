@@ -7,27 +7,27 @@ using Interpreter.Lib.Logger;
 
 namespace Interpreter.CLI.Commands
 {
-	public class QueryCommand : ICommand
-	{
-		public void Execute(string[] args, CommandManager manager)
-		{
-			if (args.Length < 2)
-			{
-				Logger.Error("No query provided.");
-				return;
-			}
-
-			string query = args[1];
-
-			if (manager.FilePath == null)
-			{
-				Logger.Error("No file has been loaded. Please load a file before executing a query.");
+  public class QueryCommand : ICommand
+  {
+    public void Execute(string[] args, CommandManager manager)
+    {
+      if (args.Length < 2)
+      {
+        Logger.Error("No query provided.");
         return;
-			}
+      }
 
-			// Implement query validation logic
+      string query = args[1];
 
-			Logger.Information($"Executing query: {query}");
-		}
-	}
+      if (manager.FilePath == null)
+      {
+        Logger.Error("No file has been loaded. Please load a file before executing a query.");
+        return;
+      }
+
+      // Implement query validation logic
+      Logger.Information($"Executing query: {query}");
+      manager.ExecuteQuery(query);
+    }
+  }
 }

@@ -5,11 +5,11 @@ using Interpreter.Lib.Solver.defaults;
 
 namespace Interpreter.Lib.Solver.defaults;
 
-public class SatEngine(List<ProgramRule> program, bool verbose = false) : SolverEngine(new Preparer(), new SatTransformer(), new DPLLSolver())
+public class SatEngine(List<ProgramRule> program) : SolverEngine(new Preparer(), new SatTransformer(), new DPLLSolver())
 {
   public List<ProgramRule> Program { get; } = program;
 
-  public override List<List<Atom>>? Execute()
+  public override List<List<Atom>> Execute()
   {
     var preperation = Preparer.Prepare(Program);
 
