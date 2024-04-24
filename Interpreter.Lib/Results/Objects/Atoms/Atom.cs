@@ -3,7 +3,7 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.Atoms;
 
-public class Atom(string name, List<Term> args) : IMatch<Atom>, IApplier<Atom>, IHasVariables
+public class Atom(string name, List<Term> args) : IMatch<Atom>, IApplier<Atom>, IHasVariables, IEquatable<Atom>, IGetVariables
 {
   public string Name { get; } = name;
   public List<Term> Args { get; } = args;
@@ -20,6 +20,16 @@ public class Atom(string name, List<Term> args) : IMatch<Atom>, IApplier<Atom>, 
   {
     var appliedArgs = Args.Select(arg => arg.Apply(substitutions)).ToList();
     return new Atom(Name, appliedArgs);
+  }
+
+  public bool Equals(Atom? other)
+  {
+    return other?.ToString() == ToString();
+  }
+
+  public List<string> GetVariables()
+  {
+    return Args.SelectMany(arg => arg.GetVariables()).ToList();
   }
 
   public bool HasVariables()

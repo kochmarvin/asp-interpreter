@@ -18,4 +18,8 @@
     <ExcludeFromCodeCoverage Include="$(ExcludeFromCodeCoverage)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Interpreter.FunctionalLib\Interpreter.FunctionalLib.fsproj" />
+  </ItemGroup>
+
 </Project>

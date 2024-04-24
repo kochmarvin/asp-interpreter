@@ -15,6 +15,16 @@ public class Variable(string name) : Term
     return this;
   }
 
+  public override List<string> GetVariables()
+  {
+    if (HasVariables())
+    {
+      return [Name];
+    }
+
+    return [];
+  }
+
   public override bool HasVariables()
   {
     if (string.IsNullOrEmpty(Name))
@@ -32,7 +42,11 @@ public class Variable(string name) : Term
       return ((Variable)t).Name == ((Variable)other).Name;
     }
 
-    substiutionen.Add(Name, other);
+    // TODO check if this fucks something up
+    if (this.HasVariables())
+    {
+      substiutionen.Add(Name, other);
+    }
 
     return true;
   }
