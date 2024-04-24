@@ -310,8 +310,13 @@ public class Grounding(DependencyGraph graph)
   /// <param name="relation">Is how the Terms are connected for example =, <></param>
   /// <param name="right">Is the Term on the right hand side.</param>
   /// <returns>If the operations succeds or not.</returns>
-  public bool EvaluateComparisson(Term left, Relation relation, Term right)
+  private bool EvaluateComparisson(Term left, Relation relation, Term right)
   {
+    if (left is Number leftParsed && right is Number rightParsed)
+    {
+      return EvaluateNumber(leftParsed, relation, rightParsed);
+    }
+
     return relation switch
     {
       Relation.LessEqual => string.Compare(left.ToString(), right.ToString()) <= 0,
@@ -320,6 +325,20 @@ public class Grounding(DependencyGraph graph)
       Relation.GreaterThan => string.Compare(left.ToString(), right.ToString()) > 0,
       Relation.Inequal => left.ToString() != right.ToString(),
       Relation.Equal => left.ToString() == right.ToString(),
+      _ => false,
+    };
+  }
+
+  private bool EvaluateNumber(Number left, Relation relation, Number right)
+  {
+    return relation switch
+    {
+      Relation.LessEqual => left.Value <= right.Value,
+      Relation.LessThan => left.Value < right.Value,
+      Relation.GreaterEqual => left.Value >= right.Value,
+      Relation.GreaterThan => left.Value > right.Value,
+      Relation.Inequal => left.Value != right.Value,
+      Relation.Equal => left.Value == right.Value,
       _ => false,
     };
   }

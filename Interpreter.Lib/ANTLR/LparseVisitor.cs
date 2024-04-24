@@ -74,6 +74,12 @@ public interface ILparseVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDisjunction([NotNull] LparseParser.DisjunctionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.range"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRange([NotNull] LparseParser.RangeContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LparseParser.choice"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -92,12 +98,6 @@ public interface ILparseVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitChoice_element([NotNull] LparseParser.Choice_elementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LparseParser.naf_literals"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitNaf_literals([NotNull] LparseParser.Naf_literalsContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="LparseParser.naf_literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -109,6 +109,24 @@ public interface ILparseVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitClassical_literal([NotNull] LparseParser.Classical_literalContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.range_literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRange_literal([NotNull] LparseParser.Range_literalContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.range_binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRange_binding([NotNull] LparseParser.Range_bindingContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.range_number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRange_number([NotNull] LparseParser.Range_numberContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LparseParser.builtin_atom"/>.
 	/// </summary>

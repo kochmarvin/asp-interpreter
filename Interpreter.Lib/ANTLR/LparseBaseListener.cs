@@ -120,6 +120,18 @@ public partial class LparseBaseListener : ILparseListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDisjunction([NotNull] LparseParser.DisjunctionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.range"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRange([NotNull] LparseParser.RangeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.range"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRange([NotNull] LparseParser.RangeContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.choice"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -156,18 +168,6 @@ public partial class LparseBaseListener : ILparseListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitChoice_element([NotNull] LparseParser.Choice_elementContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LparseParser.naf_literals"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterNaf_literals([NotNull] LparseParser.Naf_literalsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LparseParser.naf_literals"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitNaf_literals([NotNull] LparseParser.Naf_literalsContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.naf_literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -191,6 +191,42 @@ public partial class LparseBaseListener : ILparseListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitClassical_literal([NotNull] LparseParser.Classical_literalContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.range_literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRange_literal([NotNull] LparseParser.Range_literalContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.range_literal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRange_literal([NotNull] LparseParser.Range_literalContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.range_binding"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRange_binding([NotNull] LparseParser.Range_bindingContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.range_binding"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRange_binding([NotNull] LparseParser.Range_bindingContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.range_number"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRange_number([NotNull] LparseParser.Range_numberContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.range_number"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRange_number([NotNull] LparseParser.Range_numberContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.builtin_atom"/>.
 	/// <para>The default implementation does nothing.</para>
