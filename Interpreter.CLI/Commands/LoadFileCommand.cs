@@ -47,7 +47,6 @@ namespace Interpreter.CLI.Commands
         return;
       }
 
-      filePath = "/Users/marvinkoch/Desktop/x.lp";
       manager.FilePath = filePath;
       manager.LoadFile(filePath);
     }
