@@ -107,36 +107,6 @@ public interface LparseListener extends ParseTreeListener {
 	 */
 	void exitChoice_element(LparseParser.Choice_elementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LparseParser#aggregate}.
-	 * @param ctx the parse tree
-	 */
-	void enterAggregate(LparseParser.AggregateContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LparseParser#aggregate}.
-	 * @param ctx the parse tree
-	 */
-	void exitAggregate(LparseParser.AggregateContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link LparseParser#aggregate_elements}.
-	 * @param ctx the parse tree
-	 */
-	void enterAggregate_elements(LparseParser.Aggregate_elementsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LparseParser#aggregate_elements}.
-	 * @param ctx the parse tree
-	 */
-	void exitAggregate_elements(LparseParser.Aggregate_elementsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link LparseParser#aggregate_element}.
-	 * @param ctx the parse tree
-	 */
-	void enterAggregate_element(LparseParser.Aggregate_elementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LparseParser#aggregate_element}.
-	 * @param ctx the parse tree
-	 */
-	void exitAggregate_element(LparseParser.Aggregate_elementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link LparseParser#naf_literals}.
 	 * @param ctx the parse tree
 	 */

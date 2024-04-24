@@ -7,6 +7,7 @@ ID : [a-z][A-Za-z_]*;
 
 VARIABLE : [A-Z][A-Za-z0-9_]* ;
 DOT : '.' ;
+DOTDOT : '..' ;
 COMMA : ',' ;
 QUERY_MARK : '?' ;
 COLON : ':' ;
@@ -30,35 +31,42 @@ LESS_OR_EQ : '<=' ;
 GREATER_OR_EQ : '>=' ;
 
 // Lexer rules for skipping comments and whitespace
-COMMENT : '%' (~[\r\n])* '\r'? '\n' -> skip ;
+LINE_COMMENT : '%' ~[\r\n]* -> skip;
+
 WS : [ \t\r\n]+ -> skip ;
 
 // Parser rules
 program : statements query? | query ;
 statements : statement (statement)* ;
 
-query : classical_literal QUERY_MARK ;
+query : body QUERY_MARK ;
 
 statement : CONS body? DOT
           | head CONS? body? DOT ;
 
-head : disjunction | choice ;
+head : disjunction | choice | range ;
 
 body : (naf_literal) (COMMA (naf_literal))* ;
 
 disjunction : classical_literal ;
 
-choice : (term binop)? CURLY_OPEN choice_elements? CURLY_CLOSE (binop term)? ;
+range : range_literal;
+
+choice : CURLY_OPEN choice_elements? CURLY_CLOSE ;
 
 choice_elements : choice_element (SEMICOLON choice_element)* ;
 
-choice_element : classical_literal (COLON naf_literals)? ;
-
-naf_literals : naf_literal (COMMA naf_literal)* ;
+choice_element : classical_literal;
 
 naf_literal : NAF? classical_literal | builtin_atom ;
 
 classical_literal : (MINUS)? ID (PAREN_OPEN terms? PAREN_CLOSE)? ;
+
+range_literal : (MINUS)? ID (PAREN_OPEN range_binding PAREN_CLOSE);
+
+range_binding : range_number DOTDOT range_number;
+
+range_number : (MINUS)? NUMBER;
 
 builtin_atom : term binop term ;
 
