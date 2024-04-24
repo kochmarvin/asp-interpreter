@@ -1,3 +1,4 @@
+using System.Data;
 using Interpreter.Lib.Results.Objects.Rule;
 
 namespace Interpreter.Lib.Visitors;
@@ -12,6 +13,6 @@ public class ProgramVisitor : LparseBaseVisitor<List<ProgramRule>>, IProgramVisi
       return statementsVisitor.Visit(context.statements());
     }
 
-    throw new InvalidOperationException("Could not parse Programm");
+    throw new SyntaxErrorException("Could not parse Programm");
   }
 }

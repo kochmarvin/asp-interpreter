@@ -15,7 +15,7 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
     List<ProgramRule> atoms = [];
     foreach (var statementContext in context.statement())
     {
-      Head headLiteral = new Headless();
+      List<Head> headLiterals = [new Headless()];
       List<Body> bodyLiterals = [];
 
       HeadContext head = statementContext.head();
@@ -23,7 +23,7 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
 
       if (head != null)
       {
-        headLiteral = new HeadVisitor().Visit(head);
+        headLiterals = new HeadVisitor().Visit(head);
       }
 
       if (body != null)
@@ -31,7 +31,10 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
         bodyLiterals = new BodyVisitor().Visit(body);
       }
 
-      atoms.Add(new ProgramRule(headLiteral, bodyLiterals));
+      foreach (var headLiteral in headLiterals)
+      {
+        atoms.Add(new ProgramRule(headLiteral, bodyLiterals));
+      }
     }
 
     return atoms;
