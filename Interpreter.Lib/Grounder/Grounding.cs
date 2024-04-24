@@ -7,13 +7,21 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
+using Interpreter.Lib.Logger;
+using System.Diagnostics;
 
 namespace Interpreter.Lib.Grounder;
 
 public class Grounding(DependencyGraph graph)
 {
   private readonly List<Atom> _visited = [];
+  private readonly List<string> _warnings = [];
   public DependencyGraph Graph { get; } = graph;
+
+  /// <summary>
+  /// This is a list of atomliterals that have not been found in a head, just for print out
+  /// </summary>
+  public List<string> Warnings { get { return _warnings; } }
 
   /// <summary>
   /// This function creates the grounding secence of the program
@@ -22,6 +30,7 @@ public class Grounding(DependencyGraph graph)
   // TODO wurde zu einer doppel liste gechanged checken ob das eh nichts kaputt macht
   public List<List<ProgramRule>> GenerateGroundingSequence()
   {
+    var watch = StopWatch.Start();
     var sequence = new List<List<ProgramRule>>();
 
     foreach (var scc in Graph.CreateGraph())
@@ -31,9 +40,21 @@ public class Grounding(DependencyGraph graph)
         sequence.Add(posScc);
       }
     }
-
     // Most important step, why exactly this happens is unclear.
     sequence.Reverse();
+    Logger.Logger.Debug("Created dependecy graph. \n"
+    + "Creation duration was " + watch.Stop());
+
+    foreach (var list in sequence)
+    {
+      string rules = "--------------------------------\n";
+      foreach (var rule in list)
+      {
+        rules += rule.ToString() + "\n";
+      }
+      Logger.Logger.Debug(rules + "--------------------------------");
+    }
+
     return sequence;
   }
 
@@ -45,6 +66,8 @@ public class Grounding(DependencyGraph graph)
   /// <returns>A variable free program.</returns>
   public List<ProgramRule> Ground()
   {
+    Logger.Logger.Debug("Start grounding process \n");
+    var watch = StopWatch.Start();
     var groundedProgram = new List<ProgramRule>();
 
     foreach (var subProgram in GenerateGroundingSequence())
@@ -52,9 +75,22 @@ public class Grounding(DependencyGraph graph)
       // Add Range is just a simpler way to add it to the list. You could also loop through it and add one by one
       groundedProgram.AddRange(GroundSubProgram(subProgram));
     }
+    List<string> availableHeads = [];
+    List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram, availableHeads);
 
-    List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram);
+    _warnings.RemoveAll(availableHeads.Contains);
+
     GroundCleanUp(groundedProgram, availableAtoms);
+
+    Logger.Logger.Debug("Created grounded program. \n"
+        + "Creation duration was " + watch.Stop());
+
+    string rules = "--------------------------------\n";
+    foreach (var rule in groundedProgram)
+    {
+      rules += rule.ToString() + "\n";
+    }
+    Logger.Logger.Debug(rules + "--------------------------------");
 
     return groundedProgram;
   }
@@ -66,7 +102,7 @@ public class Grounding(DependencyGraph graph)
   /// </summary>
   /// <param name="groundedProgram">The initial grounded Program.</param>
   /// <returns>All heads as a string list.</returns>
-  private List<string> GenerateAvailableAtoms(List<ProgramRule> groundedProgram)
+  private List<string> GenerateAvailableAtoms(List<ProgramRule> groundedProgram, List<string> headNamesOnly)
   {
     List<string> availableAtoms = [];
     foreach (var rule in groundedProgram)
@@ -74,11 +110,13 @@ public class Grounding(DependencyGraph graph)
       if (rule.Head is ChoiceHead choiceHead)
       {
         availableAtoms.AddRange(choiceHead.Atoms.Select(atom => atom.ToString()));
+        headNamesOnly.AddRange(choiceHead.Atoms.Select(atom => atom.Name));
       }
 
       if (rule.Head is AtomHead atomHead)
       {
         availableAtoms.Add(atomHead.Atom.ToString());
+        headNamesOnly.Add(atomHead.Atom.Name);
       }
     }
 
@@ -96,6 +134,7 @@ public class Grounding(DependencyGraph graph)
   /// <param name="availableAtoms">The heads of each rule.</param>
   private void GroundCleanUp(List<ProgramRule> groundedProgram, List<string> availableAtoms)
   {
+    Logger.Logger.Debug("Cleaning up grounded program.");
     List<string> _seen = [];
 
     for (int i = 0; i < groundedProgram.Count; i++)
@@ -177,6 +216,13 @@ public class Grounding(DependencyGraph graph)
         continue;
       }
 
+      // TODO check if this is valid behaviour.
+      // if (!rule.HasVariables())
+      // {
+      //   groundedSubProgram.Add(rule);
+      //   continue;
+      // }
+
       groundedSubProgram.AddRange(GroundRule(rule));
     }
 
@@ -211,10 +257,10 @@ public class Grounding(DependencyGraph graph)
     substitutions ??= [];
     var groundedRules = new List<ProgramRule>();
 
-
     if (index >= rule.Body.Count)
     {
       var newRule = rule.Apply(substitutions);
+
       groundedRules.Add(newRule);
     }
 
@@ -264,8 +310,13 @@ public class Grounding(DependencyGraph graph)
   /// <param name="relation">Is how the Terms are connected for example =, <></param>
   /// <param name="right">Is the Term on the right hand side.</param>
   /// <returns>If the operations succeds or not.</returns>
-  public bool EvaluateComparisson(Term left, Relation relation, Term right)
+  private bool EvaluateComparisson(Term left, Relation relation, Term right)
   {
+    if (left is Number leftParsed && right is Number rightParsed)
+    {
+      return EvaluateNumber(leftParsed, relation, rightParsed);
+    }
+
     return relation switch
     {
       Relation.LessEqual => string.Compare(left.ToString(), right.ToString()) <= 0,
@@ -274,6 +325,20 @@ public class Grounding(DependencyGraph graph)
       Relation.GreaterThan => string.Compare(left.ToString(), right.ToString()) > 0,
       Relation.Inequal => left.ToString() != right.ToString(),
       Relation.Equal => left.ToString() == right.ToString(),
+      _ => false,
+    };
+  }
+
+  private bool EvaluateNumber(Number left, Relation relation, Number right)
+  {
+    return relation switch
+    {
+      Relation.LessEqual => left.Value <= right.Value,
+      Relation.LessThan => left.Value < right.Value,
+      Relation.GreaterEqual => left.Value >= right.Value,
+      Relation.GreaterThan => left.Value > right.Value,
+      Relation.Inequal => left.Value != right.Value,
+      Relation.Equal => left.Value == right.Value,
       _ => false,
     };
   }
@@ -288,6 +353,8 @@ public class Grounding(DependencyGraph graph)
   {
     var substituationList = new List<Dictionary<string, Term>>();
 
+    _warnings.Add(atomLiteral.Atom.Name);
+
     // If it is not positive (not ...) we just assume that it is a possible value.
     // This is important for circular dependecy rules.
     if (!atomLiteral.Positive && !atomLiteral.Atom.Apply(substitutions).HasVariables())
@@ -297,6 +364,7 @@ public class Grounding(DependencyGraph graph)
 
     // Cloneig the atom of the literal by appliend substiutian
     var newAtom = atomLiteral.Atom.Apply(substitutions);
+
     foreach (var visited in _visited)
     {
 
