@@ -100,40 +100,49 @@ public class CommandManager
       var tree = parser.program();
 
       var programVisitor = new QueryVisitor();
-      Query parsedQuery = programVisitor.VisitQuery(tree);
-      List<string> variables = [.. parsedQuery.Variables];
+      List<Query> parsedQuery = programVisitor.VisitQuery(tree);
 
-      QuerySolver querySolver = new QuerySolver(parsedQuery, _store.AnswerSets, new Preparer());
-      var answers = querySolver.Answers();
-
-      string rules = "Query Solution\n--------------------------------";
-      for (int i = 0; i < answers.Count; i++)
+      foreach (Query q in parsedQuery)
       {
-        rules += "\nSet " + i + "\n";
-
-        if (answers[i].Count == 0)
-        {
-          rules += "false. \n";
-          continue;
-        }
-
-        foreach (var answer in answers[i])
-        {
-          if (answer.Head is AtomHead atomHead && atomHead.Atom.Args.Count == 0)
-          {
-            rules += "true. \n";
-            continue;
-          }
-
-          AtomHead head = (AtomHead)answer.Head;
-          for (int j = 0; j < head.Atom.Args.Count; j++)
-          {
-            rules += variables[j] + " = " + head.Atom.Args[j] + " ";
-          }
-          rules += "\n";
-        }
+        Console.WriteLine(q.ParsedQuery);
       }
-      Logger.Information(rules + "--------------------------------");
+
+      // node(X), node(Y), Y == 5, X == 10; node(X), node(Y), Y == X
+      // /Users/marvinkoch/Desktop/x.lp
+      for (int i = 0; i < _store.AnswerSets.Count; i++)
+      {
+        string rules = "\nSet " + (i + 1) + "\n";
+        foreach (var currentQuery in parsedQuery)
+        {
+          QuerySolver querySolver = new QuerySolver(currentQuery, _store.AnswerSets[i], new Preparer());
+          var answers = querySolver.Answers();
+
+          if (answers.Count == 0)
+          {
+            rules += "false. \n";
+          }
+
+          foreach (var rule in answers)
+          {
+            if (rule.Head is AtomHead atomHead && atomHead.Atom.Args.Count == 0)
+            {
+              rules += "true. \n";
+              continue;
+            }
+
+            AtomHead head = (AtomHead)rule.Head;
+            List<string> vars = [.. currentQuery.Variables];
+
+            for (int m = 0; m < head.Atom.Args.Count; m++)
+            {
+              rules += vars[m] + " = " + head.Atom.Args[m] + " ";
+            }
+            rules += "\n";
+          }
+        }
+        Logger.Information(rules + "--------------------------------");
+      }
+
     }
     catch (Exception e)
     {

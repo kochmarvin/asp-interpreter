@@ -9,5 +9,5 @@ knoten(X) :- node(X), X > 3.
 knoten(X) :- node(X), X >= 3.
 knoten(X) :- node(X), X <= 3.
 knoten(X) :- node(X), X < 3.
-knoten(X) :- node(X), X = 3.
+knoten(X) :- node(X), X == 3.
 knoten(X) :- node(X), X <> 3.

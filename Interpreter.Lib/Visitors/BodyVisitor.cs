@@ -39,7 +39,7 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
 
         switch (binop)
         {
-          case "=":
+          case "==":
             relation = Relation.Equal;
             break;
           case "!=":

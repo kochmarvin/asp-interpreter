@@ -12,50 +12,44 @@ public class QuerySolver
 {
 
   private readonly IPreparer _preparer;
-  private readonly List<List<Atom>> _answerSets;
+  private readonly List<Atom> _set;
   private readonly Query _query;
 
-  public QuerySolver(Query query, List<List<Atom>> answerSets, IPreparer preparer)
+  public QuerySolver(Query query, List<Atom> set, IPreparer preparer)
   {
     _preparer = preparer;
-    _answerSets = answerSets;
+    _set = set;
     _query = query;
   }
 
-  public List<List<ProgramRule>> Answers()
+  public List<ProgramRule> Answers()
   {
     List<List<ProgramRule>> results = [];
-    foreach (var set in _answerSets)
+    List<ProgramRule> rules = [];
+
+    foreach (var atom in _set)
     {
-      List<ProgramRule> rules = [];
-
-      foreach (var atom in set)
-      {
-        rules.Add(new ProgramRule(new AtomHead(atom), []));
-      }
-
-      rules.Add(_query.ParsedQuery);
-
-      DependencyGraph graph = new DependencyGraph(rules);
-      Grounding grounding = new Grounding(graph);
-      var grounded = grounding.Ground();
-
-      foreach (var warning in grounding.Warnings)
-      {
-        Logger.Logger.Warning("atom does not occur in any rule head: \n" + warning);
-      }
-
-      var prepared = _preparer.Prepare(grounded);
-
-      var filteredRules = prepared.FactuallyTrue
-          .Where(rule => rule.Head is AtomHead &&
-                ((AtomHead)rule.Head).Atom.Name.StartsWith(_query.Name) &&
-                 rule.Body.Count == 0)
-          .ToList();
-
-      results.Add(filteredRules);
+      rules.Add(new ProgramRule(new AtomHead(atom), []));
     }
 
-    return results;
+    rules.Add(_query.ParsedQuery);
+
+    DependencyGraph graph = new DependencyGraph(rules);
+    Grounding grounding = new Grounding(graph);
+    var grounded = grounding.Ground();
+
+    foreach (var warning in grounding.Warnings)
+    {
+      Logger.Logger.Warning("atom does not occur in any rule head: \n" + warning);
+    }
+
+    var prepared = _preparer.Prepare(grounded);
+
+    return prepared.FactuallyTrue
+        .Where(rule => rule.Head is AtomHead &&
+              ((AtomHead)rule.Head).Atom.Name.StartsWith(_query.Name) &&
+               rule.Body.Count == 0)
+        .ToList();
+
   }
 }

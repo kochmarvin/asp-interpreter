@@ -23,7 +23,7 @@ SQUARE_OPEN : '[' ;
 SQUARE_CLOSE : ']' ;
 CURLY_OPEN : '{' ;
 CURLY_CLOSE : '}' ;
-EQUAL : '=' ;
+EQUAL : '==' ;
 UNEQUAL : '<>' | '!=' ;
 LESS : '<' ;
 GREATER : '>' ;
@@ -39,14 +39,14 @@ WS : [ \t\r\n]+ -> skip ;
 program : statements query? | query ;
 statements : statement (statement)* ;
 
-query : body QUERY_MARK ;
+query : body (SEMICOLON body)* QUERY_MARK ;
 
 statement : CONS body? DOT
           | head CONS? body? DOT ;
 
 head : disjunction | choice | range ;
 
-body : (naf_literal) (COMMA (naf_literal))* ;
+body : (naf_literal) (COMMA naf_literal)* ;
 
 disjunction : classical_literal ;
 
