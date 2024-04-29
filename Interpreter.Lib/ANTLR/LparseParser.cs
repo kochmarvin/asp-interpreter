@@ -39,8 +39,8 @@ public partial class LparseParser : Parser {
 		NAF=1, NUMBER=2, ID=3, VARIABLE=4, DOT=5, DOTDOT=6, COMMA=7, QUERY_MARK=8, 
 		COLON=9, SEMICOLON=10, CONS=11, PLUS=12, MINUS=13, TIMES=14, DIV=15, PAREN_OPEN=16, 
 		PAREN_CLOSE=17, SQUARE_OPEN=18, SQUARE_CLOSE=19, CURLY_OPEN=20, CURLY_CLOSE=21, 
-		EQUAL=22, UNEQUAL=23, LESS=24, GREATER=25, LESS_OR_EQ=26, GREATER_OR_EQ=27, 
-		LINE_COMMENT=28, WS=29;
+		UNIFICATION=22, EQUAL=23, UNEQUAL=24, LESS=25, GREATER=26, LESS_OR_EQ=27, 
+		GREATER_OR_EQ=28, LINE_COMMENT=29, WS=30;
 	public const int
 		RULE_program = 0, RULE_statements = 1, RULE_query = 2, RULE_statement = 3, 
 		RULE_head = 4, RULE_body = 5, RULE_disjunction = 6, RULE_range = 7, RULE_choice = 8, 
@@ -58,13 +58,13 @@ public partial class LparseParser : Parser {
 	private static readonly string[] _LiteralNames = {
 		null, "'not'", null, null, null, "'.'", "'..'", "','", "'?'", "':'", "';'", 
 		"':-'", "'+'", "'-'", "'*'", "'/'", "'('", "')'", "'['", "']'", "'{'", 
-		"'}'", "'=='", null, "'<'", "'>'", "'<='", "'>='"
+		"'}'", "'='", "'=='", null, "'<'", "'>'", "'<='", "'>='"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "NAF", "NUMBER", "ID", "VARIABLE", "DOT", "DOTDOT", "COMMA", "QUERY_MARK", 
 		"COLON", "SEMICOLON", "CONS", "PLUS", "MINUS", "TIMES", "DIV", "PAREN_OPEN", 
 		"PAREN_CLOSE", "SQUARE_OPEN", "SQUARE_CLOSE", "CURLY_OPEN", "CURLY_CLOSE", 
-		"EQUAL", "UNEQUAL", "LESS", "GREATER", "LESS_OR_EQ", "GREATER_OR_EQ", 
+		"UNIFICATION", "EQUAL", "UNEQUAL", "LESS", "GREATER", "LESS_OR_EQ", "GREATER_OR_EQ", 
 		"LINE_COMMENT", "WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
@@ -1271,6 +1271,7 @@ public partial class LparseParser : Parser {
 	}
 
 	public partial class BinopContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UNIFICATION() { return GetToken(LparseParser.UNIFICATION, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUAL() { return GetToken(LparseParser.EQUAL, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UNEQUAL() { return GetToken(LparseParser.UNEQUAL, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LESS() { return GetToken(LparseParser.LESS, 0); }
@@ -1310,7 +1311,7 @@ public partial class LparseParser : Parser {
 			{
 			State = 154;
 			_la = TokenStream.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 264241152L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 532676608L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -1632,7 +1633,7 @@ public partial class LparseParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,29,195,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,30,195,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,1,0,1,0,3,
 		0,45,8,0,1,0,3,0,48,8,0,1,1,1,1,5,1,52,8,1,10,1,12,1,55,9,1,1,2,1,2,1,
@@ -1647,7 +1648,7 @@ public partial class LparseParser : Parser {
 		19,1,19,1,19,1,19,3,19,171,8,19,1,19,3,19,174,8,19,1,19,1,19,1,19,1,19,
 		1,19,1,19,3,19,182,8,19,1,19,1,19,1,19,1,19,5,19,188,8,19,10,19,12,19,
 		191,9,19,1,20,1,20,1,20,0,1,38,21,0,2,4,6,8,10,12,14,16,18,20,22,24,26,
-		28,30,32,34,36,38,40,0,2,1,0,22,27,1,0,12,15,200,0,47,1,0,0,0,2,49,1,0,
+		28,30,32,34,36,38,40,0,2,1,0,22,28,1,0,12,15,200,0,47,1,0,0,0,2,49,1,0,
 		0,0,4,56,1,0,0,0,6,80,1,0,0,0,8,85,1,0,0,0,10,87,1,0,0,0,12,95,1,0,0,0,
 		14,97,1,0,0,0,16,99,1,0,0,0,18,105,1,0,0,0,20,113,1,0,0,0,22,120,1,0,0,
 		0,24,123,1,0,0,0,26,134,1,0,0,0,28,141,1,0,0,0,30,146,1,0,0,0,32,150,1,

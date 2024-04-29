@@ -58,6 +58,9 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
           case "<=":
             relation = Relation.LessEqual;
             break;
+          case "=":
+            relation = Relation.Unification;
+            break;
           default:
             throw new InvalidOperationException("You used a operator that is not valid!");
         }

@@ -10,6 +10,7 @@ public static class RelationExtensions
       Relation.LessEqual => "<=",
       Relation.GreaterThan => ">",
       Relation.GreaterEqual => ">=",
+      Relation.Unification => "=",
       Relation.Equal => "==",
       Relation.Inequal => "!=",
       _ => throw new NotImplementedException()

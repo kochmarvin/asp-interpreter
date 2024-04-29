@@ -293,7 +293,7 @@ public class Grounding(DependencyGraph graph)
 
       // Here we check if the comparisson is valid because if it fails
       // we wont store the substiturions for it.
-      if (EvaluateComparisson(left, comparisonLiteral.Reltation, right))
+      if (EvaluateComparisson(left, comparisonLiteral.Reltation, right, substitutions))
       {
         return [substitutions];
       }
@@ -310,8 +310,14 @@ public class Grounding(DependencyGraph graph)
   /// <param name="relation">Is how the Terms are connected for example =, <></param>
   /// <param name="right">Is the Term on the right hand side.</param>
   /// <returns>If the operations succeds or not.</returns>
-  private bool EvaluateComparisson(Term left, Relation relation, Term right)
+  private bool EvaluateComparisson(Term left, Relation relation, Term right, Dictionary<string, Term> substitutions)
   {
+
+    if (relation == Relation.Unification)
+    {
+      return EvaluateUnification(left, right, substitutions);
+    }
+
     if (left is Number leftParsed && right is Number rightParsed)
     {
       return EvaluateNumber(leftParsed, relation, rightParsed);
@@ -327,6 +333,55 @@ public class Grounding(DependencyGraph graph)
       Relation.Equal => left.ToString() == right.ToString(),
       _ => false,
     };
+  }
+
+  private bool EvaluateUnification(Term left, Term right, Dictionary<string, Term> substitutions)
+  {
+
+    if (left.HasVariables() && right.HasVariables())
+    {
+      return false;
+    }
+
+    if (!left.HasVariables() && !right.HasVariables())
+    {
+      return EvaluateComparisson(left, Relation.Equal, right, substitutions);
+    }
+
+    if (right.HasVariables() && !left.HasVariables() && right.GetVariables().Count == 1)
+    {
+      var subs = new Dictionary<string, Term>
+      {
+        { right.GetVariables()[0], left }
+      };
+      var newTerm = right.Apply(subs);
+
+      if (!EvaluateComparisson(left, Relation.Equal, newTerm, substitutions))
+      {
+        return false;
+      }
+
+      substitutions.Add(right.GetVariables()[0], left);
+      return true;
+    }
+
+    if (left.HasVariables() && !right.HasVariables() && left.GetVariables().Count == 1)
+    {
+      var subs = new Dictionary<string, Term>
+      {
+        { left.GetVariables()[0], right }
+      };
+      var newTerm = right.Apply(subs);
+      if (!EvaluateComparisson(newTerm, Relation.Equal, right, substitutions))
+      {
+        return false;
+      }
+
+      substitutions.Add(left.GetVariables()[0], right);
+      return true;
+    }
+
+    return false;
   }
 
   private bool EvaluateNumber(Number left, Relation relation, Number right)

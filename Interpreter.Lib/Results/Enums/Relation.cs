@@ -8,4 +8,5 @@ public enum Relation
   GreaterEqual,
   Equal,
   Inequal,
+  Unification,
 }

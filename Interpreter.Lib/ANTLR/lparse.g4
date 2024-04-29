@@ -23,6 +23,7 @@ SQUARE_OPEN : '[' ;
 SQUARE_CLOSE : ']' ;
 CURLY_OPEN : '{' ;
 CURLY_CLOSE : '}' ;
+UNIFICATION : '=' ;
 EQUAL : '==' ;
 UNEQUAL : '<>' | '!=' ;
 LESS : '<' ;
@@ -41,8 +42,10 @@ statements : statement (statement)* ;
 
 query : body (SEMICOLON body)* QUERY_MARK ;
 
-statement : CONS body? DOT
-          | head CONS? body? DOT ;
+statement : CONS bodies? DOT
+          | head CONS? bodies? DOT ;
+
+bodies : body (SEMICOLON body)*;
 
 head : disjunction | choice | range ;
 
@@ -70,7 +73,7 @@ range_number : (MINUS)? NUMBER;
 
 builtin_atom : term binop term ;
 
-binop : EQUAL | UNEQUAL | LESS | GREATER | LESS_OR_EQ | GREATER_OR_EQ ;
+binop : UNIFICATION | EQUAL | UNEQUAL | LESS | GREATER | LESS_OR_EQ | GREATER_OR_EQ ;
 
 terms : term (COMMA term)* ;
 
