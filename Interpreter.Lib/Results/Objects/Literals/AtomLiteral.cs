@@ -25,6 +25,11 @@ public class AtomLiteral(bool positive, Atom atom) : Literal
     return Atom.HasVariables();
   }
 
+  public override bool HasVariables(string variable)
+  {
+    return Atom.HasVariables(variable);
+  }
+
   public override string ToString()
   {
     return $"{(Positive ? "" : "not ")}{Atom}";

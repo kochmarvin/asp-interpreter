@@ -23,6 +23,11 @@ public class LiteralBody(Literal literal) : Body
     return Literal.HasVariables();
   }
 
+  public override bool HasVariables(string variable)
+  {
+    return Literal.HasVariables(variable);
+  }
+
   public override string? ToString()
   {
     return Literal.ToString();

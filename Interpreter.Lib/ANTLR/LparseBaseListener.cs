@@ -84,6 +84,18 @@ public partial class LparseBaseListener : ILparseListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStatement([NotNull] LparseParser.StatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.bodies"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBodies([NotNull] LparseParser.BodiesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.bodies"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBodies([NotNull] LparseParser.BodiesContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.head"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -14,6 +14,11 @@ public class Headless : Head
     return false;
   }
 
+  public override bool HasVariables(string variable)
+  {
+    return false;
+  }
+
   public override string ToString()
   {
     return "";

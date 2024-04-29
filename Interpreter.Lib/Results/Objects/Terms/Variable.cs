@@ -35,6 +35,16 @@ public class Variable(string name) : Term
     return char.IsUpper(Name[0]);
   }
 
+  public override bool HasVariables(string variable)
+  {
+    if (string.IsNullOrEmpty(Name))
+    {
+      return false;
+    }
+
+    return variable.Equals(Name);
+  }
+
   public override bool Match(Term other, Dictionary<string, Term> substiutionen)
   {
     if (substiutionen.TryGetValue(Name, out Term? t))

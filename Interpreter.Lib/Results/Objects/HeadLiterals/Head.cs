@@ -9,6 +9,8 @@ public abstract class Head : IApplier<Head>, IHasVariables
 
   public abstract bool HasVariables();
 
+  public abstract bool HasVariables(string variable);
+
   public override string? ToString()
   {
     return base.ToString();

@@ -11,6 +11,8 @@ public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables
 
   public abstract bool HasVariables();
 
+  public abstract bool HasVariables(string variable);
+
   public override string? ToString()
   {
     return base.ToString();

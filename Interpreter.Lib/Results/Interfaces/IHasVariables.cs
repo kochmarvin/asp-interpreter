@@ -5,4 +5,6 @@ namespace Interpreter.Lib.Results.Interfaces;
 public interface IHasVariables
 {
   public bool HasVariables();
+
+  public bool HasVariables(string variable);
 }

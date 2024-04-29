@@ -18,6 +18,11 @@ public class AtomHead(Atom atom) : Head
     return Atom.HasVariables();
   }
 
+  public override bool HasVariables(string variable)
+  {
+    return Atom.HasVariables(variable);
+  }
+
   public override string ToString()
   {
     return Atom.ToString() + " ";

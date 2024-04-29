@@ -89,7 +89,7 @@ public class CommandManager
 
     try
     {
-      var inputStream = new AntlrInputStream(query + "?");
+      var inputStream = new AntlrInputStream(query.Replace(".", "") + "?");
       var lexer = new LparseLexer(inputStream);
       var tokens = new CommonTokenStream(lexer);
 

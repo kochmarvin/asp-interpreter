@@ -28,6 +28,19 @@ public class ChoiceHead(List<Atom> atoms) : Head
     return false;
   }
 
+  public override bool HasVariables(string variable)
+  {
+    foreach (var atom in Atoms)
+    {
+      if (atom.HasVariables(variable))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public override string ToString()
   {
     var headString = Atoms.Select(bl => bl.ToString());

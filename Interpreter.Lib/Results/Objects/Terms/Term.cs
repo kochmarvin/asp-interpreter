@@ -14,6 +14,7 @@ public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables, IGetVa
   }
 
   public abstract bool HasVariables();
+  public abstract bool HasVariables(string variable);
 
   public abstract List<string> GetVariables();
 }

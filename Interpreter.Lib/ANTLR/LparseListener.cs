@@ -71,6 +71,16 @@ public interface ILparseListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStatement([NotNull] LparseParser.StatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.bodies"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBodies([NotNull] LparseParser.BodiesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.bodies"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBodies([NotNull] LparseParser.BodiesContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.head"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

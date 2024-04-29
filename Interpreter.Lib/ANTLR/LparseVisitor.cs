@@ -56,6 +56,12 @@ public interface ILparseVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] LparseParser.StatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.bodies"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBodies([NotNull] LparseParser.BodiesContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LparseParser.head"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -40,6 +40,24 @@ public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>, IH
     return false;
   }
 
+  public bool HasVariables(string variable)
+  {
+    if (Head.HasVariables(variable))
+    {
+      return true;
+    }
+
+    foreach (var bodyLiteral in Body)
+    {
+      if (bodyLiteral.HasVariables(variable))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public override string ToString()
   {
     var headString = Head.ToString();
