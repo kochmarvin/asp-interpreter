@@ -2,6 +2,7 @@ using Interpreter.Lib.Graph;
 using Interpreter.Lib.Grounder;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Rule;
+using Interpreter.Lib.Results.Objects.Terms;
 using Interpreter.Lib.Solver.defaults;
 using Interpreter.Tests;
 using Interpreter.Tests.Parser;
@@ -59,8 +60,122 @@ public class SatEngineTests
     );
 
     yield return new SatEngineResult(
+      "range_positive.lp",
+      [
+        [new Atom("a", [new Number(3)]), new Atom("a", [new Number(2)]), new Atom("a", [new Number(1)])]
+      ]
+    );
+
+    yield return new SatEngineResult(
+      "range_negative.lp",
+      [
+        [new Atom("mensch", [new Number(2)]),
+        new Atom("mensch", [new Number(1)]),
+        new Atom("mensch", [new Number(0)]),
+        new Atom("mensch", [new Number(-2)]),
+        new Atom("mensch", [new Number(-1)])]
+      ]
+    );
+
+    yield return new SatEngineResult(
+     "birds.lp",
+     [
+       [new Atom("penguin", [new Variable("tux")]),
+        new Atom("fly", [new Variable("eddy")]),
+        new Atom("eagle", [new Variable("eddy")]),
+        new Atom("bird", [new Variable("tux")]),
+        new Atom("bird", [new Variable("eddy")]),
+        new Atom("-fly", [new Variable("tux")])]
+     ]
+   );
+
+    /*
+    reihenfolge fickt hier
+    yield return new SatEngineResult(
+      "choice_head.lp",
+      [
+        [],
+        [new Atom("x", []), new Atom("a", [])],
+        [new Atom("x", []), new Atom("c", []), new Atom("a", [])],
+        [new Atom("a", [])],
+        [new Atom("b", []), new Atom("a", [])],
+        [new Atom("x", []), new Atom("b", []), new Atom("a", [])],
+        [new Atom("c", []), new Atom("b", []), new Atom("a", [])],
+        [new Atom("c", []), new Atom("a", [])],
+        [new Atom("x", []), new Atom("c", []), new Atom("b", []), new Atom("a", [])],
+        [new Atom("c", []), new Atom("b", [])],
+      ]
+    );
+    */
+
+    // hier kann reihenfolge auch ficken 
+    yield return new SatEngineResult(
+      "circular.lp",
+      [
+        [new Atom("single", [new Variable("marvin")]), new Atom("mensch", [new Variable("marvin")])],
+        [new Atom("mensch", [new Variable("marvin")]), new Atom("married", [new Variable("marvin")])]
+      ]
+    );
+
+    yield return new SatEngineResult(
+      "comparisson.lp",
+     [
+       [new Atom("node", [new Number(6)]),
+       new Atom("node", [new Number(5)]),
+       new Atom("node", [new Number(4)]),
+       new Atom("node", [new Number(3)]),
+       new Atom("node", [new Number(2)]),
+       new Atom("node", [new Number(1)]),
+       new Atom("knoten", [new Number(6)]),
+       new Atom("knoten", [new Number(5)]),
+       new Atom("knoten", [new Number(4)]),
+       new Atom("knoten", [new Number(3)]),
+       new Atom("knoten", [new Number(2)]),
+       new Atom("knoten", [new Number(1)])]
+     ]
+    );
+
+    yield return new SatEngineResult(
+      "faster.lp",
+      [
+        [new Atom("isFaster", [new Variable("werner"), new Variable("niko")]),
+        new Atom("isFaster", [new Variable("werner"), new Variable("michi")]),
+        new Atom("isFaster", [new Variable("niko"), new Variable("michi")]),
+        new Atom("isFaster", [new Variable("marvin"), new Variable("werner")]),
+        new Atom("isFaster", [new Variable("marvin"), new Variable("niko")]),
+        new Atom("isFaster", [new Variable("marvin"), new Variable("michi")]),
+        new Atom("faster", [new Variable("werner"), new Variable("niko")]),
+        new Atom("faster", [new Variable("niko"), new Variable("michi")]),
+        new Atom("faster", [new Variable("marvin"), new Variable("werner")])
+        ]
+      ]
+    );
+
+    // clingo wirft hier error wegen Y --> _
+    yield return new SatEngineResult(
+      "fastest.lp",
+      [
+        [new Atom("vehicle", [new Variable("skateboard")]),
+        new Atom("vehicle", [new Variable("bike")]),
+        new Atom("is_faster", [new Variable("bike"), new Variable("skateboard")]),
+        new Atom("fastest", [new Variable("bike")]),
+        new Atom("faster", [new Variable("bike"), new Variable("skateboard")])
+        ]
+      ]
+    );
+
+    yield return new SatEngineResult(
+      "no_vars.lp",
+      [
+        [new Atom("b", [])],
+        [new Atom("x", []), new Atom("a", [])],
+      ]
+    );
+
+    yield return new SatEngineResult(
      "unsat_1.lp",
      []
    );
+
   }
 }

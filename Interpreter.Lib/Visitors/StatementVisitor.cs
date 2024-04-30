@@ -37,8 +37,6 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
         }
       }
 
-
-      // ich check den schäh nicht 
       foreach (var headLiteral in headLiterals)
       {
 
