@@ -44,9 +44,6 @@ public class SatTransformer : ITransformer
         foreach (var choice in choiceHead.Atoms)
         {
           int foundIndex = GetIndexOfString(choice.ToString(), ref index, choice);
-
-          Logger.Logger.Error("" + foundIndex);
-
           int notIndex = GetNotStateOfChoice(foundIndex, ref index);
 
           expressions.Add(CNFWrapper.NewExpression().SetXor(
@@ -419,19 +416,7 @@ public class SatTransformer : ITransformer
     {
       ++index;
 
-      if (signature.StartsWith("-"))
-      {
-        _mappedAtoms.Add(signature, index);
-        _mappedAtoms.Add(signature[1..], -index);
-        foundIndex = -index;
-      }
-      else
-      {
-        _mappedAtoms.Add(signature, index);
-        _mappedAtoms.Add("-" + signature, -index);
-        foundIndex = index;
-      }
-
+      _mappedAtoms.Add(signature, index);
       _reMappedAtoms.Add(index, signature);
 
       if (atom != null)
@@ -439,11 +424,7 @@ public class SatTransformer : ITransformer
         _mappedRules.Add(signature, atom);
       }
 
-    }
-
-    if (!_reMappedAtoms.TryGetValue(foundIndex, out string? sig))
-    {
-      _reMappedAtoms[foundIndex] = signature;
+      foundIndex = index;
     }
 
     return foundIndex;

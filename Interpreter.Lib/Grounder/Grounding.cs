@@ -81,6 +81,7 @@ public class Grounding(DependencyGraph graph)
     _warnings.RemoveAll(availableHeads.Contains);
 
     GroundCleanUp(groundedProgram, availableAtoms);
+    AddHeadlessRules(groundedProgram);
 
     Logger.Logger.Debug("Created grounded program. \n"
         + "Creation duration was " + watch.Stop());
@@ -93,6 +94,50 @@ public class Grounding(DependencyGraph graph)
     Logger.Logger.Debug(rules + "--------------------------------");
 
     return groundedProgram;
+  }
+
+  private void AddHeadlessRules(List<ProgramRule> rules)
+  {
+    List<ProgramRule> newHeadlessRules = [];
+    foreach (var rule in rules)
+    {
+      if (rule.Head is ChoiceHead choiceHead)
+      {
+        foreach (var atom in choiceHead.Atoms)
+        {
+          var newRule = AddHeadlessRuleForAtom(atom);
+          if (newRule != null)
+          {
+            newHeadlessRules.Add(newRule);
+          }
+        }
+      }
+
+      if (rule.Head is AtomHead atomHead)
+      {
+        var newRule = AddHeadlessRuleForAtom(atomHead.Atom);
+        if (newRule != null)
+        {
+          newHeadlessRules.Add(newRule);
+        }
+      }
+    }
+
+    rules.AddRange(newHeadlessRules);
+  }
+
+  private ProgramRule? AddHeadlessRuleForAtom(Atom atom)
+  {
+    if (!atom.Name.StartsWith("-"))
+    {
+      return null;
+    }
+
+    var negativeAtom = new LiteralBody(new AtomLiteral(true, new Atom(atom.Name, [.. atom.Args])));
+    var postiveAtom = new LiteralBody(new AtomLiteral(true, new Atom(atom.Name[1..], [.. atom.Args])));
+
+    var rule = new ProgramRule(new Headless(), [negativeAtom, postiveAtom]);
+    return rule;
   }
 
   /// <summary>

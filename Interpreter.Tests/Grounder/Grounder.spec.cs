@@ -50,6 +50,7 @@ public class GrounderTests
       "-fly(tux):-penguin(tux).",
       "fly(tux):-bird(tux),not-fly(tux).",
       "fly(eddy):-bird(eddy),not-fly(eddy).",
+      ":--fly(tux),fly(tux)."
     ];
 
     DependencyGraph graph = new DependencyGraph(rules);
