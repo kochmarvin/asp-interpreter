@@ -37,6 +37,8 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
         }
       }
 
+
+      // ich check den schäh nicht 
       foreach (var headLiteral in headLiterals)
       {
 
@@ -49,9 +51,6 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
         {
           atoms.Add(new ProgramRule(headLiteral, body));
         }
-
-
-
 
 
         /* TODO 
