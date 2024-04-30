@@ -13,7 +13,7 @@ using Interpreter.Lib.Logger;
 namespace Interpreter.Lib.Solver.defaults;
 
 /*
-  TODO Circle detection and adding XOR
+  TODO Classical negation add
 */
 public class SatTransformer : ITransformer
 {
@@ -44,6 +44,9 @@ public class SatTransformer : ITransformer
         foreach (var choice in choiceHead.Atoms)
         {
           int foundIndex = GetIndexOfString(choice.ToString(), ref index, choice);
+
+          Logger.Logger.Error("" + foundIndex);
+
           int notIndex = GetNotStateOfChoice(foundIndex, ref index);
 
           expressions.Add(CNFWrapper.NewExpression().SetXor(
@@ -62,31 +65,34 @@ public class SatTransformer : ITransformer
       {
         int foundIndex = GetIndexOfString(atomHead.Atom.ToString(), ref index, atomHead.Atom);
 
-        if (rule.Body.Count > 0)
+        if (rule.Body.Count == 0)
         {
-          var orRules = preperation.Remainder.
-          Where(watchRule => watchRule != rule).
-          Where(rule => rule.Head is AtomHead).
-          Where(rule => rule.Body.Count > 0).
-          Where(
-            rule =>
-            {
-              var ruleHead = rule.Head as AtomHead;
-              return ruleHead?.Atom.ToString() == atomHead.Atom.ToString();
-            }
-          ).ToList();
-
-
-          string rules = "Or Rules for " + rule + " \n--------------------------------\n";
-          foreach (var orRule in orRules)
-          {
-            rules += orRule.ToString() + "\n";
-          }
-          Logger.Logger.Debug(rules + "--------------------------------");
-          _preperation.Remainder.RemoveAll(orRules.Contains);
-
-          expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, orRules, ref index));
+          expressions.Add(CNFWrapper.CreateVariable(foundIndex));
+          continue;
         }
+
+        var orRules = preperation.Remainder.
+        Where(watchRule => watchRule != rule).
+        Where(rule => rule.Head is AtomHead).
+        Where(rule => rule.Body.Count > 0).
+        Where(
+          rule =>
+          {
+            var ruleHead = rule.Head as AtomHead;
+            return ruleHead?.Atom.ToString() == atomHead.Atom.ToString();
+          }
+        ).ToList();
+
+
+        string rules = "Or Rules for " + rule + " \n--------------------------------\n";
+        foreach (var orRule in orRules)
+        {
+          rules += orRule.ToString() + "\n";
+        }
+        Logger.Logger.Debug(rules + "--------------------------------");
+        _preperation.Remainder.RemoveAll(orRules.Contains);
+
+        expressions.Add(TransformBodyLiterals(foundIndex, rule.Body, orRules, ref index));
       }
     }
 
@@ -215,14 +221,17 @@ public class SatTransformer : ITransformer
     {
       List<Atom> answers = [.. alwaysTrue];
 
+      Logger.Logger.Debug("SET NUMBERS = " + string.Join(", ", set));
       foreach (var variable in set)
       {
-        if (variable >= 0)
+        if (_reMappedAtoms.TryGetValue(variable, out string? key))
         {
-          if (_reMappedAtoms.TryGetValue(variable, out string? key))
+          if (string.IsNullOrEmpty(key))
           {
-            answers.Add(_mappedRules[key]);
+            continue;
           }
+
+          answers.Add(_mappedRules[key]);
         }
       }
 
@@ -405,15 +414,36 @@ public class SatTransformer : ITransformer
   private int GetIndexOfString(string signature, ref int index, Atom? atom = null)
   {
     int foundIndex;
+
     if (!_mappedAtoms.TryGetValue(signature, out foundIndex))
     {
-      _mappedAtoms.Add(signature, ++index);
+      ++index;
+
+      if (signature.StartsWith("-"))
+      {
+        _mappedAtoms.Add(signature, index);
+        _mappedAtoms.Add(signature[1..], -index);
+        foundIndex = -index;
+      }
+      else
+      {
+        _mappedAtoms.Add(signature, index);
+        _mappedAtoms.Add("-" + signature, -index);
+        foundIndex = index;
+      }
+
       _reMappedAtoms.Add(index, signature);
+
       if (atom != null)
       {
         _mappedRules.Add(signature, atom);
       }
-      foundIndex = index;
+
+    }
+
+    if (!_reMappedAtoms.TryGetValue(foundIndex, out string? sig))
+    {
+      _reMappedAtoms[foundIndex] = signature;
     }
 
     return foundIndex;

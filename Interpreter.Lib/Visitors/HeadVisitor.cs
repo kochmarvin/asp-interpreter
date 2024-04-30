@@ -58,7 +58,8 @@ public class HeadVisitor : LparseBaseVisitor<List<Head>>
       {
         Classical_literalContext classic = choice.classical_literal();
         string name = classic.ID().GetText();
-
+        name = classic.MINUS() != null ? "-" + name : name;
+        
         List<Term> terms = [];
         if (classic.terms() != null)
         {

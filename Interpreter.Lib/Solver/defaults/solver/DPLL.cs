@@ -32,10 +32,12 @@ public class DPLLSolver : ISolver
   {
     Logger.Logger.Debug("Starting finding solutions process");
     SatResult result = DPLL(formula, []);
+    bool insert = true;
+
     if (!result.Satisfiable)
     {
       Logger.Logger.Debug("Killing process due of finding unsatisfiable");
-      return;
+      insert = false;
     }
 
     lock (lockObject)
@@ -45,7 +47,10 @@ public class DPLLSolver : ISolver
         return;
       }
 
-      allSolutions.Add(result);
+      if (insert)
+      {
+        allSolutions.Add(result);
+      }
     }
 
     Parallel.ForEach(result.Assignments, (literal) =>

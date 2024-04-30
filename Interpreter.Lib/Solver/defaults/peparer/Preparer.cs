@@ -73,7 +73,7 @@ public class Preparer : IPreparer
 
 
         // if it is a fact (rule without body) we have to maybe add it to the factual true
-        if (rule.Head is AtomHead atomHead && rule.Body.Count == 0)
+        if (rule.Head is AtomHead atomHead && rule.Body.Count == 0 && !atomHead.Atom.Name.StartsWith("-"))
         {
           // if it is contained in a headless rule we dont touch it.
           if (_notAllowed.Contains(atomHead.Atom.ToString()))
