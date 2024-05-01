@@ -140,6 +140,18 @@ public interface ILparseVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBuiltin_atom([NotNull] LparseParser.Builtin_atomContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.is_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIs_operator([NotNull] LparseParser.Is_operatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOperand([NotNull] LparseParser.OperandContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LparseParser.binop"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

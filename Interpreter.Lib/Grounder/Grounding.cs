@@ -344,6 +344,41 @@ public class Grounding(DependencyGraph graph)
       }
     }
 
+    if (literal is IsLiteral isLiteral)
+    {
+      var left = isLiteral.Left.Apply(substitutions);
+      var right = isLiteral.Right.Apply(substitutions);
+
+      if (left is not Number || right is not Number)
+      {
+        return [];
+      }
+
+      Number parsedLeft = (Number)left;
+      Number parsedRight = (Number)right;
+
+      int calculated = 0;
+
+      switch (isLiteral.Operator)
+      {
+        case Operator.PLUS:
+          calculated = parsedLeft.Value + parsedRight.Value;
+          break;
+        case Operator.MINUS:
+          calculated = parsedLeft.Value - parsedRight.Value;
+          break;
+        case Operator.DIVIDE:
+          calculated = parsedLeft.Value / parsedRight.Value;
+          break;
+        case Operator.MULTIPLY:
+          calculated = parsedLeft.Value * parsedRight.Value;
+          break;
+      }
+
+      substitutions.Add(isLiteral.New.Name, new Number(calculated));
+      return [substitutions];
+    }
+
     return [];
   }
 

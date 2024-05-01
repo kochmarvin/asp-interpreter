@@ -57,6 +57,11 @@ public class DependencyGraph
           continue;
         }
 
+        if (bodyLiteral.Literal is IsLiteral)
+        {
+          continue;
+        }
+
         var atomLiteral = (AtomLiteral)bodyLiteral.Literal;
 
         if (atomLiteral.Positive || !onlyPositves)

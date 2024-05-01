@@ -2,6 +2,7 @@ grammar Lparse;
 
 // Lexer rules
 NAF : 'not';
+IS : 'is' ;
 NUMBER : '0' | [1-9][0-9]* ;
 ID : [a-z][A-Za-z_]*;
 
@@ -61,7 +62,7 @@ choice_elements : choice_element (SEMICOLON choice_element)* ;
 
 choice_element : classical_literal;
 
-naf_literal : NAF? classical_literal | builtin_atom ;
+naf_literal : is_operator | NAF? classical_literal | builtin_atom  ;
 
 classical_literal : (MINUS)? ID (PAREN_OPEN terms? PAREN_CLOSE)? ;
 
@@ -73,6 +74,9 @@ range_number : (MINUS)? NUMBER;
 
 builtin_atom : term binop term ;
 
+is_operator : VARIABLE IS operand arithop operand;
+operand : (VARIABLE | NUMBER);
+
 binop : UNIFICATION | EQUAL | UNEQUAL | LESS | GREATER | LESS_OR_EQ | GREATER_OR_EQ ;
 
 terms : term (COMMA term)* ;
@@ -81,6 +85,5 @@ term : ID (PAREN_OPEN terms PAREN_CLOSE)?
      | (MINUS)? NUMBER
      | VARIABLE
      | PAREN_OPEN term PAREN_CLOSE
-     | term arithop term ;
-
+     ;
 arithop : PLUS | MINUS | TIMES | DIV ;

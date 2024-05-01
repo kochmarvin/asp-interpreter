@@ -39,7 +39,7 @@ public class Preparer : IPreparer
         var literal = ((LiteralBody)headlessRule.Body[i]).Literal;
 
         // Removing all Comparison Literals in a rule because they are just for grounding
-        if (literal is ComparisonLiteral)
+        if (literal is ComparisonLiteral || literal is IsLiteral)
         {
           Logger.Logger.Debug("Remove " + headlessRule.Body[i] + " from " + headlessRule);
           headlessRule.Body.RemoveAt(i);
@@ -100,7 +100,7 @@ public class Preparer : IPreparer
 
           // If it is a Comparison Literal we just remove it because there is no logical equivalent (just neccessary for grounding)
           // TODO check if assumtion is correct
-          if (body?.Literal is ComparisonLiteral)
+          if (body?.Literal is ComparisonLiteral || body?.Literal is IsLiteral)
           {
             Logger.Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
             rule.Body.RemoveAt(j);

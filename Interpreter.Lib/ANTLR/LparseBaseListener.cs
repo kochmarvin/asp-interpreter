@@ -252,6 +252,30 @@ public partial class LparseBaseListener : ILparseListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBuiltin_atom([NotNull] LparseParser.Builtin_atomContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.is_operator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIs_operator([NotNull] LparseParser.Is_operatorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.is_operator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIs_operator([NotNull] LparseParser.Is_operatorContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterOperand([NotNull] LparseParser.OperandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitOperand([NotNull] LparseParser.OperandContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.binop"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

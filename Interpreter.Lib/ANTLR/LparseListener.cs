@@ -211,6 +211,26 @@ public interface ILparseListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBuiltin_atom([NotNull] LparseParser.Builtin_atomContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.is_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIs_operator([NotNull] LparseParser.Is_operatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.is_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIs_operator([NotNull] LparseParser.Is_operatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOperand([NotNull] LparseParser.OperandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOperand([NotNull] LparseParser.OperandContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.binop"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
