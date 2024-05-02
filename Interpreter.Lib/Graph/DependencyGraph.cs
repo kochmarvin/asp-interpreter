@@ -9,7 +9,7 @@ namespace Interpreter.Lib.Graph;
 
 public class DependencyGraph
 {
-  public List<ProgramRule> Program { get; }
+  public List<ProgramRule> Program { get; set; }
 
   private AdjacencyGraph<ProgramRule, Edge<ProgramRule>> _graph;
   private Dictionary<string, List<ProgramRule>> _predicates;

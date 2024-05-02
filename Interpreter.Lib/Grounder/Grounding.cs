@@ -33,6 +33,57 @@ public class Grounding(DependencyGraph graph)
     var watch = StopWatch.Start();
     var sequence = new List<List<ProgramRule>>();
 
+    for (int i = 0; i < Graph.Program.Count; i++)
+    {
+      foreach (var body in Graph.Program[i].Body)
+      {
+
+        bool notInBody = false;
+        bool notInHead = false;
+        List<string> vars = body.GetVariables();
+        var otherVars = Graph.Program[i].Body.Where((b) => b != body).SelectMany(b => b.GetVariables()).ToList();
+        otherVars.AddRange(Graph.Program[i].Head.GetVariables());
+
+        foreach (var v in vars)
+        {
+          if (v.StartsWith("_"))
+          {
+            continue;
+          }
+
+          if (!otherVars.Contains(v))
+          {
+            notInBody = true;
+          }
+        }
+
+        foreach (var v in vars)
+        {
+          if (v.StartsWith("_"))
+          {
+            continue;
+          }
+
+          if (!otherVars.Contains(v))
+          {
+            notInHead = true;
+          }
+        }
+
+
+        if (notInBody && notInHead)
+        {
+          Graph.Program.RemoveAt(i);
+
+          if (i != 0)
+          {
+            i--;
+            break;
+          }
+        }
+      }
+    }
+
     foreach (var scc in Graph.CreateGraph())
     {
       foreach (var posScc in new DependencyGraph(scc).CreateGraph(true))
@@ -212,20 +263,13 @@ public class Grounding(DependencyGraph graph)
             // we have to get rid of every component of the rule
             if (availableAtoms.Contains(atomLiteral.Atom.ToString()))
             {
+
               continue;
             }
 
             // Now we now that we are making change, because we delete rules and modify the valid atoms
             changes++;
-
-            foreach (var rule in groundedProgram)
-            {
-
-              Logger.Logger.Debug(rule.ToString());
-            }
-            Logger.Logger.Debug(groundedProgram.Count + "");
-            Logger.Logger.Debug(groundedProgram[i].ToString());
-
+            
             // if it is a choice head remove every possible choice from the valid atoms.
             if (groundedProgram[i].Head is ChoiceHead choiceHead)
             {

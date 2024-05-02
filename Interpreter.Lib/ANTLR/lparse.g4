@@ -6,7 +6,7 @@ IS : 'is' ;
 NUMBER : '0' | [1-9][0-9]* ;
 ID : [a-z][A-Za-z_]*;
 
-VARIABLE : [A-Z][A-Za-z0-9_]* ;
+VARIABLE : [_A-Z][A-Za-z0-9_]* ;
 DOT : '.' ;
 DOTDOT : '..' ;
 COMMA : ',' ;

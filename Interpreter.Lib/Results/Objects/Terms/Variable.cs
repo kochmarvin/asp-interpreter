@@ -32,7 +32,7 @@ public class Variable(string name) : Term
       return false;
     }
 
-    return char.IsUpper(Name[0]);
+    return char.IsUpper(Name[0]) || Name.StartsWith("_");
   }
 
   public override bool HasVariables(string variable)
