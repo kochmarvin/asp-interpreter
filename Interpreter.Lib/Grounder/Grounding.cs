@@ -218,6 +218,14 @@ public class Grounding(DependencyGraph graph)
             // Now we now that we are making change, because we delete rules and modify the valid atoms
             changes++;
 
+            foreach (var rule in groundedProgram)
+            {
+
+              Logger.Logger.Debug(rule.ToString());
+            }
+            Logger.Logger.Debug(groundedProgram.Count + "");
+            Logger.Logger.Debug(groundedProgram[i].ToString());
+
             // if it is a choice head remove every possible choice from the valid atoms.
             if (groundedProgram[i].Head is ChoiceHead choiceHead)
             {
@@ -235,7 +243,11 @@ public class Grounding(DependencyGraph graph)
             groundedProgram.RemoveAt(i);
 
             // go back in the for loop because the whole list shrunk by one
-            i--;
+            if (i != 0)
+            {
+              i--;
+              break;
+            }
           }
         }
       }
