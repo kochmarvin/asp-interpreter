@@ -218,7 +218,7 @@ public class SatTransformer : ITransformer
     {
       List<Atom> answers = [.. alwaysTrue];
 
-      Logger.Logger.Debug("SET NUMBERS = " + string.Join(", ", set));
+      Logger.Logger.Debug("SET NUMBERS = " + string.Join(", ", set.OrderBy(x => x)));
       foreach (var variable in set)
       {
         if (_reMappedAtoms.TryGetValue(variable, out string? key))
@@ -235,7 +235,9 @@ public class SatTransformer : ITransformer
       transformed.Add(answers);
     }
 
-    List<List<Atom>> uniqueAtomLists = transformed.Select(list =>
+    List<List<Atom>> distinctAtomLists = RemoveDuplicates(transformed);
+
+    List<List<Atom>> uniqueAtomLists = distinctAtomLists.Select(list =>
            list
                .GroupBy(atom => atom.ToString())
                .Select(g => g.First())
@@ -247,12 +249,22 @@ public class SatTransformer : ITransformer
         uniqueAtomLists.Select(list => string.Join(",", list.Select(atom => atom.ToString())))
     );
 
-    List<List<Atom>> distinctAtomLists = uniqueAtomLists
+    List<List<Atom>> dist = uniqueAtomLists
         .Where(list => uniqueListRepresentations.Contains(string.Join(",", list.Select(atom => atom.ToString()))))
         .ToList();
 
 
-    return distinctAtomLists;
+    return dist;
+  }
+
+  private List<List<Atom>> RemoveDuplicates(List<List<Atom>> originalLists)
+  {
+    var uniqueLists = new HashSet<List<Atom>>(new AtomListComparer());
+    foreach (var list in originalLists)
+    {
+      uniqueLists.Add(list);
+    }
+    return uniqueLists.ToList();
   }
 
   private List<List<int>> ConvertFSharpListToList(FSharpList<FSharpList<int>> fsharpListOfLists)

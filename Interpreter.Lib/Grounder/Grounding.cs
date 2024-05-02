@@ -126,25 +126,33 @@ public class Grounding(DependencyGraph graph)
       // Add Range is just a simpler way to add it to the list. You could also loop through it and add one by one
       groundedProgram.AddRange(GroundSubProgram(subProgram));
     }
+
     List<string> availableHeads = [];
-    List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram, availableHeads);
+
+
+    HashSet<ProgramRule> uniqueRules = new(groundedProgram);
+    List<ProgramRule> deduplicatedRules = new(uniqueRules);
+
+    List<string> availableAtoms = GenerateAvailableAtoms(deduplicatedRules, availableHeads);
 
     _warnings.RemoveAll(availableHeads.Contains);
+    _warnings.RemoveAll(availableHeads.Contains);
 
-    GroundCleanUp(groundedProgram, availableAtoms);
-    AddHeadlessRules(groundedProgram);
+    GroundCleanUp(deduplicatedRules);
+
+    AddHeadlessRules(deduplicatedRules);
 
     Logger.Logger.Debug("Created grounded program. \n"
         + "Creation duration was " + watch.Stop());
 
     string rules = "--------------------------------\n";
-    foreach (var rule in groundedProgram)
+    foreach (var rule in deduplicatedRules)
     {
       rules += rule.ToString() + "\n";
     }
     Logger.Logger.Debug(rules + "--------------------------------");
 
-    return groundedProgram;
+    return deduplicatedRules;
   }
 
   private void AddHeadlessRules(List<ProgramRule> rules)
@@ -228,26 +236,13 @@ public class Grounding(DependencyGraph graph)
   /// </summary>
   /// <param name="groundedProgram">The initial grounded program.</param>
   /// <param name="availableAtoms">The heads of each rule.</param>
-  private void GroundCleanUp(List<ProgramRule> groundedProgram, List<string> availableAtoms)
+  private void GroundCleanUp(List<ProgramRule> groundedProgram)
   {
     Logger.Logger.Debug("Cleaning up grounded program.");
-    List<string> _seen = [];
-
-    for (int i = 0; i < groundedProgram.Count; i++)
-    {
-      if (_seen.Contains(groundedProgram[i].ToString()))
-      {
-        groundedProgram.RemoveAt(i);
-        i--;
-        continue;
-      }
-
-      _seen.Add(groundedProgram[i].ToString());
-    }
-
     int changes = 0;
     do
     {
+      List<string> availableAtoms = GenerateAvailableAtoms(groundedProgram, []);
       changes = 0;
 
       for (int i = 0; i < groundedProgram.Count; i++)
@@ -269,7 +264,7 @@ public class Grounding(DependencyGraph graph)
 
             // Now we now that we are making change, because we delete rules and modify the valid atoms
             changes++;
-            
+
             // if it is a choice head remove every possible choice from the valid atoms.
             if (groundedProgram[i].Head is ChoiceHead choiceHead)
             {

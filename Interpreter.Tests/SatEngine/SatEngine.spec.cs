@@ -15,7 +15,6 @@ public class SatEngineTests
   [TestCaseSource(nameof(GetTestCases))]
   public void SatEngine(SatEngineResult obj)
   {
-
     List<ProgramRule> program = Utils.ParseProgram(obj.File);
     var graph = new DependencyGraph(program);
     var grounder = new Grounding(graph);
@@ -89,24 +88,24 @@ public class SatEngineTests
      ]
    );
 
-    /*
-    reihenfolge fickt hier
-    yield return new SatEngineResult(
-      "choice_head.lp",
-      [
-        [],
-        [new Atom("x", []), new Atom("a", [])],
-        [new Atom("x", []), new Atom("c", []), new Atom("a", [])],
-        [new Atom("a", [])],
-        [new Atom("b", []), new Atom("a", [])],
-        [new Atom("x", []), new Atom("b", []), new Atom("a", [])],
-        [new Atom("c", []), new Atom("b", []), new Atom("a", [])],
-        [new Atom("c", []), new Atom("a", [])],
-        [new Atom("x", []), new Atom("c", []), new Atom("b", []), new Atom("a", [])],
-        [new Atom("c", []), new Atom("b", [])],
-      ]
-    );
-    */
+
+
+    // yield return new SatEngineResult(
+    //   "choice_head.lp",
+    //   [
+    //     [],
+    //     [new Atom("x", []), new Atom("a", [])],
+    //     [new Atom("x", []), new Atom("c", []), new Atom("a", [])],
+    //     [new Atom("a", [])],
+    //     [new Atom("b", []), new Atom("a", [])],
+    //     [new Atom("x", []), new Atom("b", []), new Atom("a", [])],
+    //     [new Atom("c", []), new Atom("b", []), new Atom("a", [])],
+    //     [new Atom("c", []), new Atom("a", [])],
+    //     [new Atom("x", []), new Atom("c", []), new Atom("b", []), new Atom("a", [])],
+    //     [new Atom("c", []), new Atom("b", [])],
+    //   ]
+    // );
+
 
     // hier kann reihenfolge auch ficken 
     yield return new SatEngineResult(

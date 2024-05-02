@@ -58,6 +58,24 @@ public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>, IH
     return false;
   }
 
+  public override bool Equals(object obj)
+  {
+    if (obj == null || this.GetType() != obj.GetType())
+    {
+      return false;
+    }
+    else
+    {
+      ProgramRule p = (ProgramRule)obj;
+      return this.ToString() == p.ToString();
+    }
+  }
+
+  public override int GetHashCode()
+  {
+    return this.ToString().GetHashCode();
+  }
+
   public override string ToString()
   {
     var headString = Head.ToString();

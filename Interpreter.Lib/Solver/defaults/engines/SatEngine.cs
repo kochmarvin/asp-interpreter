@@ -11,7 +11,17 @@ public class SatEngine(List<ProgramRule> program) : SolverEngine(new Preparer(),
 
   public override List<List<Atom>> Execute()
   {
-    var preperation = Preparer.Prepare(Program);
+
+    HashSet<ProgramRule> uniqueRules = new(Program);
+    List<ProgramRule> deduplicatedRules = new(uniqueRules);
+    string rulea = "JDWAOIDJWAIODJAWOIDJAWIODJAWOIDJAIOWJD";
+    foreach (var rule in deduplicatedRules)
+    {
+      rulea += rule.ToString() + "\n";
+    }
+    Logger.Logger.Debug(rulea + "--------------------------------");
+
+    var preperation = Preparer.Prepare(deduplicatedRules);
 
     Logger.Logger.Debug("Created prepared Program.");
 
@@ -27,9 +37,11 @@ public class SatEngine(List<ProgramRule> program) : SolverEngine(new Preparer(),
     {
       rules += rule.ToString() + "\n";
     }
+
     Logger.Logger.Debug(rules + "--------------------------------");
 
     var transformed = Transformer.TransformToFormular(preperation);
+
 
     Logger.Logger.Debug("Created cnf for solver.");
 

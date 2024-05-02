@@ -61,8 +61,8 @@ public class DPLLSolver : ISolver
 
   private bool AreEquivalent(List<int> list1, List<int> list2)
   {
-    var set1 = new HashSet<int>(list1);
-    var set2 = new HashSet<int>(list2);
+    var set1 = new HashSet<int>(list1.OrderByDescending(x => x));
+    var set2 = new HashSet<int>(list2.OrderByDescending(x => x));
     return set1.SetEquals(set2);
   }
 

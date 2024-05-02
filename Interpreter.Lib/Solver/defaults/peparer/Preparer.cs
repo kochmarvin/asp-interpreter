@@ -29,6 +29,27 @@ public class Preparer : IPreparer
     List<ProgramRule> factuallyTrue = [];
     List<string> _notAllowed = [];
     List<string> _trueFacts = [];
+    List<string> _heads = [];
+
+    foreach (var rule in program)
+    {
+
+      if (rule.Head is Headless)
+      {
+        continue;
+      }
+
+      if (rule.Head is AtomHead atomHead)
+      {
+        _heads.Add(atomHead.Atom.ToString());
+      }
+
+      if (rule.Head is ChoiceHead choiceHead)
+      {
+        _heads.AddRange(choiceHead.Atoms.Select(atom => atom.ToString()));
+      }
+
+    }
 
     // Specificasion of all rules we cannot remove, because they are in a headless rule.
     // And this has to do the solver due to increasing complexity of the preparerer
