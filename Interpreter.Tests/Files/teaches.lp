@@ -1,9 +1,11 @@
-member (sam, cs). 
+member(sam, cs). 
 course(java, cs). 
 course(ai, cs).
 member (bob, cs). 
 course(c, cs). 
-course(logic, cs). member (tom, cs). likes(sam, java). 
+course(logic, cs). 
+member (tom, cs). 
+likes(sam, java). 
 likes(sam, c).
 likes(bob, java). 
 likes(bob, ai).
