@@ -35,11 +35,12 @@ public class Grounding(DependencyGraph graph)
 
     for (int i = 0; i < Graph.Program.Count; i++)
     {
+      // First we check if a rule contains any variables that are not in the head or any other body part
+      // while skipping anonymous variable (e.g. _ ) 
       foreach (var body in Graph.Program[i].Body)
       {
-
-        bool notInBody = false;
-        bool notInHead = false;
+        bool notInBodyAndHead = false;
+        // bool notInHead = false;
         List<string> vars = body.GetVariables();
         var otherVars = Graph.Program[i].Body.Where((b) => b != body).SelectMany(b => b.GetVariables()).ToList();
         otherVars.AddRange(Graph.Program[i].Head.GetVariables());
@@ -53,25 +54,25 @@ public class Grounding(DependencyGraph graph)
 
           if (!otherVars.Contains(v))
           {
-            notInBody = true;
+            notInBodyAndHead = true;
           }
         }
 
-        foreach (var v in vars)
-        {
-          if (v.StartsWith("_"))
-          {
-            continue;
-          }
+        // foreach (var v in vars)
+        // {
+        //   if (v.StartsWith("_"))
+        //   {
+        //     continue;
+        //   }
 
-          if (!otherVars.Contains(v))
-          {
-            notInHead = true;
-          }
-        }
+        //   if (!otherVars.Contains(v))
+        //   {
+        //     notInHead = true;
+        //   }
+        // }
 
-
-        if (notInBody && notInHead)
+        // if it the variable is not in the head and not in the body we remove it from the program
+        if (notInBodyAndHead)
         {
           Graph.Program.RemoveAt(i);
 
@@ -84,6 +85,7 @@ public class Grounding(DependencyGraph graph)
       }
     }
 
+    // After removing from the graph we create it again to get the new program rules
     foreach (var scc in Graph.CreateGraph())
     {
       foreach (var posScc in new DependencyGraph(scc).CreateGraph(true))
@@ -91,6 +93,7 @@ public class Grounding(DependencyGraph graph)
         sequence.Add(posScc);
       }
     }
+
     // Most important step, why exactly this happens is unclear.
     sequence.Reverse();
     Logger.Logger.Debug("Created dependecy graph. \n"
@@ -128,7 +131,6 @@ public class Grounding(DependencyGraph graph)
     }
 
     List<string> availableHeads = [];
-
 
     HashSet<ProgramRule> uniqueRules = new(groundedProgram);
     List<ProgramRule> deduplicatedRules = new(uniqueRules);
@@ -258,7 +260,6 @@ public class Grounding(DependencyGraph graph)
             // we have to get rid of every component of the rule
             if (availableAtoms.Contains(atomLiteral.Atom.ToString()))
             {
-
               continue;
             }
 
@@ -305,7 +306,7 @@ public class Grounding(DependencyGraph graph)
 
     foreach (var rule in subPorgram)
     {
-      // If the body is zero we dont need to ground anything because its header a bodyless choice or a fact
+      // If the body is zero we dont need to ground anything because its either a bodyless choice or a fact
       if (rule.Body.Count == 0)
       {
         groundedSubProgram.Add(rule);
@@ -395,6 +396,7 @@ public class Grounding(DependencyGraph graph)
       }
     }
 
+    // If the literal is a IsLiteral e.g. M is N - 1
     if (literal is IsLiteral isLiteral)
     {
       var left = isLiteral.Left.Apply(substitutions);
@@ -433,9 +435,8 @@ public class Grounding(DependencyGraph graph)
     return [];
   }
 
-
   /// <summary>
-  //  This function evaluates the truth value of the relation operation
+  /// This function evaluates the truth value of the relation operation
   /// </summary>
   /// <param name="left">Is the Term on the left hand side.</param>
   /// <param name="relation">Is how the Terms are connected for example =, <></param>
@@ -553,7 +554,6 @@ public class Grounding(DependencyGraph graph)
 
     foreach (var visited in _visited)
     {
-
       var newSubstituation = new Dictionary<string, Term>(substitutions);
 
       // If the new atom does not match with the visited node, name etc. skip it. Match also adds new substituations
