@@ -88,26 +88,24 @@ public class SatEngineTests
      ]
    );
 
-
-
+    // ist noch nicht correct, gibt verschiedene antworten aus
     // yield return new SatEngineResult(
     //   "choice_head.lp",
     //   [
     //     [],
-    //     [new Atom("x", []), new Atom("a", [])],
-    //     [new Atom("x", []), new Atom("c", []), new Atom("a", [])],
+    //     [new Atom("b", [])],
+    //     [new Atom("c", [])],
+    //     [new Atom("b", []), new Atom("c", [])],
     //     [new Atom("a", [])],
-    //     [new Atom("b", []), new Atom("a", [])],
-    //     [new Atom("x", []), new Atom("b", []), new Atom("a", [])],
-    //     [new Atom("c", []), new Atom("b", []), new Atom("a", [])],
-    //     [new Atom("c", []), new Atom("a", [])],
-    //     [new Atom("x", []), new Atom("c", []), new Atom("b", []), new Atom("a", [])],
-    //     [new Atom("c", []), new Atom("b", [])],
+    //     [new Atom("a", []), new Atom("c", [])],
+    //     [new Atom("a", []), new Atom("b", [])],
+    //     [new Atom("a", []), new Atom("b", []), new Atom("c", [])],
+    //     [new Atom("a", []), new Atom("x", [])],
+    //     [new Atom("a", []), new Atom("b", []), new Atom("x", [])],
+    //     [new Atom("a", []), new Atom("b", []), new Atom("c", []), new Atom("x", [])],
     //   ]
     // );
 
-
-    // hier kann reihenfolge auch ficken 
     yield return new SatEngineResult(
       "circular.lp",
       [
@@ -150,7 +148,6 @@ public class SatEngineTests
       ]
     );
 
-    // clingo wirft hier error wegen Y --> _
     yield return new SatEngineResult(
       "fastest.lp",
       [
