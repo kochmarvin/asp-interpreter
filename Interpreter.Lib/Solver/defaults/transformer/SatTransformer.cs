@@ -214,7 +214,30 @@ public class SatTransformer : ITransformer
       return [alwaysTrue];
     }
 
+    List<List<int>> filteredResults = [];
+
     foreach (var set in results)
+    {
+      List<int> form = [];
+      foreach (var variable in set)
+      {
+        if (_reMappedAtoms.TryGetValue(variable, out string? key))
+        {
+          if (string.IsNullOrEmpty(key))
+          {
+            continue;
+          }
+
+          form.Add(variable);
+        }
+      }
+
+      filteredResults.Add(form);
+    }
+
+    var uniqueLists = new HashSet<List<int>>(filteredResults, new ListComparer<int>());
+
+    foreach (var set in uniqueLists.ToList())
     {
       List<Atom> answers = [.. alwaysTrue];
 

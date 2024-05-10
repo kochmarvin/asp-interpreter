@@ -169,7 +169,7 @@ public class SatEngineTests
       "blocks.lp",
       [
         [new Atom("stacked", [new Variable("b")]),
-        new Atom("stacked", [new Variable("a")]), 
+        new Atom("stacked", [new Variable("a")]),
         new Atom("puton", [new Variable("d"), new Variable("d")]),
         new Atom("puton", [new Variable("d"), new Variable("a")]),
         new Atom("puton", [new Variable("a"), new Variable("d")]),
@@ -177,7 +177,7 @@ public class SatEngineTests
         new Atom("on", [new Variable("b"), new Variable("c")]),
         new Atom("on", [new Variable("a"), new Variable("b")]),
         new Atom("handempty", []),
-        new Atom("clear", [new Variable("d")]), 
+        new Atom("clear", [new Variable("d")]),
         new Atom("clear", [new Variable("a")])]
       ]
     );
@@ -203,7 +203,7 @@ public class SatEngineTests
     //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("student", [new Variable("marvin")]), new Atom("informatiker", [new Variable("julia")]), new Atom("student", [new Variable("julia")])]
     //   ]
     // );
-    
+
     // da fickt die reihenfolge der AS wieder, ab und zu kommts durch 
     /*
     yield return new SatEngineResult(
@@ -307,32 +307,32 @@ public class SatEngineTests
       "edge.lp",
       [
         [
-          new Atom("edge", [new Variable("c"), new Variable("d")]), 
-          new Atom("edge", [new Variable("b"), new Variable("d")]), 
-          new Atom("edge", [new Variable("b"), new Variable("c")]), 
-          new Atom("edge", [new Variable("a"), new Variable("c")]), 
-          new Atom("edge", [new Variable("a"), new Variable("b")]), 
-          new Atom("color", [new Variable("red")]), 
-          new Atom("color", [new Variable("green")]), 
-          new Atom("color", [new Variable("blue")]), 
+          new Atom("edge", [new Variable("c"), new Variable("d")]),
+          new Atom("edge", [new Variable("b"), new Variable("d")]),
+          new Atom("edge", [new Variable("b"), new Variable("c")]),
+          new Atom("edge", [new Variable("a"), new Variable("c")]),
+          new Atom("edge", [new Variable("a"), new Variable("b")]),
+          new Atom("color", [new Variable("red")]),
+          new Atom("color", [new Variable("green")]),
+          new Atom("color", [new Variable("blue")]),
         ]
       ]
     );
-    
+
     yield return new SatEngineResult(
       "family_relations.lp",
       [
         [
-          new Atom("parent", [new Variable("charlie"), new Variable("emma")]), 
-          new Atom("parent", [new Variable("bob"), new Variable("charlie")]), 
-          new Atom("parent", [new Variable("bob"), new Variable("alice")]), 
-          new Atom("parent", [new Variable("alice"), new Variable("david")]), 
-          new Atom("ancestor", [new Variable("charlie"), new Variable("emma")]), 
-          new Atom("ancestor", [new Variable("bob"), new Variable("emma")]), 
-          new Atom("ancestor", [new Variable("bob"), new Variable("david")]), 
-          new Atom("ancestor", [new Variable("bob"), new Variable("charlie")]), 
-          new Atom("ancestor", [new Variable("bob"), new Variable("alice")]), 
-          new Atom("ancestor", [new Variable("alice"), new Variable("david")]), 
+          new Atom("parent", [new Variable("charlie"), new Variable("emma")]),
+          new Atom("parent", [new Variable("bob"), new Variable("charlie")]),
+          new Atom("parent", [new Variable("bob"), new Variable("alice")]),
+          new Atom("parent", [new Variable("alice"), new Variable("david")]),
+          new Atom("ancestor", [new Variable("charlie"), new Variable("emma")]),
+          new Atom("ancestor", [new Variable("bob"), new Variable("emma")]),
+          new Atom("ancestor", [new Variable("bob"), new Variable("david")]),
+          new Atom("ancestor", [new Variable("bob"), new Variable("charlie")]),
+          new Atom("ancestor", [new Variable("bob"), new Variable("alice")]),
+          new Atom("ancestor", [new Variable("alice"), new Variable("david")]),
         ]
       ]
     );
@@ -340,7 +340,7 @@ public class SatEngineTests
     yield return new SatEngineResult(
       "negations.lp",
       [
-        [new Atom("p", [])], 
+        [new Atom("p", [])],
         [new Atom("q", [])]
       ]
     );
@@ -356,8 +356,8 @@ public class SatEngineTests
       "happy.lp",
       [
         [
-          new Atom("unhappy", [new Variable("bob")]), 
-          new Atom("sad", [new Variable("alice")]), 
+          new Atom("unhappy", [new Variable("bob")]),
+          new Atom("sad", [new Variable("alice")]),
           new Atom("reasontobeunhappy", [new Variable("bob")]),
           new Atom("reasontobehappy", [new Variable("alice")]),
           new Atom("happy", [new Variable("alice")])

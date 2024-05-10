@@ -1,27 +1,29 @@
 namespace Interpreter.Lib.Solver;
 public class ListComparer<T> : IEqualityComparer<List<T>>
-    where T : IEquatable<T>
 {
-  public bool Equals(List<T>? x, List<T>? y)
+  public bool Equals(List<T> x, List<T> y)
   {
     if (x == null || y == null)
-    {
-      return false;
-    }
+      return x == y;
 
-    return x.SequenceEqual(y);
+    // Sort both lists and then compare
+    var sortedX = x.OrderBy(i => i).ToList();
+    var sortedY = y.OrderBy(i => i).ToList();
+
+    return sortedX.SequenceEqual(sortedY);
   }
 
   public int GetHashCode(List<T> obj)
   {
-    unchecked
+    if (obj == null)
+      return 0;
+
+    // Generate hash code based on sorted elements
+    int hash = 17;
+    foreach (var item in obj.OrderBy(i => i))
     {
-      int hash = 19;
-      foreach (var item in obj)
-      {
-        hash = hash * 31 + item.GetHashCode();
-      }
-      return hash;
+      hash = hash * 23 + (item == null ? 0 : item.GetHashCode());
     }
+    return hash;
   }
 }
