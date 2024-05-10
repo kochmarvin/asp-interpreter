@@ -8,7 +8,7 @@ namespace Interpreter.Lib.Solver.defaults
   public class DPLLSolver : ISolver
   {
     private Random _random;
-    private const int MaxDuplicates = 7;
+    private const int MaxDuplicates = 1;
 
     public DPLLSolver()
     {
@@ -24,16 +24,27 @@ namespace Interpreter.Lib.Solver.defaults
     {
       var watch = Stopwatch.StartNew();
       var allSolutions = new ConcurrentBag<SatResult>();
+      var processedFormulas = new ConcurrentDictionary<string, bool>();
       var lockObject = new object();
-      FindAllSolutionsRecursive(formula, [], allSolutions, lockObject, 0);
+      FindAllSolutionsRecursive(formula, [], allSolutions, lockObject, processedFormulas, 0);
       Logger.Logger.Debug("Found all possible solutions. \n"
              + "Duration was " + watch.Elapsed);
       return allSolutions.ToList();
     }
 
-    private void FindAllSolutionsRecursive(List<List<int>> formula, List<int> assignments, ConcurrentBag<SatResult> allSolutions, object lockObject, int duplicateCount)
+    private void FindAllSolutionsRecursive(List<List<int>> formula, List<int> assignments, ConcurrentBag<SatResult> allSolutions, object lockObject, ConcurrentDictionary<string, bool> processedFormulas, int duplicateCount)
     {
       Logger.Logger.Debug("Starting finding solutions process");
+
+
+      var normalizedFormulaString = NormalizeAndStringifyFormula(formula);
+      if (processedFormulas.ContainsKey(normalizedFormulaString))
+      {
+        Logger.Logger.Debug("Formula already processed, skipping.");
+        return;
+      }
+      processedFormulas[normalizedFormulaString] = true;
+
       SatResult result = DPLL(formula, []);
 
       if (!result.Satisfiable)
@@ -63,8 +74,15 @@ namespace Interpreter.Lib.Solver.defaults
       Parallel.ForEach(result.Assignments, (literal) =>
       {
         List<List<int>> newFormula = [.. formula, [-literal]];
-        FindAllSolutionsRecursive(newFormula, [], allSolutions, lockObject, duplicateCount);
+        FindAllSolutionsRecursive(newFormula, [], allSolutions, lockObject, processedFormulas, duplicateCount);
       });
+    }
+
+    private string NormalizeAndStringifyFormula(List<List<int>> formula)
+    {
+      var sortedClauses = formula.Select(clause => clause.OrderBy(lit => Math.Abs(lit)).ToList())
+                                 .OrderBy(clause => string.Join(",", clause));
+      return string.Join(";", sortedClauses.Select(clause => string.Join(",", clause)));
     }
 
     private SatResult DPLL(List<List<int>> formula, List<int>? assignments = null)
