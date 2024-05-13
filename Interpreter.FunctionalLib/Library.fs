@@ -1,6 +1,8 @@
 ﻿namespace Interpreter.FunctionalLib
 
 module ConjunctiveNormalForm =
+  
+  // Expression type
   type Expression =
       | Var of int
       | Not of Expression
@@ -10,6 +12,7 @@ module ConjunctiveNormalForm =
       | Equiv of Expression * Expression
       | Xor of Expression * Expression
 
+  // generates the whole cnf with basic pattern matching
   let rec createCNF expression =
       let rec transform = function
           | Var _ as x -> x
@@ -30,6 +33,7 @@ module ConjunctiveNormalForm =
       let cnfExpression' = transform expression
       if expression = cnfExpression' then expression else createCNF cnfExpression'
 
+  // generates the list of the cnf where each row is and connected and each col is or connected
   let rec cnfToList expression =
       match expression with
       | Var x -> [[x]]
