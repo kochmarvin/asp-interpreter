@@ -5,24 +5,38 @@ using Microsoft.Extensions.Options;
 
 namespace Interpreter.Lib.Logger;
 
+/// <summary>
+/// Basic logger from the microsoft extension with a debug mode.
+/// </summary>
 public class Logger
 {
+  /// <summary>
+  /// Singelton instance of the logger
+  /// </summary>
   private static Logger? _instance;
-  private ILogger _logger;
-  private bool _debug;
 
-  private Logger(ILogger logger, bool debug)
+  /// <summary>
+  /// The microsoft logger itself
+  /// </summary>
+  private ILogger _logger;
+
+  private Logger(ILogger logger)
   {
     _logger = logger;
-    _debug = debug;
   }
 
+
+  /// <summary>
+  /// Creates the singelton instance of the logger with a certein log level
+  /// </summary>
+  /// <param name="debug">If debug is true the loglevel is Trace otherwise informaiton</param>
   public static void InitLogger(bool debug)
   {
     if (_instance != null)
     {
       return;
     }
+
     using var loggerFactory = LoggerFactory.Create(builder =>
        {
          builder
@@ -36,7 +50,7 @@ public class Logger
        });
 
     ILogger logger = loggerFactory.CreateLogger("Answer Set Programming");
-    _instance = new Logger(logger, debug);
+    _instance = new Logger(logger);
   }
 
 

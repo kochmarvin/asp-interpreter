@@ -22,7 +22,39 @@ public class SatEngineTests
 
     List<List<Atom>> results = satEngine.Execute();
 
-    Assert.IsTrue(AreEquivalent(results, obj.Expected), "Results and expected lists are not equivalent.");
+    Assert.IsTrue(AreEqual(obj.Expected, results));
+  }
+
+  public bool AreEqual(List<List<Atom>> x, List<List<Atom>> y)
+  {
+    if (x == null || y == null)
+      return x == y;
+
+    if (x.Count != y.Count)
+      return false;
+
+    var sortedX = x.Select(l => l.OrderBy(a => a.ToString()).ToList()).ToList();
+    var sortedY = y.Select(l => l.OrderBy(a => a.ToString()).ToList()).ToList();
+
+    sortedX.Sort((a, b) => string.Compare(a.FirstOrDefault()?.ToString(), b.FirstOrDefault()?.ToString()));
+    sortedY.Sort((a, b) => string.Compare(a.FirstOrDefault()?.ToString(), b.FirstOrDefault()?.ToString()));
+
+    for (int i = 0; i < sortedX.Count; i++)
+    {
+      var listX = sortedX[i];
+      var listY = sortedY[i];
+
+      if (listX.Count != listY.Count)
+        return false;
+
+      for (int j = 0; j < listX.Count; j++)
+      {
+        if (!listX[j].ToString().Equals(listY[j].ToString()))
+          return false;
+      }
+    }
+
+    return true;
   }
 
   private bool AreEquivalent(List<List<Atom>> results, List<List<Atom>> expected)

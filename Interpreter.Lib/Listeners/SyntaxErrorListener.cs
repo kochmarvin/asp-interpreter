@@ -2,6 +2,10 @@ using Antlr4.Runtime;
 using Interpreter.Lib.Errors;
 
 namespace Interpreter.Lib.Listeners;
+
+/// <summary>
+/// Override for the syntax error listener to print out the custom syntax error
+/// </summary>
 public class SyntaxErrorListener : BaseErrorListener
 {
   public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg,

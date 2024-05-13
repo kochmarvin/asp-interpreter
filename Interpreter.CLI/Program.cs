@@ -12,7 +12,7 @@ Parser.Default.ParseArguments<Options>(args)
         var manager = new CommandManager();
         var cli = new CommandLineInterpreter(manager);
         Logger.InitLogger(opts.Verbose);
-        Logger.Debug("Starting Answer Set Programming Interpreter"); 
+        Logger.Debug("Starting Answer Set Programming Interpreter");
 
         if (!string.IsNullOrEmpty(opts.FilePath))
         {
@@ -31,7 +31,7 @@ Parser.Default.ParseArguments<Options>(args)
             Logger.Error("Only files with extension .lp are supported.");
             return;
           }
-          
+
           new ExplainCommand().Execute(args, manager);
           return;
         }

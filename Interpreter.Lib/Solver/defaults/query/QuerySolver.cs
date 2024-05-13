@@ -8,20 +8,22 @@ using Interpreter.Lib.Solver.Interfaces;
 
 namespace Interpreter.Lib.Solver;
 
-public class QuerySolver
+/// <summary>
+/// The standard query solver to solve a query.
+/// </summary>
+/// <param name="query">The query which should get solved</param>
+/// <param name="set">The found sets.</param>
+/// <param name="preparer">An instance of an preparer.</param>
+public class QuerySolver(Query query, List<Atom> set, IPreparer preparer)
 {
+  private readonly IPreparer _preparer = preparer;
+  private readonly List<Atom> _set = set;
+  private readonly Query _query = query;
 
-  private readonly IPreparer _preparer;
-  private readonly List<Atom> _set;
-  private readonly Query _query;
-
-  public QuerySolver(Query query, List<Atom> set, IPreparer preparer)
-  {
-    _preparer = preparer;
-    _set = set;
-    _query = query;
-  }
-
+  /// <summary>
+  /// Generates all the answers for the specified query
+  /// </summary>
+  /// <returns>The found solutions</returns>
   public List<ProgramRule> Answers()
   {
     List<List<ProgramRule>> results = [];
@@ -32,8 +34,10 @@ public class QuerySolver
       rules.Add(new ProgramRule(new AtomHead(atom), []));
     }
 
+    // add the parsed query to the whole program.
     rules.Add(_query.ParsedQuery);
 
+    // Just make the grounding process again prepare it with that we know what query could be resolved
     DependencyGraph graph = new DependencyGraph(rules);
     Grounding grounding = new Grounding(graph);
     var grounded = grounding.Ground();
@@ -45,6 +49,7 @@ public class QuerySolver
 
     var prepared = _preparer.Prepare(grounded);
 
+    // Returning all the querys which are factually true and could be resolved.
     return prepared.FactuallyTrue
         .Where(rule => rule.Head is AtomHead &&
               ((AtomHead)rule.Head).Atom.Name.StartsWith(_query.Name) &&

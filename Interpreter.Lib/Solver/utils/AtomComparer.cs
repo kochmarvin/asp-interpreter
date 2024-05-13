@@ -1,5 +1,8 @@
 using Interpreter.Lib.Results.Objects.Atoms;
 
+/// <summary>
+/// Compares two atoms List and checks if they are equal
+/// </summary>
 public class AtomListComparer : IEqualityComparer<List<Atom>>
 {
   public bool Equals(List<Atom> x, List<Atom> y)

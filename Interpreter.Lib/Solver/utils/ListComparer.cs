@@ -1,4 +1,9 @@
 namespace Interpreter.Lib.Solver;
+
+/// <summary>
+/// A generic list comparere of two list
+/// </summary>
+/// <typeparam name="T">The type of the list</typeparam>
 public class ListComparer<T> : IEqualityComparer<List<T>>
 {
   public bool Equals(List<T> x, List<T> y)

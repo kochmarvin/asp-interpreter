@@ -12,11 +12,19 @@ namespace Interpreter.Lib.Visitors;
 
 public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
 {
+  /// <summary>
+  /// Parses all statements of the programm context.
+  /// </summary>
+  /// <param name="context">The statement context</param>
+  /// <returns>A List of parsed rules</returns>
   public override List<ProgramRule> VisitStatements(LparseParser.StatementsContext context)
   {
     List<ProgramRule> atoms = [];
+
+    // go through every statement inside the context.
     foreach (var statementContext in context.statement())
     {
+      // default case is that it is headless
       List<Head> headLiterals = [new Headless()];
       List<List<Body>> bodyLiterals = [];
 
@@ -24,29 +32,39 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
       BodiesContext bodies = statementContext.bodies();
       Comment_bodsContext comment = statementContext.comment_bods();
 
+      // If the head context is not null parse the head.
       if (head != null)
       {
         headLiterals = new HeadVisitor().Visit(head);
       }
 
+      // If the bodies context is not null parse the bodies.
       if (bodies != null)
       {
+        // Could be more bodies due to splitting of the ";" or
         foreach (var body in bodies.body())
         {
           bodyLiterals.Add([.. new BodyVisitor().Visit(body)]);
         }
       }
 
+      // If the comment for explaining is not null add it.
       if (comment != null)
       {
         List<Variable> vars = [];
         List<string> strings = [];
-        foreach(var specials in comment.comment_bod()) 
+
+        // go through the body of the cimment.
+        foreach (var specials in comment.comment_bod())
         {
+          // if its a specail e.g a variable parse it.
           if (specials.special() != null)
           {
             bool found = false;
-            for(int i = 0; i < vars.Count; i++) {
+            
+            // check if the variable is arleady in it, so no duplicates get added
+            for (int i = 0; i < vars.Count; i++)
+            {
               if (vars[i].Name == specials.special().VARIABLE().GetText())
               {
                 strings.Add(i.ToString());
@@ -55,14 +73,20 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
               }
             }
 
-            if (!found) {
+            // if the variable is not in it add it.
+            if (!found)
+            {
               strings.Add(vars.Count.ToString());
               vars.Add(new Variable(specials.special().VARIABLE().GetText()));
             }
           }
 
-          if (specials.text() != null) {
-            foreach(var id in specials.text().ID()) {
+          // if the text conxt is not null then parse the strings
+          if (specials.text() != null)
+          {
+            // text is just a bunch load of ids so just add it up
+            foreach (var id in specials.text().ID())
+            {
               strings.Add(id.GetText());
             }
           }
@@ -71,6 +95,7 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
         bodyLiterals.Add([new LiteralBody(new CommentLiteral(vars, strings))]);
       }
 
+      // Go thorugh each head annd add the bodies, multiple heads could be due to an range operator.
       foreach (var headLiteral in headLiterals)
       {
 
@@ -79,87 +104,14 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
           atoms.Add(new ProgramRule(headLiteral, []));
         }
 
+        // and if there are multiple bodeis due to or, create multiple rules
         foreach (var body in bodyLiterals)
         {
           atoms.Add(new ProgramRule(headLiteral, body));
         }
-
-
-        /* TODO 
-          checken ob der current body, variablen hat,
-          => aus dem head alle variables (Terme) ziehen, die diese Variablen haben,
-          => und dann einen neuen HEad machen nur mit den allen heads
-          => das füe jeden body wegen oder.
-
-        */
       }
     }
 
     return atoms;
-  }
-
-
-  private List<ProgramRule> BodySplitter(Head headLiteral, List<List<Body>> bodyLiterals)
-  {
-    List<ProgramRule> atoms = [];
-    if (bodyLiterals.Count == 0)
-    {
-      atoms.Add(new ProgramRule(headLiteral, []));
-    }
-
-    foreach (var body in bodyLiterals)
-    {
-      if (!headLiteral.HasVariables())
-      {
-        atoms.Add(new ProgramRule(headLiteral, body));
-        continue;
-      }
-
-      var variableList = body.SelectMany(bod => bod.GetVariables());
-
-
-      if (headLiteral is AtomHead atomHead)
-      {
-        var newAtomHead = new AtomHead(new Atom(atomHead.Atom.Name, []));
-        foreach (var variable in variableList)
-        {
-          newAtomHead.Atom.Args.AddRange(CreateNewAtom(variable, atomHead.Atom));
-        }
-        atoms.Add(new ProgramRule(newAtomHead, body));
-      }
-
-      if (headLiteral is ChoiceHead choiceHead)
-      {
-        var newChoiceHead = new ChoiceHead([]);
-
-        foreach (var choice in choiceHead.Atoms)
-        {
-          var newAtom = new Atom(choice.Name, []);
-          foreach (var variable in variableList)
-          {
-            newAtom.Args.AddRange(CreateNewAtom(variable, choice));
-          }
-          newChoiceHead.Atoms.Add(newAtom);
-        }
-
-        atoms.Add(new ProgramRule(newChoiceHead, body));
-      }
-    }
-
-    return atoms;
-  }
-
-  private List<Term> CreateNewAtom(string variable, Atom atom)
-  {
-    List<Term> headTerms = [];
-    foreach (var term in atom.Args)
-    {
-      if (!term.HasVariables() || term.HasVariables(variable))
-      {
-        headTerms.Add(term);
-      }
-    }
-
-    return headTerms;
   }
 }

@@ -33,6 +33,22 @@ public class Grounding(DependencyGraph graph)
     var watch = StopWatch.Start();
     var sequence = new List<List<ProgramRule>>();
 
+    // Going through the programm and remove the comment literal because this is not necessary for gorunding.
+    for (int i = 0; i < Graph.Program.Count; i++)
+    {
+      if (Graph.Program[i].Body.Count != 0)
+      {
+        foreach (var body in Graph.Program[i].Body)
+        {
+          if (body is LiteralBody literalBody && literalBody.Literal is CommentLiteral)
+          {
+            Graph.Program.RemoveAt(i);
+            i--;
+          }
+        }
+      }
+    }
+
     for (int i = 0; i < Graph.Program.Count; i++)
     {
       // First we check if a rule contains any variables that are not in the head or any other body part
@@ -57,19 +73,6 @@ public class Grounding(DependencyGraph graph)
             notInBodyAndHead = true;
           }
         }
-
-        // foreach (var v in vars)
-        // {
-        //   if (v.StartsWith("_"))
-        //   {
-        //     continue;
-        //   }
-
-        //   if (!otherVars.Contains(v))
-        //   {
-        //     notInHead = true;
-        //   }
-        // }
 
         // if it the variable is not in the head and not in the body we remove it from the program
         if (notInBodyAndHead)
@@ -137,12 +140,16 @@ public class Grounding(DependencyGraph graph)
 
     List<string> availableAtoms = GenerateAvailableAtoms(deduplicatedRules, availableHeads);
 
-    _warnings.RemoveAll(availableHeads.Contains);
+    // removes all warning of heads we have found
     _warnings.RemoveAll(availableHeads.Contains);
 
+    // Cleanup the rules, remvoe all which do not make sense
     GroundCleanUp(deduplicatedRules);
 
+    // Add the constraints for the grounded program.
     AddHeadlessRules(deduplicatedRules);
+
+    GroundCleanUp(deduplicatedRules);
 
     Logger.Logger.Debug("Created grounded program. \n"
         + "Creation duration was " + watch.Stop());
@@ -157,11 +164,17 @@ public class Grounding(DependencyGraph graph)
     return deduplicatedRules;
   }
 
+  /// <summary>
+  /// This function adds all the headless rule constraints if thre is a classical negation 
+  /// </summary>
+  /// <param name="rules">The frounded Programm</param>
   private void AddHeadlessRules(List<ProgramRule> rules)
   {
     List<ProgramRule> newHeadlessRules = [];
     foreach (var rule in rules)
     {
+
+      // If it is a choicehead do it for every atom (choice)
       if (rule.Head is ChoiceHead choiceHead)
       {
         foreach (var atom in choiceHead.Atoms)
@@ -174,6 +187,7 @@ public class Grounding(DependencyGraph graph)
         }
       }
 
+      // if it is a normal head generate the headless rule for it
       if (rule.Head is AtomHead atomHead)
       {
         var newRule = AddHeadlessRuleForAtom(atomHead.Atom);
@@ -184,9 +198,16 @@ public class Grounding(DependencyGraph graph)
       }
     }
 
+    // Append all found headless rules to the program.
     rules.AddRange(newHeadlessRules);
   }
 
+
+  /// <summary>
+  /// Generates a headless rule for an atom that starts with -
+  /// </summary>
+  /// <param name="atom">An atom which you want to generate the rule for</param>
+  /// <returns>Either null if it does not start with - or a new headless rule</returns>
   private ProgramRule? AddHeadlessRuleForAtom(Atom atom)
   {
     if (!atom.Name.StartsWith("-"))
@@ -194,6 +215,7 @@ public class Grounding(DependencyGraph graph)
       return null;
     }
 
+    // Create a rule where not both can be true not the positve and not the negative atom at the same time
     var negativeAtom = new LiteralBody(new AtomLiteral(true, new Atom(atom.Name, [.. atom.Args])));
     var postiveAtom = new LiteralBody(new AtomLiteral(true, new Atom(atom.Name[1..], [.. atom.Args])));
 

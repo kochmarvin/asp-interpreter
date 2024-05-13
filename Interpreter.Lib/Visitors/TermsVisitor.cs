@@ -5,6 +5,11 @@ namespace Interpreter.Lib.Visitors;
 
 public class TermsVisitor : LparseBaseVisitor<List<Term>>
 {
+  /// <summary>
+  /// Parses the terms context and goes through each term and stores it inside a list.
+  /// </summary>
+  /// <param name="context">The terms context.</param>
+  /// <returns>The parsed list of terms.</returns>
   public override List<Term> VisitTerms(LparseParser.TermsContext context)
   {
     List<Term> terms = [];

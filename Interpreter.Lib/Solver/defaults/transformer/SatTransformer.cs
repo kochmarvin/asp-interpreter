@@ -12,12 +12,9 @@ using Interpreter.Lib.Logger;
 
 namespace Interpreter.Lib.Solver.defaults;
 
-/*
-  TODO Classical negation add
-*/
+
 public class SatTransformer : ITransformer
 {
-
   private Preperation? _preperation;
   private Dictionary<string, int> _mappedAtoms = [];
   private Dictionary<int, int> _choiceNotState = [];

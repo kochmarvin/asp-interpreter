@@ -2,6 +2,9 @@ using Interpreter.Lib.Solver.defaults;
 
 namespace Interpreter.Lib.Solver.Interfaces;
 
+/// <summary>
+/// Interface of what a solver needs
+/// </summary>
 public interface ISolver
 {
   // Every List is one answer Set, List of Answert sets thats why double list
