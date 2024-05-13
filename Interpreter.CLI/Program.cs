@@ -9,10 +9,22 @@ using Interpreter.Lib.Logger;
 Parser.Default.ParseArguments<Options>(args)
       .WithParsed(opts =>
       {
+        if (!string.IsNullOrEmpty(opts.Explain))
+        {
+          if (!opts.FilePath.EndsWith(".lp"))
+          {
+            Logger.Error("Only files with extension .lp are supported.");
+            return;
+          }
+          
+          new ExplainCommand().Execute(args, null);
+          return;
+        }
+
         var manager = new CommandManager();
         var cli = new CommandLineInterpreter(manager);
         Logger.InitLogger(opts.Verbose);
-        Logger.Debug("Starting Answer Set Programming Interpreter");
+        Logger.Debug("Starting Answer Set Programming Interpreter"); 
 
         if (!string.IsNullOrEmpty(opts.FilePath))
         {
@@ -22,6 +34,18 @@ Parser.Default.ParseArguments<Options>(args)
             return;
           }
           new LoadFileCommand().Execute(args, manager);
+        }
+
+        if (!string.IsNullOrEmpty(opts.Explain))
+        {
+          if (!opts.FilePath.EndsWith(".lp"))
+          {
+            Logger.Error("Only files with extension .lp are supported.");
+            return;
+          }
+          
+          new ExplainCommand().Execute(args, manager);
+          return;
         }
 
         if (!string.IsNullOrEmpty(opts.Query))

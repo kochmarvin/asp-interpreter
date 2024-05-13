@@ -13,6 +13,7 @@ namespace Interpreter.CLI.Commands
     {
       string help = "\nAvailable commands: \n\n"
       + ":l <filePath> | :load <filePath> - Load a specific file with extension .lp \n"
+      + ":ex <filePath> | :explain <filePath> - Explain a specific file with extension .lp \n"
       + ":r | :reload	- Reload the loaded file \n"
       + ":e | :exit - Close the CLI \n"
       + ":i | :info - Show information about the loaded file \n"

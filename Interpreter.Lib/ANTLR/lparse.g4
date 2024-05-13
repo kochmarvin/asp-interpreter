@@ -9,8 +9,10 @@ ID : [a-z][A-Za-z_]*;
 VARIABLE : [_A-Z][A-Za-z0-9_]* ;
 DOT : '.' ;
 DOTDOT : '..' ;
+AT : '@' ;
 COMMA : ',' ;
 QUERY_MARK : '?' ;
+DOUBLE_COLON : '::' ;
 COLON : ':' ;
 SEMICOLON : ';' ;
 CONS : ':-' ;
@@ -44,7 +46,13 @@ statements : statement (statement)* ;
 query : body (SEMICOLON body)* QUERY_MARK ;
 
 statement : CONS bodies? DOT
-          | head CONS? bodies? DOT ;
+          | head CONS? bodies? DOT
+          | head DOUBLE_COLON comment_bods DOT;
+
+text : ID (ID)*;
+comment_bods :  comment_bod (comment_bod*);
+comment_bod: (text | special);
+special : AT PAREN_OPEN VARIABLE PAREN_CLOSE;
 
 bodies : body (SEMICOLON body)*;
 

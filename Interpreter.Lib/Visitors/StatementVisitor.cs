@@ -22,6 +22,7 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
 
       HeadContext head = statementContext.head();
       BodiesContext bodies = statementContext.bodies();
+      Comment_bodsContext comment = statementContext.comment_bods();
 
       if (head != null)
       {
@@ -32,9 +33,42 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
       {
         foreach (var body in bodies.body())
         {
-
           bodyLiterals.Add([.. new BodyVisitor().Visit(body)]);
         }
+      }
+
+      if (comment != null)
+      {
+        List<Variable> vars = [];
+        List<string> strings = [];
+        foreach(var specials in comment.comment_bod()) 
+        {
+          if (specials.special() != null)
+          {
+            bool found = false;
+            for(int i = 0; i < vars.Count; i++) {
+              if (vars[i].Name == specials.special().VARIABLE().GetText())
+              {
+                strings.Add(i.ToString());
+                found = true;
+                break;
+              }
+            }
+
+            if (!found) {
+              strings.Add(vars.Count.ToString());
+              vars.Add(new Variable(specials.special().VARIABLE().GetText()));
+            }
+          }
+
+          if (specials.text() != null) {
+            foreach(var id in specials.text().ID()) {
+              strings.Add(id.GetText());
+            }
+          }
+        }
+
+        bodyLiterals.Add([new LiteralBody(new CommentLiteral(vars, strings))]);
       }
 
       foreach (var headLiteral in headLiterals)

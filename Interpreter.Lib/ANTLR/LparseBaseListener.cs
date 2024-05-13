@@ -84,6 +84,54 @@ public partial class LparseBaseListener : ILparseListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStatement([NotNull] LparseParser.StatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.text"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterText([NotNull] LparseParser.TextContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.text"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitText([NotNull] LparseParser.TextContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.comment_bods"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterComment_bods([NotNull] LparseParser.Comment_bodsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.comment_bods"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitComment_bods([NotNull] LparseParser.Comment_bodsContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.comment_bod"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterComment_bod([NotNull] LparseParser.Comment_bodContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.comment_bod"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitComment_bod([NotNull] LparseParser.Comment_bodContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.special"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSpecial([NotNull] LparseParser.SpecialContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.special"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSpecial([NotNull] LparseParser.SpecialContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.bodies"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

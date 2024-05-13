@@ -56,6 +56,30 @@ public interface ILparseVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] LparseParser.StatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitText([NotNull] LparseParser.TextContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.comment_bods"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComment_bods([NotNull] LparseParser.Comment_bodsContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.comment_bod"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComment_bod([NotNull] LparseParser.Comment_bodContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LparseParser.special"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSpecial([NotNull] LparseParser.SpecialContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LparseParser.bodies"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

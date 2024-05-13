@@ -31,6 +31,9 @@ namespace Interpreter.CLI
 				case ":h":
 				case ":help":
 					return new HelpCommand();
+				case ":ex":
+				case ":explain":
+					return new ExplainCommand();
 				default:
 					return null;
 			}

@@ -13,6 +13,8 @@ namespace Interpreter.CLI.Options
     public string? FilePath { get; set; }
 
     [Option('q', "query", Required = false, HelpText = "Execute a query on the loaded file")]
+    public string? Explain { get; set; }
+    [Option('e', "explain", Required = false, HelpText = "Explain a programm with words")]
     public string? Query { get; set; }
     [Option("verbose", Required = false, HelpText = "Enable debug output to be shown")]
     public bool Verbose { get; set; }

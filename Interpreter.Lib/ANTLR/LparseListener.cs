@@ -71,6 +71,46 @@ public interface ILparseListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStatement([NotNull] LparseParser.StatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterText([NotNull] LparseParser.TextContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitText([NotNull] LparseParser.TextContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.comment_bods"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterComment_bods([NotNull] LparseParser.Comment_bodsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.comment_bods"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitComment_bods([NotNull] LparseParser.Comment_bodsContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.comment_bod"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterComment_bod([NotNull] LparseParser.Comment_bodContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.comment_bod"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitComment_bod([NotNull] LparseParser.Comment_bodContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LparseParser.special"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSpecial([NotNull] LparseParser.SpecialContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LparseParser.special"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSpecial([NotNull] LparseParser.SpecialContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LparseParser.bodies"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
