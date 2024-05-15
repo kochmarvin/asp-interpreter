@@ -10,6 +10,9 @@ using static LparseParser;
 
 namespace Interpreter.Lib.Visitors;
 
+/// <summary>
+/// Implementation of the statement visitor.
+/// </summary>
 public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
 {
   /// <summary>

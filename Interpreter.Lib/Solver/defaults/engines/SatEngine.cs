@@ -1,7 +1,6 @@
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Solver.Abstracts;
-using Interpreter.Lib.Solver.defaults;
 
 namespace Interpreter.Lib.Solver.defaults;
 

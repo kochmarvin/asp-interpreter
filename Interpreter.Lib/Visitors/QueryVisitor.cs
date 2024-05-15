@@ -8,6 +8,9 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Visitors;
 
+/// <summary>
+/// Implementation of the query visitor.
+/// </summary>
 public class QueryVisitor : LparseBaseVisitor<List<Query>>, IQueryVisitor<List<Query>>
 {
   /// <summary>

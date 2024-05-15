@@ -2,9 +2,11 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Visitors;
 
+/// <summary>
+/// Implementation of the Term visitor.
+/// </summary>
 public class TermVisitor : LparseBaseVisitor<Term>
 {
-
   /// <summary>
   /// Parses the context of a term and either returns a number an or an variable
   /// </summary>

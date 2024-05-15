@@ -3,6 +3,9 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Visitors;
 
+/// <summary>
+/// Implementation of the Terms visitor.
+/// </summary>
 public class TermsVisitor : LparseBaseVisitor<List<Term>>
 {
   /// <summary>
