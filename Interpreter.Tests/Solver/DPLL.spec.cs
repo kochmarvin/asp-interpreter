@@ -1,67 +1,114 @@
+using Interpreter.Lib.Graph;
+using Interpreter.Lib.Grounder;
+using Interpreter.Lib.Results.Objects.Rule;
+using Interpreter.Lib.Solver;
 using Interpreter.Lib.Solver.defaults;
+using Interpreter.Tests;
+using Interpreter.Tests.Parser;
 
 namespace Tests.Solver;
 
 [TestFixture]
 public class SolverTests
 {
-    // [Test]
-    // public void Solve_ReturnsCorrectResult_ForSatisfiableFormula()
-    // {
-    //     // Arrange
-    //     var solver = new DPLLSolver();
-    //     var formula = new List<List<int>>()
-    //         {
-    //             new List<int>() { 1, 2, -3 },
-    //             new List<int>() { -1, 3 },
-    //             new List<int>() { -2, -3 }
-    //         };
-
-    //     // Act
-    //     var result = solver.Solve(formula);
-
-    //     // Assert
-    //     Assert.IsTrue(result.Satisfiable);
-    //     CollectionAssert.AreEquivalent(new List<int>() { 1, -2, 3 }, result.Assignments);
-    // }
-
-    [Test]
-    public void Solve_ReturnsCorrectResult_ForUnsatisfiableFormula()
+    [TestCaseSource(nameof(GetTestCases))]
+    public void DPLLSolver(DPLLTestResults obj)
     {
-        // Arrange
-        var solver = new DPLLSolver();
-        var formula = new List<List<int>>()
-            {
-                new List<int>() { 1 },
-                new List<int>() { -1 }
-            };
+        List<ProgramRule> program = Utils.ParseProgram(obj.File);
+        var graph = new DependencyGraph(program);
+        var grounder = new Grounding(graph);
+        var groundedProgram = grounder.Ground();
+        var preperation = new Preparer().Prepare(groundedProgram);
 
-        // Act
-        var result = solver.Solve(formula);
+        List<List<int>> transformed = new SatTransformer().TransformToFormular(preperation);
+        var results = new DPLLSolver().FindAllSolutions(transformed);
 
-        // Assert
-        Assert.IsFalse(result.Satisfiable);
-        CollectionAssert.IsEmpty(result.Assignments);
+        // System.Console.WriteLine(obj.File);
+        // foreach (var result in results)
+        // {
+        //     foreach (var rule in result.Assignments)
+        //     {
+        //         Console.Write(rule.ToString());
+        //     }
+        //     Console.WriteLine();
+        // }
+
+        Assert.IsTrue(Utils.AreEqual(obj.Expected, results.Select(sr => sr.Assignments).ToList()));
     }
 
-    // [Test]
-    // public void FindAllSolutions_ReturnsAllSolutions_ForSatisfiableFormula()
-    // {
-    //     // Arrange
-    //     var solver = new DPLLSolver();
-    //     var formula = new List<List<int>>()
-    //         {
-    //             new List<int>() { 1, 2, -3 },
-    //             new List<int>() { -1, 3 },
-    //             new List<int>() { -2, -3 }
-    //         };
+    public static IEnumerable<DPLLTestResults> GetTestCases()
+    {
+        yield return new DPLLTestResults(
+            "birds.lp",
+            [
+                [2, -3, -1]
+            ]
+        );
 
-    //     // Act
-    //     var solutions = solver.FindAllSolutions(formula);
+        yield return new DPLLTestResults(
+            "blocks.lp",
+            [
+                [-1]
+            ]
+        );
 
-    //     // Assert
-    //     Assert.AreEqual(3, solutions.Count); // In this case, only one unique solution
-    //     Assert.IsTrue(solutions[0].Satisfiable);
-    //     CollectionAssert.AreEquivalent(new List<int>() { 1, -2, 3 }, solutions[0].Assignments);
-    // }
+        yield return new DPLLTestResults(
+           "edge.lp",
+           [
+               [-1]
+           ]
+       );
+
+        yield return new DPLLTestResults(
+           "family_relations.lp",
+           [
+               [-1]
+           ]
+       );
+
+        yield return new DPLLTestResults(
+           "faster.lp",
+           [
+               [-1]
+           ]
+       );
+
+        yield return new DPLLTestResults(
+            "fastest.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new DPLLTestResults(
+           "happy.lp",
+           [
+               [-1]
+           ]
+       );
+
+        yield return new DPLLTestResults(
+           "nested.lp",
+           [
+               [-1]
+           ]
+       );
+
+        yield return new DPLLTestResults(
+            "unsat_1.lp",
+            []
+        );
+
+        yield return new DPLLTestResults(
+           "unsat_2.lp",
+           []
+       );
+
+    //     yield return new DPLLTestResults(
+    //        "test.lp",
+    //        [
+
+    //        ]
+    //    );
+    }
 }
