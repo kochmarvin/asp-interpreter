@@ -8,8 +8,8 @@ namespace Interpreter.Lib.Solver;
 /// </summary>
 public class LoopRule
 {
-  public List<Atom> Head { get; } = [];
-  public List<List<AtomLiteral>> Body { get; } = [];
+  public List<Atom> Head { get; set; } = [];
+  public List<List<AtomLiteral>> Body { get; set; } = [];
 
   /// <summary>
   /// Adds a head if the head is not already in it.

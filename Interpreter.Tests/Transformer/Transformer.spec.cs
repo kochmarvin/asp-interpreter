@@ -21,62 +21,17 @@ public class TransformerTests
 
         List<List<int>> results = new SatTransformer().TransformToFormular(preperation);
 
-        System.Console.WriteLine(obj.File);
-        foreach (var result in results)
-        {
-            foreach (var rule in result)
-            {
-                System.Console.Write(rule.ToString());
-            }
-            System.Console.WriteLine();
-        }
+        // System.Console.WriteLine(obj.File);
+        // foreach (var result in results)
+        // {
+        //     foreach (var rule in result)
+        //     {
+        //         System.Console.Write(rule.ToString());
+        //     }
+        //     System.Console.WriteLine();
+        // }
 
-        Assert.IsTrue(AreEqual(obj.Expected, results));
-    }
-
-    public bool AreEqual(List<List<int>> x, List<List<int>> y)
-    {
-        if (x == null || y == null)
-        {
-            return x == null && y == null;
-        }
-
-        if (x.Count != y.Count)
-        {
-            return false;
-        }
-
-        // Sort each inner list before comparing
-        for (int i = 0; i < x.Count; i++)
-        {
-            x[i].Sort();
-            y[i].Sort();
-        }
-
-        // Sort outer list before comparing
-        x.Sort(CompareLists);
-        y.Sort(CompareLists);
-
-        return Enumerable.SequenceEqual(x, y, new ListComparer<int>());
-    }
-
-    private int CompareLists(List<int> list1, List<int> list2)
-    {
-        if (list1 == null || list2 == null)
-        {
-            return list1 == null ? (list2 == null ? 0 : -1) : 1;
-        }
-
-        for (int i = 0; i < Math.Min(list1.Count, list2.Count); i++)
-        {
-            int comparison = list1[i].CompareTo(list2[i]);
-            if (comparison != 0)
-            {
-                return comparison;
-            }
-        }
-
-        return list1.Count.CompareTo(list2.Count);
+        Assert.IsTrue(Utils.AreEqual(obj.Expected, results));
     }
 
     public static IEnumerable<SatTransformerResult> GetTestCases()
@@ -115,7 +70,13 @@ public class TransformerTests
             [
                 [-1]
             ]
+        );
 
+        yield return new SatTransformerResult(
+            "atom_head.lp",
+            [
+                [-1]
+            ]
         );
 
         yield return new SatTransformerResult(
@@ -146,6 +107,27 @@ public class TransformerTests
         );
 
         yield return new SatTransformerResult(
+            "comparisson.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
+            "comparison.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
+            "edge.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
             "edge_2.lp",
             [
                 [2],
@@ -153,6 +135,34 @@ public class TransformerTests
                 [4],
                 [-2, -3, -3, 5, 6],
                 [-2, -4, -4, 7, 8],
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
+            "family_relations.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
+            "faster.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
+            "fastest.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
+            "happy.lp",
+            [
                 [-1]
             ]
         );
@@ -193,6 +203,27 @@ public class TransformerTests
                 [-4, -3, 5],
                 [-4, 2],
                 [-5, 2],
+                [-1]
+           ]
+       );
+
+        yield return new SatTransformerResult(
+           "unsat_2.lp",
+           [
+                [2],
+                [3],
+                [-2, -3],
+                [-1]
+           ]
+       );
+
+       yield return new SatTransformerResult(
+           "unsat_1.lp",
+           [
+                [2],
+                [-3, 2],
+                [-2, 3],
+                [-2, -3],
                 [-1]
            ]
        );
@@ -279,7 +310,5 @@ public class TransformerTests
                 [-1]
             ]
         );
-
     }
-
 }
