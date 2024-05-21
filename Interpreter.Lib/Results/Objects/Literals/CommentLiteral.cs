@@ -1,4 +1,6 @@
 
+using Interpreter.Lib.Results.Interfaces;
+using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Terms;
 
@@ -33,6 +35,16 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
     }
 
     return foundVariables;
+  }
+
+  /// <summary>
+  /// Gives the order integer of a specific literal.
+  /// </summary>
+  /// <param name="literalOrder">The literal order visitor.</param>
+  /// <returns>The order integer of a spercific literal.</returns>
+  public override int Order(ILiteralOrder literalOrder)
+  {
+    return literalOrder.Order(this);
   }
 
   /// <summary>
@@ -91,5 +103,15 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
     }
 
     return baseString;
+  }
+
+  public override List<Atom> GetLiteralAtoms()
+  {
+    return [];
+  }
+
+  public override void AddToGraph(ILiteralAddToGraph literalAddToGraph)
+  {
+    return;
   }
 }

@@ -1,3 +1,5 @@
+using Interpreter.Lib.Results.Interfaces;
+using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Terms;
 
@@ -6,6 +8,16 @@ namespace Interpreter.Lib.Results.Objects.BodyLiterals;
 public class LiteralBody(Literal literal) : Body
 {
   public Literal Literal { get; } = literal;
+
+  public override int Order(IBodyOrder orderVisitor)
+  {
+    return orderVisitor.Order(this);
+  }
+
+  public override void AddToGraph(IBodyAddToGraph addToGraphVisitor)
+  {
+    addToGraphVisitor.AddToGraph(this);
+  }
 
   public override Body Apply(Dictionary<string, Term> substitutions)
   {
@@ -31,5 +43,10 @@ public class LiteralBody(Literal literal) : Body
   public override string? ToString()
   {
     return Literal.ToString();
+  }
+
+  public override List<Atom> GetBodyAtoms()
+  {
+    return Literal.GetLiteralAtoms();
   }
 }

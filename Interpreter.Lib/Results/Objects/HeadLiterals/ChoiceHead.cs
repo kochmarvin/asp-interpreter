@@ -15,6 +15,11 @@ public class ChoiceHead(List<Atom> atoms) : Head
     return new ChoiceHead(appliedChoices);
   }
 
+  public override List<Atom> GetHeadAtoms()
+  {
+    return Atoms;
+  }
+
   public override List<string> GetVariables()
   {
     List<string> vars = [];

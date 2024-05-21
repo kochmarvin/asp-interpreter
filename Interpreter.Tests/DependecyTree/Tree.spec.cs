@@ -4,6 +4,7 @@ using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
+using Interpreter.Lib.Results.Vistors;
 
 
 namespace Tests.Tree;
@@ -14,10 +15,11 @@ public class TreeTest
   [Test]
   public void BasicDependecy()
   {
-    DependencyGraph tree = new DependencyGraph([
+    DependencyGraph tree = new MyDependencyGraph([
       new ProgramRule(new AtomHead(new Atom("b", [])), [new LiteralBody(new AtomLiteral(true, new Atom("a", [])))]),
       new ProgramRule(new AtomHead(new Atom("a", [])), []),
-    ]);
+    ], new MyOrderVisitor(),
+      new MyAddToGraphVisitor());
 
     var graphs = tree.CreateGraph(true);
     graphs.Reverse();
@@ -30,10 +32,11 @@ public class TreeTest
   [Test]
   public void NumberApplier()
   {
-    DependencyGraph tree = new DependencyGraph([
+    DependencyGraph tree = new MyDependencyGraph([
       new ProgramRule(new AtomHead(new Atom("b", [])), [new LiteralBody(new AtomLiteral(false, new Atom("a", [])))]),
       new ProgramRule(new AtomHead(new Atom("a", [])), [new LiteralBody(new AtomLiteral(false, new Atom("b", [])))]),
-    ]);
+    ], new MyOrderVisitor(),
+      new MyAddToGraphVisitor());
 
     var graphs = tree.CreateGraph(true);
     graphs.Reverse();

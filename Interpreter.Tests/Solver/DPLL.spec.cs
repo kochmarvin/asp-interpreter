@@ -1,6 +1,7 @@
 using Interpreter.Lib.Graph;
 using Interpreter.Lib.Grounder;
 using Interpreter.Lib.Results.Objects.Rule;
+using Interpreter.Lib.Results.Vistors;
 using Interpreter.Lib.Solver;
 using Interpreter.Lib.Solver.defaults;
 using Interpreter.Tests;
@@ -15,7 +16,7 @@ public class SolverTests
     public void DPLLSolver(DPLLTestResults obj)
     {
         List<ProgramRule> program = Utils.ParseProgram(obj.File);
-        var graph = new DependencyGraph(program);
+        var graph = new MyDependencyGraph(program, new MyOrderVisitor(), new MyAddToGraphVisitor());
         var grounder = new Grounding(graph);
         var groundedProgram = grounder.Ground();
         var preperation = new Preparer().Prepare(groundedProgram);

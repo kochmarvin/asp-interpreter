@@ -1,4 +1,6 @@
 using Interpreter.Lib.Results.Enums;
+using Interpreter.Lib.Results.Interfaces;
+using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.Literals;
@@ -17,6 +19,11 @@ public class IsLiteral(Variable newVar, Term left, Operator op, Term right) : Li
   public Operator Operator { get; } = op;
   public Term Right { get; } = right;
 
+  public override void AddToGraph(ILiteralAddToGraph literalAddToGraph)
+  {
+    return;
+  }
+
   /// <summary>
   /// Applies the substiution to the object.
   /// </summary>
@@ -27,6 +34,11 @@ public class IsLiteral(Variable newVar, Term left, Operator op, Term right) : Li
     Term appliedLeft = Left.Apply(substitutions);
     Term appliedRight = Right.Apply(substitutions);
     return new IsLiteral(New, appliedLeft, Operator, appliedRight);
+  }
+
+  public override List<Atom> GetLiteralAtoms()
+  {
+    return [];
   }
 
   /// <summary>
@@ -56,6 +68,16 @@ public class IsLiteral(Variable newVar, Term left, Operator op, Term right) : Li
   public override bool HasVariables(string variable)
   {
     return Left.HasVariables(variable) || Right.HasVariables(variable);
+  }
+
+  /// <summary>
+  /// Gives the order integer of a specific literal.
+  /// </summary>
+  /// <param name="literalOrder">The literal order visitor.</param>
+  /// <returns>The order integer of a spercific literal.</returns>
+  public override int Order(ILiteralOrder literalOrder)
+  {
+    return literalOrder.Order(this);
   }
 
   /// <summary>

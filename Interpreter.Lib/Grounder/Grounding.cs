@@ -8,7 +8,6 @@ using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
 using Interpreter.Lib.Logger;
-using System.Diagnostics;
 
 namespace Interpreter.Lib.Grounder;
 
@@ -91,7 +90,7 @@ public class Grounding(DependencyGraph graph)
     // After removing from the graph we create it again to get the new program rules
     foreach (var scc in Graph.CreateGraph())
     {
-      foreach (var posScc in new DependencyGraph(scc).CreateGraph(true))
+      foreach (var posScc in Graph.CreateNewGraphInstance(scc).CreateGraph(true))
       {
         sequence.Add(posScc);
       }

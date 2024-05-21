@@ -13,6 +13,11 @@ public class AtomHead(Atom atom) : Head
     return new AtomHead(Atom.Apply(substitutions));
   }
 
+  public override List<Atom> GetHeadAtoms()
+  {
+    return [Atom];
+  }
+
   public override List<string> GetVariables()
   {
     return Atom.GetVariables();

@@ -3,6 +3,7 @@ using Interpreter.Lib.Grounder;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
+using Interpreter.Lib.Results.Vistors;
 using Interpreter.Lib.Solver.defaults;
 using Interpreter.Tests;
 using Interpreter.Tests.Parser;
@@ -16,7 +17,7 @@ public class SatEngineTests
   public void SatEngine(SatEngineResult obj)
   {
     List<ProgramRule> program = Utils.ParseProgram(obj.File);
-    var graph = new DependencyGraph(program);
+    var graph = new MyDependencyGraph(program, new MyOrderVisitor(), new MyAddToGraphVisitor());
     var grounder = new Grounding(graph);
     var satEngine = new SatEngine(grounder.Ground());
 

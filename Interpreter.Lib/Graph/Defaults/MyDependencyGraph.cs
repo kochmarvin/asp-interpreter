@@ -1,8 +1,10 @@
+using Interpreter.Lib.Results.Interfaces;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
+using Interpreter.Lib.Results.Vistors;
 using QuickGraph;
 
 namespace Interpreter.Lib.Graph;
@@ -10,30 +12,24 @@ namespace Interpreter.Lib.Graph;
 /// <summary>
 /// Genrates the dependecy graph and makes an SCC graph out of it
 /// </summary>
-public class DependencyGraph
+public class MyDependencyGraph : DependencyGraph
 {
-  /// <summary>
-  /// The program itself with all the rules
-  /// </summary>
-  public List<ProgramRule> Program { get; set; }
-
   /// <summary>
   /// The graph itself done with quickqraph
   /// </summary>
-  private AdjacencyGraph<ProgramRule, Edge<ProgramRule>> _graph;
+  private AdjacencyGraph<ProgramRule, Edge<ProgramRule>> graph;
 
   /// <summary>
   /// Simple dictionary to match the heads better with the preds they are dependent on
   /// </summary>
-  private Dictionary<string, List<ProgramRule>> _predicates;
+  private Dictionary<string, List<ProgramRule>> predicates;
 
   /// <summary>
   /// Constructor which will order the rules in a certain way
   /// </summary>
   /// <param name="program">The progra which you want the graph of</param>
-  public DependencyGraph(List<ProgramRule> program)
+  public MyDependencyGraph(List<ProgramRule> program, OrderVisitor orderVisitor, AddToGraphVisitor addToGraphVisitor) : base(program, orderVisitor, addToGraphVisitor)
   {
-    Program = program;
     OrderRules();
   }
 
@@ -42,26 +38,19 @@ public class DependencyGraph
   /// </summary>
   /// <param name="onlyPositves">If true it will only get the positive atoms, those which do not contain not, important for loop rules</param>
   /// <returns>The SCC graph.</returns>
-  public List<List<ProgramRule>> CreateGraph(bool onlyPositves = false)
+  public override List<List<ProgramRule>> CreateGraph(bool onlyPositves = false)
   {
-    _graph = new AdjacencyGraph<ProgramRule, Edge<ProgramRule>>();
-    _predicates = [];
+    graph = new AdjacencyGraph<ProgramRule, Edge<ProgramRule>>();
+    predicates = [];
 
     // Going through every rule inside the program and add a node
     foreach (var rule in Program)
     {
-      _graph.AddVertex(rule);
+      graph.AddVertex(rule);
 
-      // Get the head of the rule and its signature e.g hello/2 and store it
-      if (rule.Head is AtomHead head)
+      foreach (var atom in rule.Head.GetHeadAtoms())
       {
-        AddSignature(rule, head.Atom.Signature);
-      }
-
-      // If it is a choice head to it for every choice
-      if (rule.Head is ChoiceHead choices)
-      {
-        choices.Atoms.ForEach((choice) => AddSignature(rule, choice.Signature));
+        AddSignature(rule, atom.Signature);
       }
     }
 
@@ -71,38 +60,12 @@ public class DependencyGraph
       // get all depedencies of the rule through its body
       foreach (var body in rule.Body)
       {
-        // if it is not a literal body skip it
-        if (body is not LiteralBody)
-        {
-          continue;
-        }
-
-        var bodyLiteral = (LiteralBody)body;
-
-        // if it is a comparison literal skip it
-        if (bodyLiteral.Literal is ComparisonLiteral)
-        {
-          continue;
-        }
-
-        // if it is a is literal skip it
-        if (bodyLiteral.Literal is IsLiteral)
-        {
-          continue;
-        }
-
-        var atomLiteral = (AtomLiteral)bodyLiteral.Literal;
-
-        // Add the edge if it is postives or only postives is false.
-        if (atomLiteral.Positive || !onlyPositves)
-        {
-          AddEdge(rule, atomLiteral.Atom);
-        }
+        body.AddToGraph(AddToGraphVisitor.CreateInstance(rule, AddEdge, onlyPositves));
       }
     }
 
     // Create the SCC graph of the program
-    return new Kosaraju<ProgramRule>(_graph).CreateKosaraju();
+    return new Kosaraju<ProgramRule>(graph).CreateKosaraju();
   }
 
   /// <summary>
@@ -112,12 +75,12 @@ public class DependencyGraph
   /// <param name="signature">The signature of the rule.</param>
   private void AddSignature(ProgramRule rule, string signature)
   {
-    if (!_predicates.ContainsKey(signature))
+    if (!predicates.ContainsKey(signature))
     {
-      _predicates[signature] = [];
+      predicates[signature] = [];
     }
 
-    _predicates[signature].Add(rule);
+    predicates[signature].Add(rule);
   }
 
   /// <summary>
@@ -127,11 +90,11 @@ public class DependencyGraph
   /// <param name="atom">The head of the rule refernce to get the Signature</param>
   private void AddEdge(ProgramRule rule, Atom atom)
   {
-    if (_predicates.TryGetValue(atom.Signature, out var dependents))
+    if (predicates.TryGetValue(atom.Signature, out var dependents))
     {
       foreach (var dependentRule in dependents)
       {
-        _graph.AddEdge(new Edge<ProgramRule>(rule, dependentRule));
+        graph.AddEdge(new Edge<ProgramRule>(rule, dependentRule));
       }
     }
   }
@@ -154,18 +117,11 @@ public class DependencyGraph
   /// <returns>The integer where the body should be.</returns>
   private int OrderPredicate(Body body)
   {
-    if (body is not LiteralBody)
-    {
-      return 2;
-    }
+    return body.Order(OrderVisitor);
+  }
 
-    Literal literal = ((LiteralBody)body).Literal;
-
-    if (literal is AtomLiteral atomLiteral)
-    {
-      return atomLiteral.Positive ? 0 : 1;
-    }
-
-    return 1;
+  public override DependencyGraph CreateNewGraphInstance(List<ProgramRule> program)
+  {
+    return new MyDependencyGraph(program, OrderVisitor, AddToGraphVisitor);
   }
 }

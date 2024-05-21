@@ -1,4 +1,5 @@
 using Interpreter.Lib.Results.Interfaces;
+using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.Literals;
@@ -6,7 +7,7 @@ namespace Interpreter.Lib.Results.Objects.Literals;
 /// <summary>
 /// Abstract Class for a Literal
 /// </summary>
-public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables
+public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables, IGetLiteralAtoms
 {
   /// <summary>
   /// Applies the substiution to the object.
@@ -14,6 +15,8 @@ public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables
   /// <param name="substitutions">The found subsitituions.</param>
   /// <returns>A new object instance.</returns>
   public abstract Literal Apply(Dictionary<string, Term> substitutions);
+
+  public abstract List<Atom> GetLiteralAtoms();
 
   /// <summary>
   /// Returns all the variables of the object as a list.
@@ -33,6 +36,15 @@ public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables
   /// <param name="variable">The variable to be checked.</param>
   /// <returns>Either if it includes the variable or not.</returns>
   public abstract bool HasVariables(string variable);
+
+  /// <summary>
+  /// Gives the order integer of a specific literal.
+  /// </summary>
+  /// <param name="literalOrder">The literal order visitor.</param>
+  /// <returns>The order integer of a spercific literal.</returns>
+  public abstract int Order(ILiteralOrder literalOrder);
+
+  public abstract void AddToGraph(ILiteralAddToGraph literalAddToGraph);
 
   /// <summary>
   /// Basic to string method.
