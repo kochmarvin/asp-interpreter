@@ -36,6 +36,8 @@ public class SatTransformer : ITransformer
   /// <returns>A List with list of integers where each row is and and each col or combined.</returns>
   public List<List<int>> TransformToFormular(Preperation preperation)
   {
+    ArgumentNullException.ThrowIfNull(preperation, "Is not supposed to be null");
+
     var watch = StopWatch.Start();
     _preperation = preperation;
 

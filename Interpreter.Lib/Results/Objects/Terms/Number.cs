@@ -68,7 +68,9 @@ public class Number : Term
     ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
     ArgumentNullException.ThrowIfNull(other, "Is not supposed to be null");
     
-    return Value == ((Number)other).Value;
+    Number parsed = other.Accept(new ParseNumberVisitor()) ?? throw new InvalidOperationException("Trying to compare something else with a number");
+
+    return Value == parsed.Value;
   }
   public override T? Accept<T>(TermVisitor<T> visitor) where T : default
   {

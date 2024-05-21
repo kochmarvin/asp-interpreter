@@ -6,14 +6,14 @@ namespace Interpreter.Lib.Solver;
 /// <typeparam name="T">The type of the list</typeparam>
 public class ListComparer<T> : IEqualityComparer<List<T>>
 {
-  public bool Equals(List<T> x, List<T> y)
+  public bool Equals(List<T>? expected, List<T>? compare)
   {
-    if (x == null || y == null)
-      return x == y;
+    if (expected == null || compare == null)
+      return expected == compare;
 
     // Sort both lists and then compare
-    var sortedX = x.OrderBy(i => i).ToList();
-    var sortedY = y.OrderBy(i => i).ToList();
+    var sortedX = expected.OrderBy(item => item).ToList();
+    var sortedY = compare.OrderBy(item => item).ToList();
 
     return sortedX.SequenceEqual(sortedY);
   }
@@ -29,6 +29,7 @@ public class ListComparer<T> : IEqualityComparer<List<T>>
     {
       hash = hash * 23 + (item == null ? 0 : item.GetHashCode());
     }
+    
     return hash;
   }
 }

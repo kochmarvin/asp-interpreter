@@ -19,7 +19,7 @@ public class SolverTests
         var graph = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
         var grounder = new Grounding(graph);
         var groundedProgram = grounder.Ground();
-        var preperation = new Preparer().Prepare(groundedProgram);
+        var preperation = new Preparer(new Checker(), new ObjectParser()).Prepare(groundedProgram);
 
         List<List<int>> transformed = new SatTransformer().TransformToFormular(preperation);
         var results = new DPLLSolver().FindAllSolutions(transformed);

@@ -18,6 +18,42 @@ namespace Interpreter.Lib.Solver.defaults;
 /// </summary>
 public class Preparer : IPreparer
 {
+
+  private IChecker checker;
+  private ObjectParser parser;
+
+  public IChecker Checker
+  {
+    get
+    {
+      return checker;
+    }
+
+    private set
+    {
+      checker = value ?? throw new ArgumentNullException(nameof(Checker), "Is not supposed to be null");
+    }
+  }
+
+  public ObjectParser Parser
+  {
+    get
+    {
+      return parser;
+    }
+
+    private set
+    {
+      parser = value ?? throw new ArgumentNullException(nameof(Parser), "Is not supposed to be null");
+    }
+  }
+
+  public Preparer(IChecker checker, ObjectParser parser)
+  {
+    Checker = checker;
+    Parser = parser;
+  }
+
   /// <summary>
   /// This method checks the program for facts that are definitely true and goes thru every rule to remove any facts 
   /// that are known to be true due to these facts.
@@ -26,6 +62,8 @@ public class Preparer : IPreparer
   /// <returns>The preperation with all rules that have to get solved.</returns>
   public Preperation Prepare(List<ProgramRule> program)
   {
+    ArgumentNullException.ThrowIfNull(program, "Is not supposed to be null");
+
     var watch = StopWatch.Start();
     List<ProgramRule> factuallyTrue = [];
     List<string> _notAllowed = [];
@@ -35,32 +73,22 @@ public class Preparer : IPreparer
     foreach (var rule in program)
     {
       // if it is a headless rule we skip 
-      if (rule.Head is Headless)
+      foreach (var atom in rule.Head.GetHeadAtoms())
       {
-        continue;
-      }
-
-      if (rule.Head is AtomHead atomHead)
-      {
-        _heads.Add(atomHead.Atom.ToString());
-      }
-
-      if (rule.Head is ChoiceHead choiceHead)
-      {
-        _heads.AddRange(choiceHead.Atoms.Select(atom => atom.ToString()));
+        _heads.Add(atom.ToString());
       }
     }
 
     // Specificasion of all rules we cannot remove, because they are in a headless rule.
     // And this has to do the solver due to increasing complexity of the preparerer
-    foreach (var headlessRule in program.Where(rule => rule.Head is Headless))
+    foreach (var headlessRule in program.Where(rule => rule.Head.Accept(Checker.IsHeadlessVisitor)))
     {
       for (int i = 0; i < headlessRule.Body.Count; i++)
       {
-        var literal = ((LiteralBody)headlessRule.Body[i]).Literal;
+        var body = headlessRule.Body[i];
 
         // Removing all Comparison Literals in a rule because they are just for grounding
-        if (literal is ComparisonLiteral || literal is IsLiteral)
+        if (body.Accept(Checker.IsComparisonLiteralVisitor) || body.Accept(Checker.IsIsLiteralVisitor))
         {
           Logger.Logger.Debug("Remove " + headlessRule.Body[i] + " from " + headlessRule);
           headlessRule.Body.RemoveAt(i);
@@ -69,9 +97,9 @@ public class Preparer : IPreparer
         }
 
         // Add literal to the naughty list so they dont get removed
-        if (literal is AtomLiteral atomLiteral)
+        if (body.Accept(new IsAtomLiteralVisitor()))
         {
-          _notAllowed.Add(literal.ToString() ?? "");
+          _notAllowed.Add(body.ToString() ?? "");
         }
       }
     }
@@ -87,40 +115,45 @@ public class Preparer : IPreparer
         var rule = program[i];
 
         // if it is a headless rule we just skip it.
-        if (rule.Head is Headless)
+        if (rule.Head.Accept(Checker.IsHeadlessVisitor))
         {
           continue;
         }
 
         // if it is a fact (rule without body) and does not start with a minus we have to maybe add it to the factual true
-        if (rule.Head is AtomHead atomHead && rule.Body.Count == 0 && !atomHead.Atom.Name.StartsWith("-"))
+        if (rule.Head.Accept(Checker.IsAtomHeadVisitor) && rule.Body.Count == 0)
         {
-          // if it is contained in a headless rule we dont touch it.
-          if (_notAllowed.Contains(atomHead.Atom.ToString()))
+          AtomHead atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
+
+          if (!atomHead.Atom.Name.StartsWith("-"))
           {
+            // if it is contained in a headless rule we dont touch it.
+            if (_notAllowed.Contains(atomHead.Atom.ToString()))
+            {
+              continue;
+            }
+
+            // otherwise add it to the factually true string list (for easy comparison) and to the true facts
+            factuallyTrue.Add(rule);
+            _trueFacts.Add(atomHead.Atom.ToString());
+
+            // also remove it from the program because it is always going to be true
+            program.RemoveAt(i);
+
+            // tell the loop we made a change to the program.
+            changes++;
+            i--;
             continue;
           }
-
-          // otherwise add it to the factually true string list (for easy comparison) and to the true facts
-          factuallyTrue.Add(rule);
-          _trueFacts.Add(atomHead.Atom.ToString());
-
-          // also remove it from the program because it is always going to be true
-          program.RemoveAt(i);
-
-          // tell the loop we made a change to the program.
-          changes++;
-          i--;
-          continue;
         }
 
         for (int j = 0; j < rule.Body.Count; j++)
         {
-          var body = rule.Body[j] as LiteralBody;
+          var body = rule.Body[j];
 
           // If it is a Comparison Literal we just remove it because there is no logical equivalent (just neccessary for grounding)
           // TODO check if assumtion is correct
-          if (body?.Literal is ComparisonLiteral || body?.Literal is IsLiteral)
+          if (body.Accept(Checker.IsComparisonLiteralVisitor) || body.Accept(Checker.IsIsLiteralVisitor))
           {
             Logger.Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
             rule.Body.RemoveAt(j);
@@ -129,13 +162,15 @@ public class Preparer : IPreparer
             continue;
           }
 
-          if (body?.Literal is AtomLiteral atomLiteral)
+          if (body.Accept(Checker.IsAtomLiteralVisitor))
           {
             // if it is contained in a headless rule we dont touch it.
-            if (_notAllowed.Contains(atomLiteral.ToString()))
+            if (_notAllowed.Contains(body.ToString() ?? ""))
             {
               continue;
             }
+
+            var atomLiteral = body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
 
             // Here we look if the literal is not positive
             if (!atomLiteral.Positive)
@@ -147,24 +182,13 @@ public class Preparer : IPreparer
                 bool remove = true;
                 foreach (var head in program.Select(rule => rule.Head))
                 {
-                  // if the atom we are looking at exists in a choice head we dont remove it 
-                  if (head is ChoiceHead choiceToCheck)
+                  foreach (var atom in head.GetHeadAtoms())
                   {
-                    var found = choiceToCheck.Atoms.Where((atom) => atom.ToString() == atomLiteral.Atom.ToString()).ToList();
-
-                    if (found.Count > 0)
+                    if (atomLiteral.Atom.ToString() == atom.ToString())
                     {
                       remove = false;
                       break;
                     }
-                  }
-
-                  // if the atom we are looking at is an atom head in the program we dont remove it
-                  if (head is AtomHead atomToCheck && atomToCheck.Atom.ToString() == atomLiteral.Atom.ToString())
-                  {
-                    remove = false;
-                    break;
-
                   }
                 }
 
@@ -226,6 +250,8 @@ public class Preparer : IPreparer
   /// <returns>A list of all the loop rules found in the program.</returns>
   public List<LoopRule> FindLoopRules(List<ProgramRule> program)
   {
+    ArgumentNullException.ThrowIfNull(program, "Is not supposed to be null");
+
     var watch = StopWatch.Start();
     DependencyGraph g = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
     List<LoopRule> loopRules = [];
@@ -247,15 +273,16 @@ public class Preparer : IPreparer
       // Now we go through every rule and save the heads
       foreach (var rule in subGraph)
       {
-        if (rule.Head is ChoiceHead choices)
+        if (rule.Head.Accept(Checker.IsChoiceHeadVisitor))
         {
-          headsReference.AddRange(choices.Atoms);
-          choices.Atoms.ForEach(atom => heads.Add(atom.ToString()));
-          // TODO checken ob da noch was her gehört
+          headsReference.AddRange(rule.Head.GetHeadAtoms());
+          rule.Head.GetHeadAtoms().ForEach(atom => heads.Add(atom.ToString()));
         }
 
-        if (rule.Head is AtomHead atomHead)
+        if (rule.Head.Accept(Checker.IsAtomHeadVisitor))
         {
+          var atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
+
           // Here we add the reference for later connections
           // and the head string for easier matching
           headsReference.Add(atomHead.Atom);
@@ -268,12 +295,12 @@ public class Preparer : IPreparer
             loopRule = loop;
             List<AtomLiteral> literals = [];
             rule.Body.ForEach(body =>
-            {
-              if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral al)
               {
-                literals.Add(al);
+                if (body.Accept(Checker.IsAtomLiteralVisitor))
+                {
+                  literals.Add(body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened"));
+                }
               }
-            }
             );
 
             loop.AddBody(literals);
@@ -286,8 +313,9 @@ public class Preparer : IPreparer
       {
         foreach (var body in rule.Body)
         {
-          if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral atomLiteral)
+          if (body.Accept(Checker.IsAtomLiteralVisitor))
           {
+            var atomLiteral = body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
             // If the literal is not positiv we skip it
             if (!atomLiteral.Positive)
             {

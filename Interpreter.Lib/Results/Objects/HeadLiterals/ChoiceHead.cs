@@ -79,4 +79,9 @@ public class ChoiceHead : Head
     var headString = Atoms.Select(bl => bl.ToString());
     return "{" + $"{string.Join("; ", headString)}" + "} ";
   }
+
+  public override T? Accept<T>(HeadVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
 }

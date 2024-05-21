@@ -5,6 +5,11 @@ namespace Interpreter.Lib.Results.Objects.HeadLiterals;
 
 public class Headless : Head
 {
+  public override T? Accept<T>(HeadVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
+
   public override Head Apply(Dictionary<string, Term> substitutions)
   {
     ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");

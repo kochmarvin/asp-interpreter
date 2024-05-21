@@ -24,7 +24,7 @@ public class PreparerTests
     var graph = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
     var grounder = new Grounding(graph);
     var groundedProgram = grounder.Ground();
-    var results = new Preparer().Prepare(groundedProgram);
+    var results = new Preparer(new Checker(), new ObjectParser()).Prepare(groundedProgram);
 
     Assert.IsTrue(AreEqual(obj.Expected, results));
   }

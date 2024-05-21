@@ -102,12 +102,15 @@ public class Variable : Term
     ArgumentNullException.ThrowIfNull(other, "Is not supposed to be null");
     ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
 
-    if (substitutions.TryGetValue(Name, out Term? t))
+    if (substitutions.TryGetValue(Name, out Term? found))
     {
-      return ((Variable)t).Name == ((Variable)other).Name;
+      var parsedFound = found.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
+      var parsedOther = other.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
+
+      return parsedFound.Name == parsedOther.Name;
     }
 
-    if (this.HasVariables())
+    if (HasVariables())
     {
       substitutions.Add(Name, other);
     }

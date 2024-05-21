@@ -55,4 +55,9 @@ public class AtomHead : Head
   {
     return Atom.ToString() + " ";
   }
+
+  public override T? Accept<T>(HeadVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
 }

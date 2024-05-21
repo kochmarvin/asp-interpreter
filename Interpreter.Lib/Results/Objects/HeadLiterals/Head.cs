@@ -4,8 +4,10 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.HeadLiterals;
 
-public abstract class Head : IApplier<Head>, IHasVariables, IGetVariables, IGetHeadAtoms
+public abstract class Head : IApplier<Head>, IHasVariables, IGetVariables, IGetHeadAtoms, IHeadAccept
 {
+  public abstract T? Accept<T>(HeadVisitor<T> visitor);
+
   public abstract Head Apply(Dictionary<string, Term> substitutions);
 
   public abstract List<Atom> GetHeadAtoms();

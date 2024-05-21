@@ -135,7 +135,7 @@ public class CommandManager
         // Go through each parsed query over the current set and print the solutions
         foreach (var currentQuery in parsedQuery)
         {
-          QuerySolver querySolver = new QuerySolver(currentQuery, _store.AnswerSets[i], new Preparer());
+          QuerySolver querySolver = new QuerySolver(currentQuery, _store.AnswerSets[i], new Preparer(new Checker(), new ObjectParser()));
           var answers = querySolver.Answers();
 
           // if there are no answers its just false

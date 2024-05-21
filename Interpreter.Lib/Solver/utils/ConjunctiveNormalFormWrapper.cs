@@ -37,6 +37,8 @@ public class CNFWrapper
   /// <returns>The negative variable</returns>
   public static ConjunctiveNormalForm.Expression CreateNegativeVariable(ConjunctiveNormalForm.Expression variable)
   {
+    ArgumentNullException.ThrowIfNull(variable, "Is not supposed to be null");
+
     return ConjunctiveNormalForm.Expression.NewNot(variable);
   }
 
@@ -58,6 +60,9 @@ public class CNFWrapper
   /// <returns>The expression wrapper.</returns>
   public CNFWrapper SetXor(ConjunctiveNormalForm.Expression left, ConjunctiveNormalForm.Expression right)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+
     _expression = ConjunctiveNormalForm.Expression.NewXor(left, right);
     return this;
   }
@@ -70,6 +75,9 @@ public class CNFWrapper
   /// <returns>The expression wrapper.</returns>
   public CNFWrapper SetOr(ConjunctiveNormalForm.Expression left, ConjunctiveNormalForm.Expression right)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+
     _expression = ConjunctiveNormalForm.Expression.NewOr(left, right);
     return this;
   }
@@ -82,6 +90,9 @@ public class CNFWrapper
   /// <returns>The expression wrapper.</returns>
   public CNFWrapper SetAnd(ConjunctiveNormalForm.Expression left, ConjunctiveNormalForm.Expression right)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+
     _expression = ConjunctiveNormalForm.Expression.NewAnd(left, right);
     return this;
   }
@@ -93,6 +104,8 @@ public class CNFWrapper
   /// <returns>The expression wrapper.</returns>
   public CNFWrapper AddOr(ConjunctiveNormalForm.Expression single)
   {
+    ArgumentNullException.ThrowIfNull(single, "Is not supposed to be null");
+
     _expression = ConjunctiveNormalForm.Expression.NewOr(_expression, single);
     return this;
   }
@@ -104,6 +117,8 @@ public class CNFWrapper
   /// <returns>The expression wrapper.</returns>
   public CNFWrapper AddAnd(ConjunctiveNormalForm.Expression single)
   {
+    ArgumentNullException.ThrowIfNull(single, "Is not supposed to be null");
+
     _expression = ConjunctiveNormalForm.Expression.NewAnd(_expression, single);
     return this;
   }
@@ -116,6 +131,9 @@ public class CNFWrapper
   /// <returns>The expression wrapper.</returns>
   public CNFWrapper SetImplication(ConjunctiveNormalForm.Expression left, ConjunctiveNormalForm.Expression right)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+
     _expression = ConjunctiveNormalForm.Expression.NewImplies(left, right);
     return this;
   }
@@ -128,6 +146,9 @@ public class CNFWrapper
   /// <returns>The expression wrapper.</returns>
   public CNFWrapper SetEquality(ConjunctiveNormalForm.Expression left, ConjunctiveNormalForm.Expression right)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+
     _expression = ConjunctiveNormalForm.Expression.NewEquiv(left, right);
     return this;
   }
