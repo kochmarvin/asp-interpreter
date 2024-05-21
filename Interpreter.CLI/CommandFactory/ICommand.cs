@@ -1,13 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ICommand.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
-namespace Interpreter.CLI
+namespace Interpreter.CLI;
+
+/// <summary>
+/// The public interface of the command of the custom CLI.
+/// </summary>
+public interface ICommand
 {
-	public interface ICommand
-	{
-		void Execute(string[] args, CommandManager manager);
-	}
+    /// <summary>
+    /// The method that executes the command.
+    /// </summary>
+    /// <param name="args">The given command line arguments.</param>
+    /// <param name="manager">The manager for the commands.</param>
+    void Execute(string[] args, CommandManager manager);
 }
