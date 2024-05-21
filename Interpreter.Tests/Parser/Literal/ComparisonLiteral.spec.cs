@@ -28,7 +28,7 @@ public class ComparisonBodyTests
     var comparisonLiteral = (ComparisonLiteral)body.Literal;
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.Reltation, Is.EqualTo(Relation.Equal));
+    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.Equal));
   }
 
   [Test]
@@ -40,7 +40,7 @@ public class ComparisonBodyTests
     var comparisonLiteral = (ComparisonLiteral)body.Literal;
     Assert.IsInstanceOf<FunctionTerm>(comparisonLiteral.Left);
     Assert.IsInstanceOf<FunctionTerm>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.Reltation, Is.EqualTo(Relation.GreaterThan));
+    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.GreaterThan));
   }
 
   [Test]
@@ -52,7 +52,7 @@ public class ComparisonBodyTests
     var comparisonLiteral = (ComparisonLiteral)body.Literal;
     Assert.IsInstanceOf<Number>(comparisonLiteral.Left);
     Assert.IsInstanceOf<Number>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.Reltation, Is.EqualTo(Relation.LessThan));
+    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.LessThan));
   }
 
   [Test]
@@ -64,7 +64,7 @@ public class ComparisonBodyTests
     var comparisonLiteral = (ComparisonLiteral)body.Literal;
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.Reltation, Is.EqualTo(Relation.GreaterEqual));
+    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.GreaterEqual));
   }
   [Test]
   public void TestLessEqual()
@@ -75,7 +75,7 @@ public class ComparisonBodyTests
     var comparisonLiteral = (ComparisonLiteral)body.Literal;
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.Reltation, Is.EqualTo(Relation.LessEqual));
+    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.LessEqual));
   }
   [Test]
   public void TestInEqual()
@@ -86,7 +86,7 @@ public class ComparisonBodyTests
     var comparisonLiteral = (ComparisonLiteral)body.Literal;
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.Reltation, Is.EqualTo(Relation.Inequal));
+    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.Inequal));
   }
 
    [Test]
@@ -98,6 +98,6 @@ public class ComparisonBodyTests
     var comparisonLiteral = (ComparisonLiteral)body.Literal;
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
     Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.Reltation, Is.EqualTo(Relation.Inequal));
+    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.Inequal));
   }
 }

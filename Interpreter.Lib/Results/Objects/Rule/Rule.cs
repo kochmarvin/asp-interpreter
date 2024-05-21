@@ -11,10 +11,42 @@ namespace Interpreter.Lib.Results.Objects.Rule;
 /// </summary>
 /// <param name="head">The head of the rule.</param>
 /// <param name="body">The bodeis of the rule</param>
-public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>, IHasVariables
+public class ProgramRule : IApplier<ProgramRule>, IHasVariables
 {
-  public Head Head { get; } = head;
-  public List<Body> Body { get; set; } = body;
+  private Head head;
+  private List<Body> body;
+
+  public Head Head
+  {
+    get
+    {
+      return head;
+    }
+    private set
+    {
+      head = value ?? throw new ArgumentNullException(nameof(Head), "Is not supposed to be null");
+    }
+  }
+
+
+  public List<Body> Body
+  {
+    get
+    {
+      return body;
+    }
+
+    set
+    {
+      body = value ?? throw new ArgumentNullException(nameof(Body), "Is not supposed to be null");
+    }
+  }
+
+  public ProgramRule(Head head, List<Body> body)
+  {
+    Head = head;
+    Body = body;
+  }
 
   /// <summary>
   /// Applies the substitution to every body of the rule.
@@ -23,6 +55,8 @@ public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>, IH
   /// <returns>A new rule instance.</returns>
   public ProgramRule Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+
     Head appliedHead = Head.Apply(substitutions);
     var appliedBody = new List<Body>();
     foreach (var bodyLiteral in Body)
@@ -79,20 +113,18 @@ public class ProgramRule(Head head, List<Body> body) : IApplier<ProgramRule>, IH
 
   public override bool Equals(object obj)
   {
-    if (obj == null || this.GetType() != obj.GetType())
+    if (obj == null || GetType() != obj.GetType())
     {
       return false;
     }
-    else
-    {
-      ProgramRule p = (ProgramRule)obj;
-      return this.ToString() == p.ToString();
-    }
+
+    ProgramRule p = (ProgramRule)obj;
+    return ToString() == p.ToString();
   }
 
   public override int GetHashCode()
   {
-    return this.ToString().GetHashCode();
+    return ToString().GetHashCode();
   }
 
   public override string ToString()

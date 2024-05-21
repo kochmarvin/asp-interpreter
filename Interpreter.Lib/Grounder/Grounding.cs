@@ -268,7 +268,7 @@ public class Grounding : IGrounder, IGroundMatcher
   private void GroundCleanUp(List<ProgramRule> groundedProgram)
   {
     ArgumentNullException.ThrowIfNull(groundedProgram, "Is not supposed to be null");
-   
+
     Logger.Logger.Debug("Cleaning up grounded program.");
     int changes = 0;
     do
@@ -429,7 +429,7 @@ public class Grounding : IGrounder, IGroundMatcher
     ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
     ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
     ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
-   
+
     if (left.HasVariables() && right.HasVariables())
     {
       return false;
@@ -547,7 +547,7 @@ public class Grounding : IGrounder, IGroundMatcher
 
     // Here we check if the comparisson is valid because if it fails
     // we wont store the substiturions for it.
-    if (EvaluateComparisson(left, comparisonLiteral.Reltation, right, substitutions))
+    if (EvaluateComparisson(left, comparisonLiteral.TermRelation, right, substitutions))
     {
       return [substitutions];
     }
@@ -559,7 +559,7 @@ public class Grounding : IGrounder, IGroundMatcher
   {
     ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
     ArgumentNullException.ThrowIfNull(isLiteral, "Is not supposed to be null");
-   
+
     var left = isLiteral.Left.Apply(substitutions);
     var right = isLiteral.Right.Apply(substitutions);
 

@@ -4,10 +4,18 @@ namespace Interpreter.Lib.Results.Objects.Terms;
 /// <summary>
 /// The term of a number e.g. 1
 /// </summary>
-/// <param name="value">The vale of the number</param>
-public class Number(int value) : Term
+public class Number : Term
 {
-  public int Value { get; } = value;
+  public int Value
+  {
+    get;
+    private set;
+  }
+
+  public Number(int value)
+  {
+    Value = value;
+  }
 
   /// <summary>
   /// Applies the substiution to the object.
@@ -16,6 +24,8 @@ public class Number(int value) : Term
   /// <returns>The instance of the object..</returns>
   public override Term Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+
     return this;
   }
 
@@ -53,8 +63,11 @@ public class Number(int value) : Term
   /// <param name="other">The other object to match it.</param>
   /// <param name="substiutionen">The found subsitituions</param>
   /// <returns>Either if it was a match or not.</returns>
-  public override bool Match(Term other, Dictionary<string, Term> substiutionen)
+  public override bool Match(Term other, Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(other, "Is not supposed to be null");
+    
     return Value == ((Number)other).Value;
   }
   public override T? Accept<T>(TermVisitor<T> visitor) where T : default

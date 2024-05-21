@@ -11,11 +11,48 @@ namespace Interpreter.Lib.Results.Objects.Literals;
 /// <param name="left">The left side of the compairrison</param>
 /// <param name="relation">The relation of the comparisson</param>
 /// <param name="right">The right side of the comparisson</param>
-public class ComparisonLiteral(Term left, Relation relation, Term right) : Literal
+public class ComparisonLiteral : Literal
 {
-  public Term Left { get; } = left;
-  public Relation Reltation { get; } = relation;
-  public Term Right { get; } = right;
+  private Term left;
+  private Term right;
+  private Relation relation;
+
+  public Term Left
+  {
+    get { return left; }
+    private set
+    {
+      left = value ?? throw new ArgumentNullException(nameof(Left), "Is not supposed to be null");
+    }
+  }
+
+  public Relation TermRelation
+  {
+    get
+    {
+      return relation;
+    }
+    private set
+    {
+      relation = value;
+    }
+  }
+
+  public Term Right
+  {
+    get { return right; }
+    private set
+    {
+      right = value ?? throw new ArgumentNullException(nameof(Right), "Is not supposed to be null");
+    }
+  }
+
+  public ComparisonLiteral(Term left, Relation relation, Term right)
+  {
+    Left = left;
+    TermRelation = relation;
+    Right = right;
+  }
 
   /// <summary>
   /// Applies the substiution to the object.
@@ -24,9 +61,11 @@ public class ComparisonLiteral(Term left, Relation relation, Term right) : Liter
   /// <returns>A new object instance.</returns>
   public override Literal Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions);
+
     Term appliedLeft = Left.Apply(substitutions);
     Term appliedRight = Right.Apply(substitutions);
-    return new ComparisonLiteral(appliedLeft, Reltation, appliedRight);
+    return new ComparisonLiteral(appliedLeft, TermRelation, appliedRight);
   }
 
   /// <summary>
@@ -63,7 +102,7 @@ public class ComparisonLiteral(Term left, Relation relation, Term right) : Liter
   /// <returns>The string equivalent.</returns>
   public override string ToString()
   {
-    return $"{Left}{RelationExtensions.ToSymbol(Reltation)}{Right}";
+    return $"{Left}{RelationExtensions.ToSymbol(TermRelation)}{Right}";
   }
 
   public override List<Atom> GetLiteralAtoms()

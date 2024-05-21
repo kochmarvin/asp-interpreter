@@ -7,6 +7,8 @@ public class Headless : Head
 {
   public override Head Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+
     return this;
   }
 

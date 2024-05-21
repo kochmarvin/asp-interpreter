@@ -12,12 +12,50 @@ namespace Interpreter.Lib.Results.Objects.Literals;
 /// <param name="left">The left side of the operation</param>
 /// <param name="op">The operator.</param>
 /// <param name="right">The right side of the opreation</param>
-public class IsLiteral(Variable newVar, Term left, Operator op, Term right) : Literal
+public class IsLiteral : Literal
 {
-  public Variable New { get; } = newVar;
-  public Term Left { get; } = left;
-  public Operator Operator { get; } = op;
-  public Term Right { get; } = right;
+  private Variable newVar;
+  private Term left;
+  private Term right;
+
+  public Variable New
+  {
+    get
+    {
+      return newVar;
+    }
+    private set
+    {
+      newVar = value ?? throw new ArgumentNullException(nameof(New), "Is not supposed to be null");
+    }
+  }
+
+  public Term Left
+  {
+    get { return left; }
+    private set
+    {
+      left = value ?? throw new ArgumentNullException(nameof(Left), "Is not supposed to be null");
+    }
+  }
+  public Operator Operator { get; private set; }
+
+  public Term Right
+  {
+    get { return right; }
+    private set
+    {
+      right = value ?? throw new ArgumentNullException(nameof(Right), "Is not supposed to be null");
+    }
+  }
+
+  public IsLiteral(Variable newVar, Term left, Operator op, Term right)
+  {
+    Operator = op;
+    Right = right;
+    Left = left;
+    New = newVar;
+  }
 
   public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
   {
@@ -36,6 +74,8 @@ public class IsLiteral(Variable newVar, Term left, Operator op, Term right) : Li
   /// <returns>A new object instance.</returns>
   public override Literal Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+
     Term appliedLeft = Left.Apply(substitutions);
     Term appliedRight = Right.Apply(substitutions);
     return new IsLiteral(New, appliedLeft, Operator, appliedRight);

@@ -9,8 +9,53 @@ using Interpreter.Lib.Results.Objects.Terms;
 /// </summary>
 /// <param name="vars">The variales which are inside the literal.</param>
 /// <param name="strings">The text which should get printed.</param>
-public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
+public class CommentLiteral : Literal
 {
+  private List<Variable> vars;
+  private List<String> strings;
+  
+  public List<Variable> Vars
+  {
+    get { return vars; }
+    private set
+    {
+      vars = value ?? throw new ArgumentNullException(nameof(Vars), "Is not supposed to be null");
+    }
+  }
+
+  public List<string> Strings
+  {
+    get
+    {
+      return strings;
+    }
+    private set
+    {
+      strings = value ?? throw new ArgumentNullException(nameof(Strings), "Is not supposed to be null");
+    }
+  }
+
+  public CommentLiteral(List<Variable> vars, List<string> strings)
+  {
+    Strings = strings;
+    Vars = vars;
+  }
+
+  /// <summary>
+  /// Returns all the variables of the comment ltieral.
+  /// </summary>
+  /// <returns>The variables which the comment literal throws.</returns>
+  public override List<string> GetVariables()
+  {
+    List<string> foundVariables = [];
+    foreach (var current in Vars)
+    {
+      foundVariables.Add(current.Name);
+    }
+
+    return foundVariables;
+  }
+
   /// <summary>
   /// Will always throw due to not necessary for grounding just for explain mode
   /// </summary>
@@ -23,27 +68,12 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
   }
 
   /// <summary>
-  /// Returns all the variables of the comment ltieral.
-  /// </summary>
-  /// <returns>The variables which the comment literal throws.</returns>
-  public override List<string> GetVariables()
-  {
-    List<string> foundVariables = [];
-    foreach (var current in vars)
-    {
-      foundVariables.Add(current.Name);
-    }
-
-    return foundVariables;
-  }
-
-  /// <summary>
   /// Checks if the object has any varibles.
   /// </summary>
   /// <returns>Either if there are variables or not.</returns>
   public override bool HasVariables()
   {
-    return vars.Count != 0;
+    return Vars.Count != 0;
   }
 
   // <summary>
@@ -53,7 +83,7 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
   /// <returns>Either if it includes the variable or not.</returns>
   public override bool HasVariables(string variable)
   {
-    foreach (var current in vars)
+    foreach (var current in Vars)
     {
       if (current.Name == variable)
       {
@@ -71,8 +101,8 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
   /// <returns>A variable less string.</returns>
   public string GetText(List<string> variables)
   {
-    var baseString = string.Join(" ", strings);
-    for (int i = 0; i < vars.Count; i++)
+    var baseString = string.Join(" ", Strings);
+    for (int i = 0; i < Vars.Count; i++)
     {
       baseString = baseString.Replace(i.ToString(), "" + variables[i] + "");
     }
@@ -86,10 +116,10 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
   /// <returns>The string equivalent.</returns>
   public override string ToString()
   {
-    var baseString = string.Join(" ", strings);
-    for (int i = 0; i < vars.Count; i++)
+    var baseString = string.Join(" ", Strings);
+    for (int i = 0; i < Vars.Count; i++)
     {
-      baseString = baseString.Replace(i.ToString(), "@(" + vars[i].Name + ")");
+      baseString = baseString.Replace(i.ToString(), "@(" + Vars[i].Name + ")");
     }
 
     return baseString;

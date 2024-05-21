@@ -8,10 +8,41 @@ namespace Interpreter.Lib.Results.Objects;
 /// </summary>
 /// <param name="query">tThe parsed query.</param>
 /// <param name="variables">The variables of the query.</param>
-public class Query(ProgramRule query, HashSet<string> variables)
+public class Query
 {
-  public ProgramRule ParsedQuery { get; set; } = query;
-  public HashSet<string> Variables { get; set; } = variables;
+  private ProgramRule parsedQuery;
+  private HashSet<string> variables;
+
+  public ProgramRule ParsedQuery
+  {
+    get
+    {
+      return parsedQuery;
+    }
+
+    private set
+    {
+      parsedQuery = value ?? throw new ArgumentNullException(nameof(ParsedQuery), "Is not supposed to be null");
+    }
+  }
+
+  public HashSet<string> Variables
+  {
+    get
+    {
+      return variables;
+    }
+    private set
+    {
+      variables = value ?? throw new ArgumentNullException(nameof(Variables), "Is not supposed to be null");
+    }
+  }
+
+  public Query(ProgramRule query, HashSet<string> variables)
+  {
+    ParsedQuery = query;
+    Variables = variables;
+  }
 
   /// <summary>
   /// Returns the Name of the query because it is a random uuid

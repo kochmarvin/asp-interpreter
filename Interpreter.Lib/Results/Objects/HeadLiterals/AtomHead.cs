@@ -4,12 +4,30 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.HeadLiterals;
 
-public class AtomHead(Atom atom) : Head
+public class AtomHead : Head
 {
-  public Atom Atom { get; } = atom;
+  private Atom atom;
+  public Atom Atom
+  {
+    get
+    {
+      return atom;
+    }
+    private set
+    {
+      atom = value ?? throw new ArgumentNullException(nameof(Atom), "Is not supposed to be null");
+    }
+  }
+
+  public AtomHead(Atom atom)
+  {
+    Atom = atom;
+  }
 
   public override Head Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+    
     return new AtomHead(Atom.Apply(substitutions));
   }
 

@@ -9,18 +9,51 @@ using Interpreter.Lib.Results.Objects.Terms;
 /// </summary>
 /// <param name="positive">If the atom has a not or not a not infront of it</param>
 /// <param name="atom">The Atom.</param>
-public class AtomLiteral(bool positive, Atom atom) : Literal
+public class AtomLiteral : Literal
 {
-  public bool Positive { get; } = positive;
-  public Atom Atom { get; } = atom;
+  private bool positiv;
+  private Atom atom;
+
+  public bool Positive
+  {
+    get
+    {
+      return positiv;
+    }
+    private set
+    {
+      positiv = value;
+    }
+  }
+
+  public Atom Atom
+  {
+    get
+    {
+      return atom;
+    }
+    private set
+    {
+      atom = value ?? throw new ArgumentNullException(nameof(Atom), "Is not supposed to be null");
+    }
+  }
+
+  public AtomLiteral(bool positive, Atom atom)
+  {
+    Positive = positive;
+    Atom = atom;
+  }
+
 
   public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
   {
+    ArgumentNullException.ThrowIfNull(visitor, "Is not supposed to be null");
     return visitor.Visit(this);
   }
 
   public override void AddToGraph(ILiteralAddToGraph literalAddToGraph)
   {
+    ArgumentNullException.ThrowIfNull(literalAddToGraph, "Is not supposed to be null");
     literalAddToGraph.AddToGraph(this);
   }
 
@@ -31,6 +64,7 @@ public class AtomLiteral(bool positive, Atom atom) : Literal
   /// <returns>A new object instance.</returns>
   public override Literal Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
     Atom appliedAtom = Atom.Apply(substitutions);
     return new AtomLiteral(Positive, appliedAtom);
   }

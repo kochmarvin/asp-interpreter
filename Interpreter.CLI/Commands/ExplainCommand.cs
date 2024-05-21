@@ -153,7 +153,7 @@ public class ExplainCommand : ICommand
         if (literalBody.Literal is ComparisonLiteral comparison)
         {
 
-          switch (comparison.Reltation)
+          switch (comparison.TermRelation)
           {
             case Relation.Unification:
               basis += "          " + comparison.Left.ToString() + " is " + comparison.Right.ToString() + "\n";
