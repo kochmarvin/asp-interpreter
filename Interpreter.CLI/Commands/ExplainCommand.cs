@@ -174,7 +174,7 @@ public class ExplainCommand : ICommand
 
                 if (literalBody.Literal is ComparisonLiteral comparison)
                 {
-                    switch (comparison.Reltation)
+                    switch (comparison.TermRelation)
                     {
                         case Relation.Unification:
                             basis += "          " + comparison.Left.ToString() + " is " + comparison.Right.ToString() + "\n";
@@ -210,7 +210,8 @@ public class ExplainCommand : ICommand
         return rules
             .Where(r => r != reference)
             .Where(
-              (rule) => rule.Head is AtomHead).Where((atomHead) =>
+              (rule) => rule.Head is AtomHead)
+            .Where((atomHead) =>
             {
                 AtomHead atom = (AtomHead)atomHead.Head;
                 return atom.Atom.Signature == signature;
@@ -223,7 +224,7 @@ public class ExplainCommand : ICommand
 
         foreach (var arrgs in atom.Args)
         {
-            varOder.Add(arrgs.ToString());
+            varOder.Add(arrgs.ToString() ?? string.Empty);
         }
 
         string toPrint = literal.GetText(varOder);

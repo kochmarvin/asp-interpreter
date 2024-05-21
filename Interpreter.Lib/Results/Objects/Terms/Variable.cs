@@ -4,10 +4,31 @@ namespace Interpreter.Lib.Results.Objects.Terms;
 /// <summary>
 /// Variable Term, variable is everything so not just X it is also a, b.
 /// </summary>
-/// <param name="name">The name of the variable e.g X</param>
-public class Variable(string name) : Term
+public class Variable : Term
 {
-  public string Name { get; } = name;
+  private string name;
+
+  public string Name
+  {
+    get
+    {
+      return name;
+    }
+    private set
+    {
+      name = value ?? throw new ArgumentNullException(nameof(Name), "Is not supposed to be null");
+    }
+  }
+
+  public Variable(string name)
+  {
+    Name = name;
+  }
+
+  public override T? Accept<T>(TermVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
 
   /// <summary>
   /// Applies the substiution to the object.
@@ -16,6 +37,8 @@ public class Variable(string name) : Term
   /// <returns>A new object instance.</returns>
   public override Term Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+
     if (substitutions.TryGetValue(Name, out Term? term))
     {
       return term;
@@ -74,16 +97,22 @@ public class Variable(string name) : Term
   /// <param name="other">The other object to match it.</param>
   /// <param name="substiutionen">The found subsitituions</param>
   /// <returns>Either if it was a match or not.</returns>
-  public override bool Match(Term other, Dictionary<string, Term> substiutionen)
+  public override bool Match(Term other, Dictionary<string, Term> substitutions)
   {
-    if (substiutionen.TryGetValue(Name, out Term? t))
+    ArgumentNullException.ThrowIfNull(other, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+
+    if (substitutions.TryGetValue(Name, out Term? found))
     {
-      return ((Variable)t).Name == ((Variable)other).Name;
+      var parsedFound = found.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
+      var parsedOther = other.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
+
+      return parsedFound.Name == parsedOther.Name;
     }
 
-    if (this.HasVariables())
+    if (HasVariables())
     {
-      substiutionen.Add(Name, other);
+      substitutions.Add(Name, other);
     }
 
     return true;

@@ -7,7 +7,7 @@ namespace Interpreter.Lib.Results.Objects.Literals;
 /// <summary>
 /// Abstract Class for a Literal
 /// </summary>
-public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables, IGetLiteralAtoms
+public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables, IGetLiteralAtoms, ILiteralAccept
 {
   /// <summary>
   /// Applies the substiution to the object.
@@ -37,13 +37,6 @@ public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables,
   /// <returns>Either if it includes the variable or not.</returns>
   public abstract bool HasVariables(string variable);
 
-  /// <summary>
-  /// Gives the order integer of a specific literal.
-  /// </summary>
-  /// <param name="literalOrder">The literal order visitor.</param>
-  /// <returns>The order integer of a spercific literal.</returns>
-  public abstract int Order(ILiteralOrder literalOrder);
-
   public abstract void AddToGraph(ILiteralAddToGraph literalAddToGraph);
 
   /// <summary>
@@ -54,4 +47,6 @@ public abstract class Literal : IApplier<Literal>, IHasVariables, IGetVariables,
   {
     return base.ToString();
   }
+
+  public abstract T? Accept<T>(LiteralVisitor<T> visitor);
 }

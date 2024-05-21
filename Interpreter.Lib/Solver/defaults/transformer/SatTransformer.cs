@@ -29,6 +29,42 @@ public class SatTransformer : ITransformer
   // Dictionary which is reveresed to  get the string of Atom based on its index.
   private Dictionary<int, string> _reMappedAtoms = [];
 
+
+  private IChecker checker;
+  private ObjectParser parser;
+
+  public IChecker Checker
+  {
+    get
+    {
+      return checker;
+    }
+
+    private set
+    {
+      checker = value ?? throw new ArgumentNullException(nameof(Checker), "Is not supposed to be null");
+    }
+  }
+
+  public ObjectParser Parser
+  {
+    get
+    {
+      return parser;
+    }
+
+    private set
+    {
+      parser = value ?? throw new ArgumentNullException(nameof(Parser), "Is not supposed to be null");
+    }
+  }
+
+  public SatTransformer(IChecker checker, ObjectParser parser)
+  {
+    Checker = checker;
+    Parser = parser;
+  }
+
   /// <summary>
   /// Transforms a formular pased on the remainder of the preperation.
   /// </summary>
@@ -36,6 +72,8 @@ public class SatTransformer : ITransformer
   /// <returns>A List with list of integers where each row is and and each col or combined.</returns>
   public List<List<int>> TransformToFormular(Preperation preperation)
   {
+    ArgumentNullException.ThrowIfNull(preperation, "Is not supposed to be null");
+
     var watch = StopWatch.Start();
     _preperation = preperation;
 
@@ -49,15 +87,15 @@ public class SatTransformer : ITransformer
       var rule = preperation.Remainder[i];
 
       // If the rule is headless we transform the headless expression
-      if (rule.Head is Headless headless)
+      if (rule.Head.Accept(Checker.IsHeadlessVisitor))
       {
         expressions.Add(TransformHeadless(rule.Body, ref index));
       }
 
       // If the rule head is a choice we transform the choice expression
-      if (rule.Head is ChoiceHead choiceHead)
+      if (rule.Head.Accept(Checker.IsChoiceHeadVisitor))
       {
-        foreach (var choice in choiceHead.Atoms)
+        foreach (var choice in rule.Head.GetHeadAtoms())
         {
           // Generate or find a new index for the string of the choice.
           int foundIndex = GetIndexOfString(choice.ToString(), ref index, choice);
@@ -80,8 +118,9 @@ public class SatTransformer : ITransformer
       }
 
       // if the rule is a simple head we transform it
-      if (rule.Head is AtomHead atomHead)
+      if (rule.Head.Accept(Checker.IsAtomHeadVisitor))
       {
+        var atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something happend which should not be");
         // Firstly generate or find the index of the head atom.
         int foundIndex = GetIndexOfString(atomHead.Atom.ToString(), ref index, atomHead.Atom);
 
@@ -95,12 +134,12 @@ public class SatTransformer : ITransformer
         // Finding all or rules with linq. This are all rules which heave the same head as me
         var orRules = preperation.Remainder.
         Where(watchRule => watchRule != rule).
-        Where(rule => rule.Head is AtomHead).
+        Where(rule => rule.Head.Accept(Checker.IsAtomHeadVisitor)).
         Where(rule => rule.Body.Count > 0).
         Where(
           rule =>
           {
-            var ruleHead = rule.Head as AtomHead;
+            var ruleHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor);
             return ruleHead?.Atom.ToString() == atomHead.Atom.ToString();
           }
         ).ToList();
@@ -193,6 +232,8 @@ public class SatTransformer : ITransformer
   /// <returns>A new and fresh expression.</returns>
   private ConjunctiveNormalForm.Expression LoopRuleOrBody(List<List<AtomLiteral>> atomLiterals, ref int index)
   {
+    ArgumentNullException.ThrowIfNull(atomLiterals, "Is not supposed to be null");
+
     // If there is no literal which means no external support we say that it is impssible to get to that state
     if (atomLiterals.Count == 0)
     {
@@ -226,6 +267,8 @@ public class SatTransformer : ITransformer
   /// <returns>A fresh expression with th bodies connected.</returns>
   private ConjunctiveNormalForm.Expression LoopRuleAndBody(List<AtomLiteral> atomLiterals, ref int index)
   {
+    ArgumentNullException.ThrowIfNull(atomLiterals, "Is not supposed to be null");
+
     // If the body count is one just generate the variable and return it
     if (atomLiterals.Count == 1)
     {
@@ -255,6 +298,8 @@ public class SatTransformer : ITransformer
   /// <exception cref="InvalidOperationException">If you try to call the retransform without using a preperation.</exception>
   public List<List<Atom>> ReTransform(List<List<int>> results)
   {
+    ArgumentNullException.ThrowIfNull(results, "Is not supposed to be null");
+
     if (_preperation == null)
     {
       throw new InvalidOperationException("You have to Transform the data first to retransform it!");
@@ -272,8 +317,9 @@ public class SatTransformer : ITransformer
     // Iterate over the factually true atoms and add it to every answer set, because they have to be prensent in every
     foreach (var rule in _preperation.FactuallyTrue)
     {
-      if (rule.Head is AtomHead atomHead)
+      if (rule.Head.Accept(Checker.IsAtomHeadVisitor))
       {
+        var atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something happend which should not be");
         alwaysTrue.Add(atomHead.Atom);
       }
     }
@@ -338,7 +384,7 @@ public class SatTransformer : ITransformer
     List<List<Atom>> uniqueAtomLists = distinctAtomLists.Select(list =>
            list
             .GroupBy(atom => atom.ToString())
-            .Select(g => g.First())
+            .Select(group => group.First())
             .OrderByDescending(atom => atom.ToString())
             .ToList()
        ).ToList();
@@ -362,6 +408,8 @@ public class SatTransformer : ITransformer
   /// <returns>A list wihtout duplicates</returns>
   private List<List<Atom>> RemoveDuplicates(List<List<Atom>> originalLists)
   {
+    ArgumentNullException.ThrowIfNull(originalLists, "Is not supposed to be null");
+
     var uniqueLists = new HashSet<List<Atom>>(new AtomListComparer());
     foreach (var list in originalLists)
     {
@@ -377,6 +425,8 @@ public class SatTransformer : ITransformer
   /// <returns>A converted List.</returns>
   private List<List<int>> ConvertFSharpListToList(FSharpList<FSharpList<int>> fsharpListOfLists)
   {
+    ArgumentNullException.ThrowIfNull(fsharpListOfLists, "Is not supposed to be null");
+
     return ListModule.OfSeq(fsharpListOfLists)
            .Select(fsharpList => ListModule.OfSeq(fsharpList).ToList())
            .ToList();
@@ -384,6 +434,8 @@ public class SatTransformer : ITransformer
 
   private ConjunctiveNormalForm.Expression TransformHeadless(List<Body> bodies, ref int index)
   {
+    ArgumentNullException.ThrowIfNull(bodies, "Is not supposed to be null");
+
     if (bodies.Count == 1)
     {
       var singleExpression = AtomLiteralExpression(bodies[0], ref index);
@@ -418,6 +470,9 @@ public class SatTransformer : ITransformer
   /// <exception cref="InvalidOperationException">If the head is negative -1.</exception>
   private ConjunctiveNormalForm.Expression TransformBodyLiterals(int headIndex, List<Body> bodies, List<ProgramRule> orBodies, ref int index, int fictionalIndex = -1)
   {
+    ArgumentNullException.ThrowIfNull(bodies, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(orBodies, "Is not supposed to be null");
+
     // if the head index is -1 we throw an error because that cannot happen
     if (headIndex == -1)
     {
@@ -435,7 +490,7 @@ public class SatTransformer : ITransformer
     }
 
     CNFWrapper expression = CNFWrapper.NewExpression();
-    
+
     // if there is at least on body and more then one or bodies we set an or with the only body and the transformed or body
     if (bodies.Count == 1 && orBodies.Count >= 1 && fictionalIndex == -1)
     {
@@ -487,6 +542,8 @@ public class SatTransformer : ITransformer
   /// <returns>The or combined expression.</returns>
   private ConjunctiveNormalForm.Expression TransformOrBodie(List<ProgramRule> orBodies, ref int index)
   {
+    ArgumentNullException.ThrowIfNull(orBodies, "Is not supposed to be null");
+
     // If the or body is just one big we combine the body itself and and return it
     if (orBodies.Count == 1)
     {
@@ -515,6 +572,8 @@ public class SatTransformer : ITransformer
   /// <returns>The and combined expression.</returns>
   public ConjunctiveNormalForm.Expression TransformAnd(ProgramRule rule, ref int index)
   {
+    ArgumentNullException.ThrowIfNull(rule, "Is not supposed to be null");
+
     // The body is just one element big, there is nothing to be and connected
     // so just return the literal expression
     if (rule.Body.Count == 1)
@@ -546,10 +605,15 @@ public class SatTransformer : ITransformer
   /// <exception cref="InvalidOperationException">If another literal has crossed this way like is or comparrison.</exception>
   private AtomLiteral GetAtomOfBody(Body body)
   {
-    if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral atomLiteral)
+    ArgumentNullException.ThrowIfNull(body, "Is not supposed to be null");
+
+    if (body.Accept(Checker.IsAtomLiteralVisitor))
     {
+      var atomLiteral = body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something happend which should not be");
+
       return atomLiteral;
     }
+
     throw new InvalidOperationException("Somehow a body literal, not of type AtomLiteral has come accross my way");
   }
 
@@ -561,6 +625,8 @@ public class SatTransformer : ITransformer
   /// <returns>The corresponding expression.</returns>
   private ConjunctiveNormalForm.Expression CreateDynamicVariable(AtomLiteral literal, int index)
   {
+    ArgumentNullException.ThrowIfNull(literal, "Is not supposed to be null");
+
     return literal.Positive ? CNFWrapper.CreateVariable(index) :
       CNFWrapper.CreateNegativeVariable(index);
   }
@@ -622,6 +688,8 @@ public class SatTransformer : ITransformer
   /// <returns>The corresponding expression.</returns>
   private ConjunctiveNormalForm.Expression AtomLiteralExpression(Body body, ref int index)
   {
+    ArgumentNullException.ThrowIfNull(body, "Is not supposed to be null");
+
     var atomLiteral = GetAtomOfBody(body);
     return LoopAtomLiteralExpression(atomLiteral, ref index);
   }
@@ -634,6 +702,8 @@ public class SatTransformer : ITransformer
   /// <returns>The corresponding expression.</returns>
   private ConjunctiveNormalForm.Expression LoopAtomLiteralExpression(AtomLiteral atomLiteral, ref int index)
   {
+    ArgumentNullException.ThrowIfNull(atomLiteral, "Is not supposed to be null");
+    
     int foundIndex = GetIndexOfString(atomLiteral.Atom.ToString(), ref index, atomLiteral.Atom);
     return CreateDynamicVariable(atomLiteral, foundIndex);
   }

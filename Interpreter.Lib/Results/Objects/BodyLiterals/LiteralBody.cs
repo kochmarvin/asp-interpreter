@@ -5,22 +5,37 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.BodyLiterals;
 
-public class LiteralBody(Literal literal) : Body
+public class LiteralBody : Body
 {
-  public Literal Literal { get; } = literal;
-
-  public override int Order(IBodyOrder orderVisitor)
+  private Literal literal;
+  public Literal Literal
   {
-    return orderVisitor.Order(this);
+    get
+    {
+      return literal;
+    }
+    private set
+    {
+      literal = value ?? throw new ArgumentNullException(nameof(Literal), "Is not supposed to be null");
+    }
+  }
+
+  public LiteralBody(Literal literal)
+  {
+    Literal = literal;
   }
 
   public override void AddToGraph(IBodyAddToGraph addToGraphVisitor)
   {
+    ArgumentNullException.ThrowIfNull(addToGraphVisitor, "Is not supposed to be null");
+
     addToGraphVisitor.AddToGraph(this);
   }
 
   public override Body Apply(Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+
     Literal appliedLiteral = Literal.Apply(substitutions);
     return new LiteralBody(appliedLiteral);
   }
@@ -48,5 +63,10 @@ public class LiteralBody(Literal literal) : Body
   public override List<Atom> GetBodyAtoms()
   {
     return Literal.GetLiteralAtoms();
+  }
+
+  public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
   }
 }

@@ -20,9 +20,22 @@ public class Logger
   /// </summary>
   private ILogger _logger;
 
+  public ILogger LoggerInstance
+  {
+    get
+    {
+      return _logger;
+    }
+
+    private set
+    {
+      _logger = value ?? throw new ArgumentNullException(nameof(Logger), "Is not supposed to be null");
+    }
+  }
+
   private Logger(ILogger logger)
   {
-    _logger = logger;
+    LoggerInstance = logger;
   }
 
 
@@ -53,12 +66,12 @@ public class Logger
     _instance = new Logger(logger);
   }
 
-
   public static void Information(string message)
   {
     if (_instance == null) InitLogger(false);
     _instance?._logger.LogInformation(message);
   }
+
   public static void Debug(string message)
   {
     if (_instance == null) InitLogger(false);

@@ -4,7 +4,6 @@ using Interpreter.Lib.Results.Objects;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Rule;
-using Interpreter.Lib.Results.Vistors;
 using Interpreter.Lib.Solver.Interfaces;
 
 namespace Interpreter.Lib.Solver;
@@ -15,11 +14,57 @@ namespace Interpreter.Lib.Solver;
 /// <param name="query">The query which should get solved</param>
 /// <param name="set">The found sets.</param>
 /// <param name="preparer">An instance of an preparer.</param>
-public class QuerySolver(Query query, List<Atom> set, IPreparer preparer)
+public class QuerySolver
 {
-  private readonly IPreparer _preparer = preparer;
-  private readonly List<Atom> _set = set;
-  private readonly Query _query = query;
+  private IPreparer _preparer;
+  private List<Atom> _set;
+  private Query _query;
+
+  public IPreparer Preparer
+  {
+    get
+    {
+      return _preparer;
+    }
+
+    private set
+    {
+      _preparer = value ?? throw new ArgumentNullException(nameof(Preparer), "Is not Supposed to be null");
+    }
+  }
+
+  public List<Atom> Set
+  {
+    get
+    {
+      return _set;
+    }
+
+    private set
+    {
+      _set = value ?? throw new ArgumentNullException(nameof(Set), "Is not supposed to be null");
+    }
+  }
+
+  public Query Query
+  {
+    get
+    {
+      return _query;
+    }
+
+    private set
+    {
+      _query = value ?? throw new ArgumentNullException(nameof(Query), "Is not supposed to be null");
+    }
+  }
+
+  public QuerySolver(Query query, List<Atom> set, IPreparer preparer)
+  {
+    Query = query;
+    Set = set;
+    Preparer = preparer;
+  }
 
   /// <summary>
   /// Generates all the answers for the specified query
@@ -39,7 +84,7 @@ public class QuerySolver(Query query, List<Atom> set, IPreparer preparer)
     rules.Add(_query.ParsedQuery);
 
     // Just make the grounding process again prepare it with that we know what query could be resolved
-    DependencyGraph graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    DependencyGraph graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounding = new Grounding(graph);
     var grounded = grounding.Ground();
 
@@ -52,10 +97,20 @@ public class QuerySolver(Query query, List<Atom> set, IPreparer preparer)
 
     // Returning all the querys which are factually true and could be resolved.
     return prepared.FactuallyTrue
-        .Where(rule => rule.Head is AtomHead &&
-              ((AtomHead)rule.Head).Atom.Name.StartsWith(_query.Name) &&
-               rule.Body.Count == 0)
-        .ToList();
+        .Where(rule =>
+        {
 
+          if (!rule.Head.Accept(new IsAtomHeadVisitor()))
+          {
+            return false;
+          }
+
+          var parsedHead = rule.Head.Accept(new ParseAtomHeadVisitor()) ?? throw new InvalidOperationException("Something happend which should not happen");
+
+          return parsedHead.Atom.Name.StartsWith(_query.Name) &&
+               rule.Body.Count == 0;
+        }
+        )
+        .ToList();
   }
 }

@@ -8,19 +8,37 @@ using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
 using Interpreter.Lib.Logger;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Interpreter.Lib.Grounder;
 
-public class Grounding(DependencyGraph graph)
+public class Grounding : IGrounder, IGroundMatcher
 {
   private readonly List<Atom> _visited = [];
   private readonly List<string> _warnings = [];
-  public DependencyGraph Graph { get; } = graph;
+  private DependencyGraph graph;
+  public Grounding(DependencyGraph graph)
+  {
+    Graph = graph;
+  }
 
   /// <summary>
   /// This is a list of atomliterals that have not been found in a head, just for print out
   /// </summary>
   public List<string> Warnings { get { return _warnings; } }
+
+  public DependencyGraph Graph
+  {
+    get
+    {
+      return graph;
+    }
+
+    private set
+    {
+      graph = value ?? throw new ArgumentNullException(nameof(Graph), "Is not supposed to be null");
+    }
+  }
 
   /// <summary>
   /// This function creates the grounding secence of the program
@@ -39,7 +57,7 @@ public class Grounding(DependencyGraph graph)
       {
         foreach (var body in Graph.Program[i].Body)
         {
-          if (body is LiteralBody literalBody && literalBody.Literal is CommentLiteral)
+          if (body.Accept(new IsCommentLiteralVisitor()))
           {
             Graph.Program.RemoveAt(i);
             i--;
@@ -169,31 +187,20 @@ public class Grounding(DependencyGraph graph)
   /// <param name="rules">The frounded Programm</param>
   private void AddHeadlessRules(List<ProgramRule> rules)
   {
+    ArgumentNullException.ThrowIfNull(rules, "Is not supposed to be null");
+
     List<ProgramRule> newHeadlessRules = [];
     foreach (var rule in rules)
     {
-
       // If it is a choicehead do it for every atom (choice)
-      if (rule.Head is ChoiceHead choiceHead)
+      foreach (var atom in rule.Head.GetHeadAtoms())
       {
-        foreach (var atom in choiceHead.Atoms)
+        try
         {
           var newRule = AddHeadlessRuleForAtom(atom);
-          if (newRule != null)
-          {
-            newHeadlessRules.Add(newRule);
-          }
-        }
-      }
-
-      // if it is a normal head generate the headless rule for it
-      if (rule.Head is AtomHead atomHead)
-      {
-        var newRule = AddHeadlessRuleForAtom(atomHead.Atom);
-        if (newRule != null)
-        {
           newHeadlessRules.Add(newRule);
         }
+        catch (InvalidOperationException) { }
       }
     }
 
@@ -207,19 +214,20 @@ public class Grounding(DependencyGraph graph)
   /// </summary>
   /// <param name="atom">An atom which you want to generate the rule for</param>
   /// <returns>Either null if it does not start with - or a new headless rule</returns>
-  private ProgramRule? AddHeadlessRuleForAtom(Atom atom)
+  private ProgramRule AddHeadlessRuleForAtom(Atom atom)
   {
+    ArgumentNullException.ThrowIfNull(atom, "Is not supposed to be null");
+
     if (!atom.Name.StartsWith("-"))
     {
-      return null;
+      throw new InvalidOperationException("Creating a Headless rule for a positve Atom is not allowed");
     }
 
     // Create a rule where not both can be true not the positve and not the negative atom at the same time
     var negativeAtom = new LiteralBody(new AtomLiteral(true, new Atom(atom.Name, [.. atom.Args])));
     var postiveAtom = new LiteralBody(new AtomLiteral(true, new Atom(atom.Name[1..], [.. atom.Args])));
 
-    var rule = new ProgramRule(new Headless(), [negativeAtom, postiveAtom]);
-    return rule;
+    return new ProgramRule(new Headless(), [negativeAtom, postiveAtom]);
   }
 
   /// <summary>
@@ -231,19 +239,17 @@ public class Grounding(DependencyGraph graph)
   /// <returns>All heads as a string list.</returns>
   private List<string> GenerateAvailableAtoms(List<ProgramRule> groundedProgram, List<string> headNamesOnly)
   {
+    ArgumentNullException.ThrowIfNull(groundedProgram, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(headNamesOnly, "Is not supposed to be null");
+
     List<string> availableAtoms = [];
+
     foreach (var rule in groundedProgram)
     {
-      if (rule.Head is ChoiceHead choiceHead)
+      foreach (var atom in rule.Head.GetHeadAtoms())
       {
-        availableAtoms.AddRange(choiceHead.Atoms.Select(atom => atom.ToString()));
-        headNamesOnly.AddRange(choiceHead.Atoms.Select(atom => atom.Name));
-      }
-
-      if (rule.Head is AtomHead atomHead)
-      {
-        availableAtoms.Add(atomHead.Atom.ToString());
-        headNamesOnly.Add(atomHead.Atom.Name);
+        availableAtoms.Add(atom.ToString());
+        headNamesOnly.Add(atom.Name);
       }
     }
 
@@ -261,6 +267,8 @@ public class Grounding(DependencyGraph graph)
   /// <param name="availableAtoms">The heads of each rule.</param>
   private void GroundCleanUp(List<ProgramRule> groundedProgram)
   {
+    ArgumentNullException.ThrowIfNull(groundedProgram, "Is not supposed to be null");
+
     Logger.Logger.Debug("Cleaning up grounded program.");
     int changes = 0;
     do
@@ -273,12 +281,12 @@ public class Grounding(DependencyGraph graph)
         foreach (var body in groundedProgram[i].Body)
         {
           // Change this if there somehow comes a new body type like aggregations
-          var literal = ((LiteralBody)body).Literal;
-
-          if (literal is AtomLiteral atomLiteral && atomLiteral.Positive)
+          if (body.Accept(new GrounderCleanUpVisitor()))
           {
             // Check if the rule we are lookign at is in the valid rules, if not 
             // we have to get rid of every component of the rule
+            AtomLiteral atomLiteral = body.Accept(new TransformToAtomLiteralVisitor()) ?? throw new InvalidOperationException("Trying to transform wrong literal");
+
             if (availableAtoms.Contains(atomLiteral.Atom.ToString()))
             {
               continue;
@@ -287,18 +295,9 @@ public class Grounding(DependencyGraph graph)
             // Now we now that we are making change, because we delete rules and modify the valid atoms
             changes++;
 
-            // if it is a choice head remove every possible choice from the valid atoms.
-            if (groundedProgram[i].Head is ChoiceHead choiceHead)
+            foreach (var atom in groundedProgram[i].Head.GetHeadAtoms())
             {
-              // Also a simple way to write the process, could be made longer with for loops, 
-              // TODO maybe change for better readability
-              choiceHead.Atoms.Select(atom => atom.ToString()).ToList().ForEach((atom) => availableAtoms.Remove(atom.ToString()));
-            }
-
-            // if it is a normal head just remove it.
-            if (groundedProgram[i].Head is AtomHead atomHead)
-            {
-              availableAtoms.Remove(atomHead.Atom.ToString());
+              availableAtoms.Remove(atom.ToString());
             }
 
             groundedProgram.RemoveAt(i);
@@ -323,6 +322,8 @@ public class Grounding(DependencyGraph graph)
   /// <returns>Grounded rules for the given sub program.</returns>
   private List<ProgramRule> GroundSubProgram(List<ProgramRule> subPorgram)
   {
+    ArgumentNullException.ThrowIfNull(subPorgram, "Is not supposed to be null");
+
     var groundedSubProgram = new List<ProgramRule>();
 
     foreach (var rule in subPorgram)
@@ -334,28 +335,15 @@ public class Grounding(DependencyGraph graph)
         continue;
       }
 
-      // TODO check if this is valid behaviour.
-      // if (!rule.HasVariables())
-      // {
-      //   groundedSubProgram.Add(rule);
-      //   continue;
-      // }
-
       groundedSubProgram.AddRange(GroundRule(rule));
     }
 
     // Add every rule head to visited for future substitutions
     foreach (var rule in groundedSubProgram)
     {
-      if (rule.Head is ChoiceHead choiceHead)
+      foreach (var atom in rule.Head.GetHeadAtoms())
       {
-        // Due to linq very short way to write this
-        choiceHead.Atoms.ForEach(_visited.Add);
-      }
-
-      if (rule.Head is AtomHead atomHead)
-      {
-        _visited.Add(atomHead.Atom);
+        _visited.Add(atom);
       }
     }
 
@@ -371,6 +359,8 @@ public class Grounding(DependencyGraph graph)
   /// <returns></returns>
   private List<ProgramRule> GroundRule(ProgramRule rule, Dictionary<string, Term>? substitutions = null, int index = 0)
   {
+    ArgumentNullException.ThrowIfNull(rule, "Is not supposed to be null");
+
     // If the substitution is null the initialize it with a new dict.
     substitutions ??= [];
     var groundedRules = new List<ProgramRule>();
@@ -383,77 +373,17 @@ public class Grounding(DependencyGraph graph)
     }
 
     // Also change this if there is somehow a new body
-    if (index < rule.Body.Count && rule.Body[index] is LiteralBody lit)
+    if (index < rule.Body.Count)
     {
+      var foundMatches = rule.Body[index].Accept(new MatchLiteralVisitor(substitutions, this)) ?? throw new InvalidOperationException("Trying to match literal which is not allowed");
       // Here we look if there are any matches with the current literal and the current substituations
-      foreach (var foundSubstituations in FindMatches(substitutions, lit.Literal))
+      foreach (var foundSubstituations in foundMatches)
       {
         groundedRules.AddRange(GroundRule(rule, foundSubstituations, index + 1));
       }
     }
 
     return groundedRules;
-  }
-
-  private List<Dictionary<string, Term>> FindMatches(Dictionary<string, Term> substitutions, Literal literal)
-  {
-    // If the literal is an atom literal so everything except exception
-    if (literal is AtomLiteral atomLiteral)
-    {
-      return MatchAtomLiteral(substitutions, atomLiteral);
-    }
-
-    // If the literal is a comparisson X = Y, Y <> X
-    if (literal is ComparisonLiteral comparisonLiteral)
-    {
-      var left = comparisonLiteral.Left.Apply(substitutions);
-      var right = comparisonLiteral.Right.Apply(substitutions);
-
-      // Here we check if the comparisson is valid because if it fails
-      // we wont store the substiturions for it.
-      if (EvaluateComparisson(left, comparisonLiteral.Reltation, right, substitutions))
-      {
-        return [substitutions];
-      }
-    }
-
-    // If the literal is a IsLiteral e.g. M is N - 1
-    if (literal is IsLiteral isLiteral)
-    {
-      var left = isLiteral.Left.Apply(substitutions);
-      var right = isLiteral.Right.Apply(substitutions);
-
-      if (left is not Number || right is not Number)
-      {
-        return [];
-      }
-
-      Number parsedLeft = (Number)left;
-      Number parsedRight = (Number)right;
-
-      int calculated = 0;
-
-      switch (isLiteral.Operator)
-      {
-        case Operator.PLUS:
-          calculated = parsedLeft.Value + parsedRight.Value;
-          break;
-        case Operator.MINUS:
-          calculated = parsedLeft.Value - parsedRight.Value;
-          break;
-        case Operator.DIVIDE:
-          calculated = parsedLeft.Value / parsedRight.Value;
-          break;
-        case Operator.MULTIPLY:
-          calculated = parsedLeft.Value * parsedRight.Value;
-          break;
-      }
-
-      substitutions.Add(isLiteral.New.Name, new Number(calculated));
-      return [substitutions];
-    }
-
-    return [];
   }
 
   /// <summary>
@@ -465,15 +395,21 @@ public class Grounding(DependencyGraph graph)
   /// <returns>If the operations succeds or not.</returns>
   private bool EvaluateComparisson(Term left, Relation relation, Term right, Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(relation, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
 
     if (relation == Relation.Unification)
     {
       return EvaluateUnification(left, right, substitutions);
     }
 
-    if (left is Number leftParsed && right is Number rightParsed)
+    if (left.Accept(new IsNumberVisitor()) && right.Accept(new IsNumberVisitor()))
     {
-      return EvaluateNumber(leftParsed, relation, rightParsed);
+      var parsedLeft = left.Accept(new ParseNumberVisitor()) ?? throw new InvalidOperationException("Trying to compare something other then number");
+      var parsedRight = right.Accept(new ParseNumberVisitor()) ?? throw new InvalidOperationException("Trying to compare something other then number");
+      return EvaluateNumber(parsedLeft, relation, parsedRight);
     }
 
     return relation switch
@@ -490,6 +426,9 @@ public class Grounding(DependencyGraph graph)
 
   private bool EvaluateUnification(Term left, Term right, Dictionary<string, Term> substitutions)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
 
     if (left.HasVariables() && right.HasVariables())
     {
@@ -539,6 +478,10 @@ public class Grounding(DependencyGraph graph)
 
   private bool EvaluateNumber(Number left, Relation relation, Number right)
   {
+    ArgumentNullException.ThrowIfNull(left, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(relation, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(right, "Is not supposed to be null");
+
     return relation switch
     {
       Relation.LessEqual => left.Value <= right.Value,
@@ -557,8 +500,11 @@ public class Grounding(DependencyGraph graph)
   /// <param name="substitutions">Possible values for the appliers.</param>
   /// <param name="atomLiteral">The literal you want to find matches for.</param>
   /// <returns>A List of possible matches.</returns>
-  private List<Dictionary<string, Term>> MatchAtomLiteral(Dictionary<string, Term> substitutions, AtomLiteral atomLiteral)
+  public List<Dictionary<string, Term>> MatchAtomLiteral(Dictionary<string, Term> substitutions, AtomLiteral atomLiteral)
   {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(atomLiteral, "Is not supposed to be null");
+
     var substituationList = new List<Dictionary<string, Term>>();
 
     _warnings.Add(atomLiteral.Atom.Name);
@@ -590,4 +536,61 @@ public class Grounding(DependencyGraph graph)
 
     return substituationList;
   }
+
+  public List<Dictionary<string, Term>> MatchComparisonLiteral(Dictionary<string, Term> substitutions, ComparisonLiteral comparisonLiteral)
+  {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(comparisonLiteral, "Is not supposed to be null");
+
+    var left = comparisonLiteral.Left.Apply(substitutions);
+    var right = comparisonLiteral.Right.Apply(substitutions);
+
+    // Here we check if the comparisson is valid because if it fails
+    // we wont store the substiturions for it.
+    if (EvaluateComparisson(left, comparisonLiteral.TermRelation, right, substitutions))
+    {
+      return [substitutions];
+    }
+
+    return [];
+  }
+
+  public List<Dictionary<string, Term>> MatchIsLiteral(Dictionary<string, Term> substitutions, IsLiteral isLiteral)
+  {
+    ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(isLiteral, "Is not supposed to be null");
+
+    var left = isLiteral.Left.Apply(substitutions);
+    var right = isLiteral.Right.Apply(substitutions);
+
+    if (!left.Accept(new IsNumberVisitor()) || !right.Accept(new IsNumberVisitor()))
+    {
+      return [];
+    }
+
+    Number parsedLeft = left.Accept(new ParseNumberVisitor()) ?? throw new InvalidOperationException("Trying to evaluate a Term which is not a number");
+    Number parsedRight = right.Accept(new ParseNumberVisitor()) ?? throw new InvalidOperationException("Trying to evaluate a Term which is not a number");
+
+    int calculated = 0;
+
+    switch (isLiteral.Operator)
+    {
+      case Operator.PLUS:
+        calculated = parsedLeft.Value + parsedRight.Value;
+        break;
+      case Operator.MINUS:
+        calculated = parsedLeft.Value - parsedRight.Value;
+        break;
+      case Operator.DIVIDE:
+        calculated = parsedLeft.Value / parsedRight.Value;
+        break;
+      case Operator.MULTIPLY:
+        calculated = parsedLeft.Value * parsedRight.Value;
+        break;
+    }
+
+    substitutions.Add(isLiteral.New.Name, new Number(calculated));
+    return [substitutions];
+  }
+
 }

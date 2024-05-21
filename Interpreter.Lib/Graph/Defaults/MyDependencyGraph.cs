@@ -4,7 +4,6 @@ using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
-using Interpreter.Lib.Results.Vistors;
 using QuickGraph;
 
 namespace Interpreter.Lib.Graph;
@@ -28,7 +27,7 @@ public class MyDependencyGraph : DependencyGraph
   /// Constructor which will order the rules in a certain way
   /// </summary>
   /// <param name="program">The progra which you want the graph of</param>
-  public MyDependencyGraph(List<ProgramRule> program, OrderVisitor orderVisitor, AddToGraphVisitor addToGraphVisitor) : base(program, orderVisitor, addToGraphVisitor)
+  public MyDependencyGraph(List<ProgramRule> program, LiteralVisitor<int> orderVisitor, AddToGraphVisitor addToGraphVisitor) : base(program, orderVisitor, addToGraphVisitor)
   {
     OrderRules();
   }
@@ -75,6 +74,9 @@ public class MyDependencyGraph : DependencyGraph
   /// <param name="signature">The signature of the rule.</param>
   private void AddSignature(ProgramRule rule, string signature)
   {
+    ArgumentNullException.ThrowIfNull(rule, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(signature, "Is not supposed to be null");
+
     if (!predicates.ContainsKey(signature))
     {
       predicates[signature] = [];
@@ -90,6 +92,9 @@ public class MyDependencyGraph : DependencyGraph
   /// <param name="atom">The head of the rule refernce to get the Signature</param>
   private void AddEdge(ProgramRule rule, Atom atom)
   {
+    ArgumentNullException.ThrowIfNull(rule, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(atom, "Is not supposed to be null");
+
     if (predicates.TryGetValue(atom.Signature, out var dependents))
     {
       foreach (var dependentRule in dependents)
@@ -117,11 +122,15 @@ public class MyDependencyGraph : DependencyGraph
   /// <returns>The integer where the body should be.</returns>
   private int OrderPredicate(Body body)
   {
-    return body.Order(OrderVisitor);
+    ArgumentNullException.ThrowIfNull(body, "Is not supposed to be null");
+
+    return body.Accept(OrderVisitor);
   }
 
   public override DependencyGraph CreateNewGraphInstance(List<ProgramRule> program)
   {
+    ArgumentNullException.ThrowIfNull(program, "Is not supposed to be null");
+
     return new MyDependencyGraph(program, OrderVisitor, AddToGraphVisitor);
   }
 }

@@ -27,6 +27,8 @@ public class DPLLSolver : ISolver
 
   public SatResult Solve(List<List<int>> formula)
   {
+    ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
+
     return DPLL(formula);
   }
 
@@ -37,6 +39,8 @@ public class DPLLSolver : ISolver
   /// <returns>The found Results</returns>
   public List<SatResult> FindAllSolutions(List<List<int>> formula)
   {
+    ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
+
     var watch = Stopwatch.StartNew();
     var allSolutions = new ConcurrentBag<SatResult>();
     var processedFormulas = new ConcurrentDictionary<string, bool>();
@@ -58,6 +62,12 @@ public class DPLLSolver : ISolver
   /// <param name="duplicateCount">On which duplicate state the process is</param>
   private void FindAllSolutionsRecursive(List<List<int>> formula, List<int> assignments, ConcurrentBag<SatResult> allSolutions, object lockObject, ConcurrentDictionary<string, bool> processedFormulas, int duplicateCount)
   {
+    ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(assignments, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(allSolutions, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(lockObject, "Is not supposed to be null");
+    ArgumentNullException.ThrowIfNull(processedFormulas, "Is not supposed to be null");
+
     Logger.Logger.Debug("Starting finding solutions process");
 
     // If the solver is on a formular which has already been processed it wont do it again.
@@ -115,6 +125,8 @@ public class DPLLSolver : ISolver
   /// <returns>The string value of the forumar.</returns>
   private string NormalizeAndStringifyFormula(List<List<int>> formula)
   {
+    ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
+
     var sortedClauses = formula.Select(clause => clause.OrderBy(lit => Math.Abs(lit)).ToList())
                                .OrderBy(clause => string.Join(",", clause));
     return string.Join(";", sortedClauses.Select(clause => string.Join(",", clause)));
@@ -128,6 +140,8 @@ public class DPLLSolver : ISolver
   /// <returns>A Sat result.</returns>
   private SatResult DPLL(List<List<int>> formula, List<int>? assignments = null)
   {
+    ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
+
     // If the assignments are not set set it.
     assignments ??= [];
 
@@ -183,6 +197,8 @@ public class DPLLSolver : ISolver
   /// <returns>The new formular.</returns>
   private List<List<int>> UnitPropagate(List<List<int>> originalFormula, int literal)
   {
+    ArgumentNullException.ThrowIfNull(originalFormula, "Is not supposed to be null");
+
     List<List<int>> result = [];
     foreach (var cnfClause in originalFormula)
     {

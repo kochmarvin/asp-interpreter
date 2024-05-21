@@ -1,3 +1,4 @@
+using System.Data;
 using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Visitors;
@@ -43,6 +44,6 @@ public class TermVisitor : LparseBaseVisitor<Term>
       return new Variable(context.VARIABLE().GetText());
     }
 
-    return null;
+    throw new SyntaxErrorException("Could not parse Term");
   }
 }

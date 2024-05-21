@@ -1,7 +1,7 @@
 using Interpreter.Lib.Graph;
 using Interpreter.Lib.Grounder;
 using Interpreter.Lib.Results.Objects.Rule;
-using Interpreter.Lib.Results.Vistors;
+
 using Interpreter.Lib.Solver;
 using Interpreter.Lib.Solver.defaults;
 using Interpreter.Tests;
@@ -16,12 +16,12 @@ public class SolverTests
     public void DPLLSolver(DPLLTestResults obj)
     {
         List<ProgramRule> program = Utils.ParseProgram(obj.File);
-        var graph = new MyDependencyGraph(program, new MyOrderVisitor(), new MyAddToGraphVisitor());
+        var graph = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
         var grounder = new Grounding(graph);
         var groundedProgram = grounder.Ground();
-        var preperation = new Preparer().Prepare(groundedProgram);
+        var preperation = new Preparer(new Checker(), new ObjectParser()).Prepare(groundedProgram);
 
-        List<List<int>> transformed = new SatTransformer().TransformToFormular(preperation);
+        List<List<int>> transformed = new SatTransformer(new Checker(), new ObjectParser()).TransformToFormular(preperation);
         var results = new DPLLSolver().FindAllSolutions(transformed);
 
         // System.Console.WriteLine(obj.File);

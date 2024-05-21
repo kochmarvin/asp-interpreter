@@ -8,9 +8,26 @@ namespace Interpreter.Lib.Solver.defaults;
 /// Default Solver engine which useses a basic preparer a basic sattransformer and the DPLL in the backend
 /// </summary>
 /// <param name="program"></param>
-public class SatEngine(List<ProgramRule> program) : SolverEngine(new Preparer(), new SatTransformer(), new DPLLSolver())
+public class SatEngine : SolverEngine
 {
-  public List<ProgramRule> Program { get; } = program;
+  private List<ProgramRule> program;
+
+  public List<ProgramRule> Program
+  {
+    get
+    {
+      return program;
+    }
+    private set
+    {
+      program = value ?? throw new ArgumentNullException(nameof(Program), "Is not supposed to be null");
+    }
+  }
+
+  public SatEngine(List<ProgramRule> program) : base(new Preparer(new Checker(), new ObjectParser()), new SatTransformer(new Checker(), new ObjectParser()), new DPLLSolver())
+  {
+    Program = program;
+  }
 
   /// <summary>
   /// Executes the Backend and solves it.
@@ -62,6 +79,6 @@ public class SatEngine(List<ProgramRule> program) : SolverEngine(new Preparer(),
 
     // Find all solutions with the DPLL and return the Sets
     var solved = Solver.FindAllSolutions(transformed);
-    return Transformer.ReTransform(solved.Select(sr => sr.Assignments).ToList());
+    return Transformer.ReTransform(solved.Select(set => set.Assignments).ToList());
   }
 }

@@ -4,7 +4,7 @@ using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
-using Interpreter.Lib.Results.Vistors;
+
 
 
 namespace Tests.Tree;
@@ -18,7 +18,7 @@ public class TreeTest
     DependencyGraph tree = new MyDependencyGraph([
       new ProgramRule(new AtomHead(new Atom("b", [])), [new LiteralBody(new AtomLiteral(true, new Atom("a", [])))]),
       new ProgramRule(new AtomHead(new Atom("a", [])), []),
-    ], new MyOrderVisitor(),
+    ], new OrderVisitor(),
       new MyAddToGraphVisitor());
 
     var graphs = tree.CreateGraph(true);
@@ -35,7 +35,7 @@ public class TreeTest
     DependencyGraph tree = new MyDependencyGraph([
       new ProgramRule(new AtomHead(new Atom("b", [])), [new LiteralBody(new AtomLiteral(false, new Atom("a", [])))]),
       new ProgramRule(new AtomHead(new Atom("a", [])), [new LiteralBody(new AtomLiteral(false, new Atom("b", [])))]),
-    ], new MyOrderVisitor(),
+    ], new OrderVisitor(),
       new MyAddToGraphVisitor());
 
     var graphs = tree.CreateGraph(true);

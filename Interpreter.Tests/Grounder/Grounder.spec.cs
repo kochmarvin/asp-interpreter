@@ -2,7 +2,7 @@ using Interpreter.Lib.Graph;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Grounder;
 using Interpreter.Tests.Parser;
-using Interpreter.Lib.Results.Vistors;
+
 
 namespace Tests.GrounderTests;
 
@@ -27,7 +27,7 @@ public class GrounderTests
       "isFaster(marvin,michi):-faster(marvin,werner),isFaster(werner,michi).",
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
     var grounded = grounder.Ground();
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
@@ -54,7 +54,7 @@ public class GrounderTests
       ":--fly(tux),fly(tux)."
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
@@ -77,7 +77,7 @@ public class GrounderTests
       "married(marvin):-mensch(marvin),notsingle(marvin)."
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
@@ -101,7 +101,7 @@ public class GrounderTests
       ":-c,nota."
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
@@ -144,7 +144,7 @@ public class GrounderTests
       "knoten(6):-node(6),6!=3.",
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
@@ -168,7 +168,7 @@ public class GrounderTests
       "{informatiker(julia);student(julia)}:-mensch(julia).",
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
@@ -190,7 +190,7 @@ public class GrounderTests
       "findetJuliaCool(marvin(findet(findet(julia(cool)))),julia(cool)):-marvin(findet(julia(cool))),marvin(findet(julia(cool)))."
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
@@ -215,7 +215,7 @@ public class GrounderTests
       "y:-x,b."
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
@@ -241,7 +241,7 @@ public class GrounderTests
       "fastest(skateboard):-vehicle(skateboard),notis_faster(bike,skateboard)."
     ];
 
-    var graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounder = new Grounding(graph);
 
     var grounded = grounder.Ground();
