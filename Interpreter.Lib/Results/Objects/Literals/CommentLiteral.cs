@@ -38,16 +38,6 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
   }
 
   /// <summary>
-  /// Gives the order integer of a specific literal.
-  /// </summary>
-  /// <param name="literalOrder">The literal order visitor.</param>
-  /// <returns>The order integer of a spercific literal.</returns>
-  public override int Order(ILiteralOrder literalOrder)
-  {
-    return literalOrder.Order(this);
-  }
-
-  /// <summary>
   /// Checks if the object has any varibles.
   /// </summary>
   /// <returns>Either if there are variables or not.</returns>
@@ -113,5 +103,10 @@ public class CommentLiteral(List<Variable> vars, List<string> strings) : Literal
   public override void AddToGraph(ILiteralAddToGraph literalAddToGraph)
   {
     return;
+  }
+
+  public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
   }
 }

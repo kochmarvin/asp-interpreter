@@ -6,7 +6,6 @@ using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
-using Interpreter.Lib.Results.Vistors;
 using Interpreter.Lib.Solver.Interfaces;
 
 namespace Interpreter.Lib.Solver.defaults;
@@ -228,7 +227,7 @@ public class Preparer : IPreparer
   public List<LoopRule> FindLoopRules(List<ProgramRule> program)
   {
     var watch = StopWatch.Start();
-    DependencyGraph g = new MyDependencyGraph(program, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    DependencyGraph g = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
     List<LoopRule> loopRules = [];
     Dictionary<string, LoopRule> rules = [];
 

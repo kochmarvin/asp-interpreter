@@ -5,7 +5,7 @@ namespace Interpreter.Lib.Results.Objects.Terms;
 /// <summary>
 /// Abstract class of the smallest Unit a rule can have
 /// </summary>
-public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables, IGetVariables
+public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables, IGetVariables, ITermAccept
 {
   /// <summary>
   /// Applies the substiution to the object.
@@ -49,4 +49,6 @@ public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables, IGetVa
   /// </summary>
   /// <returns>The available variables.</returns>
   public abstract List<string> GetVariables();
+
+  public abstract T? Accept<T>(TermVisitor<T> visitor);
 }

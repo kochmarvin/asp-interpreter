@@ -10,7 +10,6 @@ using Interpreter.Lib.Solver;
 using Interpreter.Lib.Solver.defaults;
 using Interpreter.Lib.Logger;
 using Interpreter.Lib.Results.Objects;
-using Interpreter.Lib.Results.Vistors;
 
 namespace Interpreter.CLI;
 
@@ -54,7 +53,7 @@ public class CommandManager
       Logger.Information("Solving...");
 
       // Building the graph and starting the grounder
-      DependencyGraph graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+      DependencyGraph graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
       Grounding grounder = new Grounding(graph);
       var groundedProgram = grounder.Ground();
 

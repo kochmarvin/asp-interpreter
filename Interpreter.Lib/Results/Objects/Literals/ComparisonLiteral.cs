@@ -47,16 +47,6 @@ public class ComparisonLiteral(Term left, Relation relation, Term right) : Liter
     return Left.HasVariables() || Right.HasVariables();
   }
 
-  /// <summary>
-  /// Gives the order integer of a specific literal.
-  /// </summary>
-  /// <param name="literalOrder">The literal order visitor.</param>
-  /// <returns>The order integer of a spercific literal.</returns>
-  public override int Order(ILiteralOrder literalOrder)
-  {
-    return literalOrder.Order(this);
-  }
-
   // <summary>
   /// Checks if the object has a specific variable.
   /// </summary>
@@ -84,5 +74,10 @@ public class ComparisonLiteral(Term left, Relation relation, Term right) : Liter
   public override void AddToGraph(ILiteralAddToGraph literalAddToGraph)
   {
     return;
+  }
+
+  public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
   }
 }

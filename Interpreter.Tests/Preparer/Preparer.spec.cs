@@ -6,7 +6,7 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
-using Interpreter.Lib.Results.Vistors;
+
 using Interpreter.Lib.Solver;
 using Interpreter.Lib.Solver.defaults;
 using Interpreter.Tests;
@@ -21,7 +21,7 @@ public class PreparerTests
   public void Prepare(PrepareResults obj)
   {
     List<ProgramRule> program = Utils.ParseProgram(obj.File);
-    var graph = new MyDependencyGraph(program, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    var graph = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
     var grounder = new Grounding(graph);
     var groundedProgram = grounder.Ground();
     var results = new Preparer().Prepare(groundedProgram);

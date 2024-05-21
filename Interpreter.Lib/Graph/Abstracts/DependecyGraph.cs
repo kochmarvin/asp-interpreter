@@ -1,5 +1,4 @@
 using Interpreter.Lib.Results.Objects.Rule;
-using Interpreter.Lib.Results.Vistors;
 using Microsoft.FSharp.Core;
 
 namespace Interpreter.Lib.Graph;
@@ -10,7 +9,7 @@ namespace Interpreter.Lib.Graph;
 public abstract class DependencyGraph
 {
   private List<ProgramRule> program;
-  private OrderVisitor orderVisitor;
+  private LiteralVisitor<int> orderVisitor;
   private AddToGraphVisitor addToGraphVisitor;
 
   public List<ProgramRule> Program
@@ -26,7 +25,7 @@ public abstract class DependencyGraph
     }
   }
 
-  public OrderVisitor OrderVisitor
+  public LiteralVisitor<int> OrderVisitor
   {
     get
     {
@@ -56,7 +55,7 @@ public abstract class DependencyGraph
   /// Constructor which will order the rules in a certain way
   /// </summary>
   /// <param name="program">The progra which you want the graph of</param>
-  public DependencyGraph(List<ProgramRule> program, OrderVisitor orderVisitor, AddToGraphVisitor addToGraphVisitor)
+  public DependencyGraph(List<ProgramRule> program, LiteralVisitor<int> orderVisitor, AddToGraphVisitor addToGraphVisitor)
   {
     Program = program;
     OrderVisitor = orderVisitor;

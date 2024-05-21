@@ -4,7 +4,7 @@ using Interpreter.Lib.Results.Objects.Terms;
 
 namespace Interpreter.Lib.Results.Objects.BodyLiterals;
 
-public abstract class Body : IApplier<Body>, IHasVariables, IGetVariables, IGetBodyAtoms
+public abstract class Body : IApplier<Body>, IHasVariables, IGetVariables, IGetBodyAtoms, ILiteralAccept
 {
   public abstract Body Apply(Dictionary<string, Term> substitutions);
 
@@ -18,9 +18,10 @@ public abstract class Body : IApplier<Body>, IHasVariables, IGetVariables, IGetB
   {
     return base.ToString();
   }
-  public abstract int Order(IBodyOrder orderVisitor);
 
   public abstract void AddToGraph(IBodyAddToGraph addToGraphVisitor);
 
   public abstract List<Atom> GetBodyAtoms();
+
+  public abstract T? Accept<T>(LiteralVisitor<T> visitor);
 }

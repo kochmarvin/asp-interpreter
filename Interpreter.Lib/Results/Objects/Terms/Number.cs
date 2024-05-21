@@ -57,6 +57,11 @@ public class Number(int value) : Term
   {
     return Value == ((Number)other).Value;
   }
+  public override T? Accept<T>(TermVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
+
 
   /// <summary>
   /// Basic to string method.

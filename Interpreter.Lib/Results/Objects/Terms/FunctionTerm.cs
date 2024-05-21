@@ -10,6 +10,10 @@ public class FunctionTerm(string name, List<Term> arguments) : Term
 {
   public string Name { get; } = name;
   public List<Term> Arguments { get; } = arguments;
+  public override T? Accept<T>(TermVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
 
   /// <summary>
   /// Applies the substiution to the object.

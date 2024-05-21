@@ -4,7 +4,6 @@ using Interpreter.Lib.Results.Objects;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Rule;
-using Interpreter.Lib.Results.Vistors;
 using Interpreter.Lib.Solver.Interfaces;
 
 namespace Interpreter.Lib.Solver;
@@ -39,7 +38,7 @@ public class QuerySolver(Query query, List<Atom> set, IPreparer preparer)
     rules.Add(_query.ParsedQuery);
 
     // Just make the grounding process again prepare it with that we know what query could be resolved
-    DependencyGraph graph = new MyDependencyGraph(rules, new MyOrderVisitor(), new MyAddToGraphVisitor());
+    DependencyGraph graph = new MyDependencyGraph(rules, new OrderVisitor(), new MyAddToGraphVisitor());
     Grounding grounding = new Grounding(graph);
     var grounded = grounding.Ground();
 

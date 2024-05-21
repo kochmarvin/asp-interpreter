@@ -9,6 +9,11 @@ public class Variable(string name) : Term
 {
   public string Name { get; } = name;
 
+  public override T? Accept<T>(TermVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
+
   /// <summary>
   /// Applies the substiution to the object.
   /// </summary>

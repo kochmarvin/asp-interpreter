@@ -9,11 +9,6 @@ public class LiteralBody(Literal literal) : Body
 {
   public Literal Literal { get; } = literal;
 
-  public override int Order(IBodyOrder orderVisitor)
-  {
-    return orderVisitor.Order(this);
-  }
-
   public override void AddToGraph(IBodyAddToGraph addToGraphVisitor)
   {
     addToGraphVisitor.AddToGraph(this);
@@ -48,5 +43,10 @@ public class LiteralBody(Literal literal) : Body
   public override List<Atom> GetBodyAtoms()
   {
     return Literal.GetLiteralAtoms();
+  }
+
+  public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
   }
 }

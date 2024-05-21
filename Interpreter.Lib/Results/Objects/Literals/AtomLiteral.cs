@@ -14,6 +14,11 @@ public class AtomLiteral(bool positive, Atom atom) : Literal
   public bool Positive { get; } = positive;
   public Atom Atom { get; } = atom;
 
+  public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
+  {
+    return visitor.Visit(this);
+  }
+
   public override void AddToGraph(ILiteralAddToGraph literalAddToGraph)
   {
     literalAddToGraph.AddToGraph(this);
@@ -61,16 +66,6 @@ public class AtomLiteral(bool positive, Atom atom) : Literal
   public override bool HasVariables(string variable)
   {
     return Atom.HasVariables(variable);
-  }
-
-  /// <summary>
-  /// Gives the order integer of a specific literal.
-  /// </summary>
-  /// <param name="literalOrder">The literal order visitor.</param>
-  /// <returns>The order integer of a spercific literal.</returns>
-  public override int Order(ILiteralOrder literalOrder)
-  {
-    return literalOrder.Order(this);
   }
 
   /// <summary>
