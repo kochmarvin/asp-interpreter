@@ -20,7 +20,7 @@ public class TransformerTests
         var groundedProgram = grounder.Ground();
         var preperation = new Preparer(new Checker(), new ObjectParser()).Prepare(groundedProgram);
 
-        List<List<int>> results = new SatTransformer().TransformToFormular(preperation);
+        List<List<int>> results = new SatTransformer(new Checker(), new ObjectParser()).TransformToFormular(preperation);
 
         // System.Console.WriteLine(obj.File);
         // foreach (var result in results)

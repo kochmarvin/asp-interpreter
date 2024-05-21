@@ -24,7 +24,7 @@ public class SatEngine : SolverEngine
     }
   }
 
-  public SatEngine(List<ProgramRule> program) : base(new Preparer(new Checker(), new ObjectParser()), new SatTransformer(), new DPLLSolver())
+  public SatEngine(List<ProgramRule> program) : base(new Preparer(new Checker(), new ObjectParser()), new SatTransformer(new Checker(), new ObjectParser()), new DPLLSolver())
   {
     Program = program;
   }

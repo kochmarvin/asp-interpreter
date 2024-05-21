@@ -29,6 +29,42 @@ public class SatTransformer : ITransformer
   // Dictionary which is reveresed to  get the string of Atom based on its index.
   private Dictionary<int, string> _reMappedAtoms = [];
 
+
+  private IChecker checker;
+  private ObjectParser parser;
+
+  public IChecker Checker
+  {
+    get
+    {
+      return checker;
+    }
+
+    private set
+    {
+      checker = value ?? throw new ArgumentNullException(nameof(Checker), "Is not supposed to be null");
+    }
+  }
+
+  public ObjectParser Parser
+  {
+    get
+    {
+      return parser;
+    }
+
+    private set
+    {
+      parser = value ?? throw new ArgumentNullException(nameof(Parser), "Is not supposed to be null");
+    }
+  }
+
+  public SatTransformer(IChecker checker, ObjectParser parser)
+  {
+    Checker = checker;
+    Parser = parser;
+  }
+
   /// <summary>
   /// Transforms a formular pased on the remainder of the preperation.
   /// </summary>
@@ -51,15 +87,15 @@ public class SatTransformer : ITransformer
       var rule = preperation.Remainder[i];
 
       // If the rule is headless we transform the headless expression
-      if (rule.Head is Headless headless)
+      if (rule.Head.Accept(Checker.IsHeadlessVisitor))
       {
         expressions.Add(TransformHeadless(rule.Body, ref index));
       }
 
       // If the rule head is a choice we transform the choice expression
-      if (rule.Head is ChoiceHead choiceHead)
+      if (rule.Head.Accept(Checker.IsChoiceHeadVisitor))
       {
-        foreach (var choice in choiceHead.Atoms)
+        foreach (var choice in rule.Head.GetHeadAtoms())
         {
           // Generate or find a new index for the string of the choice.
           int foundIndex = GetIndexOfString(choice.ToString(), ref index, choice);
@@ -82,8 +118,9 @@ public class SatTransformer : ITransformer
       }
 
       // if the rule is a simple head we transform it
-      if (rule.Head is AtomHead atomHead)
+      if (rule.Head.Accept(Checker.IsAtomHeadVisitor))
       {
+        var atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something happend which should not be");
         // Firstly generate or find the index of the head atom.
         int foundIndex = GetIndexOfString(atomHead.Atom.ToString(), ref index, atomHead.Atom);
 
@@ -97,12 +134,12 @@ public class SatTransformer : ITransformer
         // Finding all or rules with linq. This are all rules which heave the same head as me
         var orRules = preperation.Remainder.
         Where(watchRule => watchRule != rule).
-        Where(rule => rule.Head is AtomHead).
+        Where(rule => rule.Head.Accept(Checker.IsAtomHeadVisitor)).
         Where(rule => rule.Body.Count > 0).
         Where(
           rule =>
           {
-            var ruleHead = rule.Head as AtomHead;
+            var ruleHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor);
             return ruleHead?.Atom.ToString() == atomHead.Atom.ToString();
           }
         ).ToList();
@@ -274,8 +311,9 @@ public class SatTransformer : ITransformer
     // Iterate over the factually true atoms and add it to every answer set, because they have to be prensent in every
     foreach (var rule in _preperation.FactuallyTrue)
     {
-      if (rule.Head is AtomHead atomHead)
+      if (rule.Head.Accept(Checker.IsAtomHeadVisitor))
       {
+        var atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something happend which should not be");
         alwaysTrue.Add(atomHead.Atom);
       }
     }
@@ -340,7 +378,7 @@ public class SatTransformer : ITransformer
     List<List<Atom>> uniqueAtomLists = distinctAtomLists.Select(list =>
            list
             .GroupBy(atom => atom.ToString())
-            .Select(g => g.First())
+            .Select(group => group.First())
             .OrderByDescending(atom => atom.ToString())
             .ToList()
        ).ToList();
@@ -437,7 +475,7 @@ public class SatTransformer : ITransformer
     }
 
     CNFWrapper expression = CNFWrapper.NewExpression();
-    
+
     // if there is at least on body and more then one or bodies we set an or with the only body and the transformed or body
     if (bodies.Count == 1 && orBodies.Count >= 1 && fictionalIndex == -1)
     {
@@ -548,10 +586,14 @@ public class SatTransformer : ITransformer
   /// <exception cref="InvalidOperationException">If another literal has crossed this way like is or comparrison.</exception>
   private AtomLiteral GetAtomOfBody(Body body)
   {
-    if (body is LiteralBody literalBody && literalBody.Literal is AtomLiteral atomLiteral)
+
+    if (body.Accept(Checker.IsAtomLiteralVisitor))
     {
+      var atomLiteral = body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something happend which should not be");
+
       return atomLiteral;
     }
+
     throw new InvalidOperationException("Somehow a body literal, not of type AtomLiteral has come accross my way");
   }
 

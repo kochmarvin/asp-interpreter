@@ -21,7 +21,7 @@ public class SolverTests
         var groundedProgram = grounder.Ground();
         var preperation = new Preparer(new Checker(), new ObjectParser()).Prepare(groundedProgram);
 
-        List<List<int>> transformed = new SatTransformer().TransformToFormular(preperation);
+        List<List<int>> transformed = new SatTransformer(new Checker(), new ObjectParser()).TransformToFormular(preperation);
         var results = new DPLLSolver().FindAllSolutions(transformed);
 
         // System.Console.WriteLine(obj.File);
