@@ -61,7 +61,7 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
 
         var variable = cntxt.VARIABLE().GetText();
         var arithop = cntxt.arithop().GetText();
-        
+
         // Check which operation is used
         var op = arithop switch
         {
@@ -71,7 +71,6 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
           "*" => Operator.MULTIPLY,
           _ => throw new InvalidOperationException("You used a operator that is not valid!"),
         };
-
 
         List<Term> terms = [];
 
@@ -83,7 +82,7 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
           {
             throw new SyntaxErrorException("Operand is not allowed to be null");
           }
-          
+
           // If it is a variable add it to the terms
           if (operand.VARIABLE() != null)
           {
@@ -106,7 +105,7 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
       {
         Builtin_atomContext btAtom = naf_Literal.builtin_atom();
         var binop = btAtom.binop().GetText();
-        
+
         // check which relation they have and parse it
         var relation = binop switch
         {
