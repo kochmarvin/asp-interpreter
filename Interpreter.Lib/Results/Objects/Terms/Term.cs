@@ -1,9 +1,15 @@
-using Interpreter.Lib.Results.Interfaces;
+//-----------------------------------------------------------------------
+// <copyright file="Term.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Results.Objects.Terms;
 
+using Interpreter.Lib.Results.Interfaces;
+
 /// <summary>
-/// Abstract class of the smallest Unit a rule can have
+/// Abstract class of the smallest Unit a rule can have.
 /// </summary>
 public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables, IGetVariables, ITermAccept
 {
@@ -15,10 +21,10 @@ public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables, IGetVa
   public abstract Term Apply(Dictionary<string, Term> substitutions);
 
   /// <summary>
-  /// Checks if there are any matches for another object and the substititions
+  /// Checks if there are any matches for another object and the substititions.
   /// </summary>
   /// <param name="other">The other object to match it.</param>
-  /// <param name="substiutionen">The found subsitituions</param>
+  /// <param name="substiutionen">The found subsitituions.</param>
   /// <returns>Either if it was a match or not.</returns>
   public abstract bool Match(Term other, Dictionary<string, Term> substiutionen);
 
@@ -50,5 +56,11 @@ public abstract class Term : IMatch<Term>, IApplier<Term>, IHasVariables, IGetVa
   /// <returns>The available variables.</returns>
   public abstract List<string> GetVariables();
 
+  /// <summary>
+  /// Accepts an instance of term visitor and executes it, returning a type of T.
+  /// </summary>
+  /// <typeparam name="T">The type of the object that is excepted.</typeparam>
+  /// <param name="visitor">The visitor that is executed.</param>
+  /// <returns>The excepted object of type T.</returns>
   public abstract T? Accept<T>(TermVisitor<T> visitor);
 }

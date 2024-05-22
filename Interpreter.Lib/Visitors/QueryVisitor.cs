@@ -1,3 +1,11 @@
+//-----------------------------------------------------------------------
+// <copyright file="QueryVisitor.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Interpreter.Lib.Visitors;
+
 using System.Data;
 using Interpreter.Lib.Results.Objects;
 using Interpreter.Lib.Results.Objects.Atoms;
@@ -6,15 +14,13 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
 
-namespace Interpreter.Lib.Visitors;
-
 /// <summary>
 /// Implementation of the query visitor.
 /// </summary>
 public class QueryVisitor : LparseBaseVisitor<List<Query>>, IQueryVisitor<List<Query>>
 {
   /// <summary>
-  /// Parses a query of the program context
+  /// Parses a query of the program context.
   /// </summary>
   /// <param name="context">The context of the program.</param>
   /// <returns>The parsed query.</returns>
@@ -38,8 +44,9 @@ public class QueryVisitor : LparseBaseVisitor<List<Query>>, IQueryVisitor<List<Q
       // Split up the bodies which are or connected and get the variables of each body
       foreach (var body in bodies)
       {
-       // get the variables of the body
+        // get the variables of the body
         List<string> variables = body.SelectMany(current => current.GetVariables()).ToList();
+
         // remove duplicates
         HashSet<string> variablesSet = [.. variables];
         List<Term> terms = [];

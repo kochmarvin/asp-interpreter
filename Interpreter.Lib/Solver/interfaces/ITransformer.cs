@@ -1,13 +1,29 @@
-using Interpreter.Lib.Results.Objects.Atoms;
-using Interpreter.Lib.Results.Objects.Rule;
+//-----------------------------------------------------------------------
+// <copyright file="ITransformer.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Solver.Interfaces;
 
+using Interpreter.Lib.Results.Objects.Atoms;
+
 /// <summary>
-/// Interface of what a transformer needs
+/// Interface for the transformer.
 /// </summary>
 public interface ITransformer
 {
-  public List<List<int>> TransformToFormular(Preperation Preperation);
+  /// <summary>
+  /// Transformes the given preperation into an integer format.
+  /// </summary>
+  /// <param name="preperation">The preperation that is being transformed.</param>
+  /// <returns>The transformed preperation.</returns>
+  public List<List<int>> TransformToFormular(Preperation preperation);
+
+  /// <summary>
+  /// Transformes the results back to the list of list of atoms.
+  /// </summary>
+  /// <param name="results">The results that are being transformed.</param>
+  /// <returns>The retransformed results.</returns>
   public List<List<Atom>> ReTransform(List<List<int>> results);
 }

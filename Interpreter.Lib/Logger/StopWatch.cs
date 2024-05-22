@@ -1,27 +1,45 @@
-using System.Diagnostics;
+//-----------------------------------------------------------------------
+// <copyright file="StopWatch.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Logger;
 
+using System.Diagnostics;
+
 /// <summary>
-/// Basic wrapper for stopwatch to fetch how long an action is taking
+/// Basic wrapper for stopwatch to fetch how long an action is taking.
 /// </summary>
 public class StopWatch
 {
-  private Stopwatch _stopwatch;
+  private Stopwatch stopwatch;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="StopWatch"/> class.
+  /// </summary>
   private StopWatch()
   {
-    _stopwatch = Stopwatch.StartNew();
+    this.stopwatch = Stopwatch.StartNew();
   }
+
+  /// <summary>
+  /// Creates a new instance of a stopwatch and starts it.
+  /// </summary>
+  /// <returns>A new instance of the stopwatch.</returns>
   public static StopWatch Start()
   {
     return new StopWatch();
   }
 
+  /// <summary>
+  /// Stops the stopwatch and returns the elapsed time.
+  /// </summary>
+  /// <returns>The elapsed time as a string.</returns>
   public string Stop()
   {
-    _stopwatch.Stop();
-    TimeSpan timeTaken = _stopwatch.Elapsed;
+    this.stopwatch.Stop();
+    TimeSpan timeTaken = this.stopwatch.Elapsed;
     return string.Format("{0:hh\\:mm\\:ss\\:fff}", timeTaken);
   }
-
 }

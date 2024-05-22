@@ -1,13 +1,18 @@
+//-----------------------------------------------------------------------
+// <copyright file="BodyVisitor.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Interpreter.Lib.Visitors;
+
 using System.Data;
-using Interpreter.Lib.Results;
 using Interpreter.Lib.Results.Enums;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Terms;
 using static LparseParser;
-
-namespace Interpreter.Lib.Visitors;
 
 /// <summary>
 /// Implementation of the body visitor.
@@ -18,7 +23,7 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
   /// Parses bodies from its context.
   /// </summary>
   /// <param name="context">The context which should get parsed.</param>
-  /// <returns></returns>
+  /// <returns>The visited body parts.</returns>
   /// <exception cref="SyntaxErrorException">If there are missing things which are necessary.</exception>
   /// <exception cref="InvalidOperationException">If an operation got used which is not allowed.</exception>
   public override List<Body> VisitBody(LparseParser.BodyContext context)
@@ -38,6 +43,7 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
         name = classic.MINUS() != null ? "-" + name : name;
 
         List<Term> terms = [];
+
         // If there are terms parse those and add it to the arguments
         if (classic.terms() != null)
         {

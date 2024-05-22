@@ -1,44 +1,59 @@
+//-----------------------------------------------------------------------
+// <copyright file="SatEngine.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Interpreter.Lib.Solver.defaults;
+
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Solver.Abstracts;
 
-namespace Interpreter.Lib.Solver.defaults;
-
 /// <summary>
-/// Default Solver engine which useses a basic preparer a basic sattransformer and the DPLL in the backend
+/// Default Solver engine which useses a basic preparer a basic sattransformer and the DPLL in the backend.
 /// </summary>
-/// <param name="program"></param>
 public class SatEngine : SolverEngine
 {
   private List<ProgramRule> program;
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="SatEngine"/> class.
+  /// </summary>
+  /// <param name="program">The program rules that are being solved.</param>
+  public SatEngine(List<ProgramRule> program)
+    : base(new Preparer(new Checker(), new ObjectParser()), new SatTransformer(new Checker(), new ObjectParser()), new DPLLSolver())
+  {
+    this.Program = program;
+  }
+
+  /// <summary>
+  /// Gets the program rules for the sat engine.
+  /// </summary>
   public List<ProgramRule> Program
   {
     get
     {
-      return program;
+      return this.program;
     }
+
     private set
     {
-      program = value ?? throw new ArgumentNullException(nameof(Program), "Is not supposed to be null");
+      this.program = value ?? throw new ArgumentNullException(nameof(this.Program), "Is not supposed to be null");
     }
-  }
-
-  public SatEngine(List<ProgramRule> program) : base(new Preparer(new Checker(), new ObjectParser()), new SatTransformer(new Checker(), new ObjectParser()), new DPLLSolver())
-  {
-    Program = program;
   }
 
   /// <summary>
   /// Executes the Backend and solves it.
   /// </summary>
-  /// <returns>The Solved answer sets</returns>
+  /// <returns>The Solved answer sets.</returns>
   public override List<List<Atom>> Execute()
   {
-    HashSet<ProgramRule> uniqueRules = new(Program);
+    HashSet<ProgramRule> uniqueRules = new(this.Program);
     List<ProgramRule> deduplicatedRules = new(uniqueRules);
+
     // Start the preparerer and get the preperation
-    var preperation = Preparer.Prepare(deduplicatedRules);
+    var preperation = this.Preparer.Prepare(deduplicatedRules);
 
     Logger.Logger.Debug("Created prepared Program.");
 
@@ -47,6 +62,7 @@ public class SatEngine : SolverEngine
     {
       rules += rule.ToString() + "\n";
     }
+
     Logger.Logger.Debug(rules + "--------------------------------");
 
     rules = "Remainder for solver \n--------------------------------\n";
@@ -58,16 +74,14 @@ public class SatEngine : SolverEngine
     Logger.Logger.Debug(rules + "--------------------------------");
 
     // Transform the remainded rules
-    var transformed = Transformer.TransformToFormular(preperation);
-
+    var transformed = this.Transformer.TransformToFormular(preperation);
 
     Logger.Logger.Debug("Created cnf for solver.");
-
 
     rules = "CNF in integer format \n--------------------------------\n";
     foreach (var transform in transformed)
     {
-      string rule = "";
+      string rule = string.Empty;
       foreach (var value in transform)
       {
         rule += value + " ";
@@ -75,10 +89,11 @@ public class SatEngine : SolverEngine
 
       rules += rule + "\n";
     }
+
     Logger.Logger.Debug(rules + "--------------------------------");
 
     // Find all solutions with the DPLL and return the Sets
-    var solved = Solver.FindAllSolutions(transformed);
-    return Transformer.ReTransform(solved.Select(set => set.Assignments).ToList());
+    var solved = this.Solver.FindAllSolutions(transformed);
+    return this.Transformer.ReTransform(solved.Select(set => set.Assignments).ToList());
   }
 }

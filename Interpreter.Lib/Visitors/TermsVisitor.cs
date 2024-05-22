@@ -1,7 +1,12 @@
-
-using Interpreter.Lib.Results.Objects.Terms;
+//-----------------------------------------------------------------------
+// <copyright file="TermsVisitor.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Visitors;
+
+using Interpreter.Lib.Results.Objects.Terms;
 
 /// <summary>
 /// Implementation of the Terms visitor.
@@ -26,6 +31,7 @@ public class TermsVisitor : LparseBaseVisitor<List<Term>>
         terms.Add(term);
       }
     }
+
     return terms;
   }
 }

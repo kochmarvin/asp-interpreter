@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------
+// <copyright file="CommentLiteral.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using Interpreter.Lib.Results.Interfaces;
 using Interpreter.Lib.Results.Objects.Atoms;
@@ -5,40 +10,57 @@ using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Terms;
 
 /// <summary>
-/// The comment literal for the explanation method
+/// The comment literal for the explanation method.
 /// </summary>
 /// <param name="vars">The variales which are inside the literal.</param>
 /// <param name="strings">The text which should get printed.</param>
 public class CommentLiteral : Literal
 {
   private List<Variable> vars;
-  private List<String> strings;
-  
+
+  private List<string> strings;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="CommentLiteral"/> class.
+  /// </summary>
+  /// <param name="vars">The list of variables of the literal.</param>
+  /// <param name="strings">The string representing the literal.</param>
+  public CommentLiteral(List<Variable> vars, List<string> strings)
+  {
+    this.Strings = strings;
+    this.Vars = vars;
+  }
+
+  /// <summary>
+  /// Gets the variables of the comment literal.
+  /// </summary>
   public List<Variable> Vars
   {
-    get { return vars; }
+    get
+    {
+      return this.vars;
+    }
+
     private set
     {
-      vars = value ?? throw new ArgumentNullException(nameof(Vars), "Is not supposed to be null");
+      this.vars = value ?? throw new ArgumentNullException(nameof(this.Vars), "Is not supposed to be null");
     }
   }
 
+  /// <summary>
+  /// Gets the comment string of the literal.
+  /// </summary>
   public List<string> Strings
   {
     get
     {
-      return strings;
+      return this.strings;
     }
+
     private set
     {
-      strings = value ?? throw new ArgumentNullException(nameof(Strings), "Is not supposed to be null");
+      this.strings = value ?? throw new ArgumentNullException(nameof(this.Strings), "Is not supposed to be null");
     }
-  }
-
-  public CommentLiteral(List<Variable> vars, List<string> strings)
-  {
-    Strings = strings;
-    Vars = vars;
   }
 
   /// <summary>
@@ -48,7 +70,7 @@ public class CommentLiteral : Literal
   public override List<string> GetVariables()
   {
     List<string> foundVariables = [];
-    foreach (var current in Vars)
+    foreach (var current in this.Vars)
     {
       foundVariables.Add(current.Name);
     }
@@ -57,11 +79,11 @@ public class CommentLiteral : Literal
   }
 
   /// <summary>
-  /// Will always throw due to not necessary for grounding just for explain mode
+  /// Will always throw due to not necessary for grounding just for explain mode.
   /// </summary>
-  /// <param name="substitutions"></param>
-  /// <returns></returns>
-  /// <exception cref="NotImplementedException"></exception>
+  /// <param name="substitutions">The substitutions applied on teh literal.</param>
+  /// <returns>Null.</returns>
+  /// <exception cref="NotImplementedException">Is thrown always.</exception>
   public override Literal Apply(Dictionary<string, Term> substitutions)
   {
     throw new NotImplementedException();
@@ -73,17 +95,17 @@ public class CommentLiteral : Literal
   /// <returns>Either if there are variables or not.</returns>
   public override bool HasVariables()
   {
-    return Vars.Count != 0;
+    return this.Vars.Count != 0;
   }
 
-  // <summary>
+  /// <summary>
   /// Checks if the object has a specific variable.
   /// </summary>
   /// <param name="variable">The variable to be checked.</param>
   /// <returns>Either if it includes the variable or not.</returns>
   public override bool HasVariables(string variable)
   {
-    foreach (var current in Vars)
+    foreach (var current in this.Vars)
     {
       if (current.Name == variable)
       {
@@ -97,14 +119,14 @@ public class CommentLiteral : Literal
   /// <summary>
   /// Produces a string which will replace all variables in the string.
   /// </summary>
-  /// <param name="variables">The variables which shozld get replaced</param>
+  /// <param name="variables">The variables which shozld get replaced.</param>
   /// <returns>A variable less string.</returns>
   public string GetText(List<string> variables)
   {
-    var baseString = string.Join(" ", Strings);
-    for (int i = 0; i < Vars.Count; i++)
+    var baseString = string.Join(" ", this.Strings);
+    for (int i = 0; i < this.Vars.Count; i++)
     {
-      baseString = baseString.Replace(i.ToString(), "" + variables[i] + "");
+      baseString = baseString.Replace(i.ToString(), string.Empty + variables[i] + string.Empty);
     }
 
     return baseString;
@@ -116,26 +138,41 @@ public class CommentLiteral : Literal
   /// <returns>The string equivalent.</returns>
   public override string ToString()
   {
-    var baseString = string.Join(" ", Strings);
-    for (int i = 0; i < Vars.Count; i++)
+    var baseString = string.Join(" ", this.Strings);
+    for (int i = 0; i < this.Vars.Count; i++)
     {
-      baseString = baseString.Replace(i.ToString(), "@(" + Vars[i].Name + ")");
+      baseString = baseString.Replace(i.ToString(), "@(" + this.Vars[i].Name + ")");
     }
 
     return baseString;
   }
 
+  /// <summary>
+  /// Gets all of the atom of the literal.
+  /// </summary>
+  /// <returns>An empty list.</returns>
   public override List<Atom> GetLiteralAtoms()
   {
     return [];
   }
 
+  /// <summary>
+  /// Add the literal to teh graph.
+  /// </summary>
+  /// <param name="literalAddToGraph">An interface that adds the literal to teh graph.</param>
   public override void AddToGraph(ILiteralAddToGraph literalAddToGraph)
   {
     return;
   }
 
-  public override T? Accept<T>(LiteralVisitor<T> visitor) where T : default
+  /// <summary>
+  /// Accepts an instance of literal visitor and executes it, returning a type of T.
+  /// </summary>
+  /// <typeparam name="T">The type of the object that is excepted.</typeparam>
+  /// <param name="visitor">The visitor that is executed.</param>
+  /// <returns>The excepted object of type T.</returns>
+  public override T? Accept<T>(LiteralVisitor<T> visitor)
+    where T : default
   {
     return visitor.Visit(this);
   }

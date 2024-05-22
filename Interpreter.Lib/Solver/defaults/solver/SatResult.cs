@@ -1,50 +1,61 @@
+//-----------------------------------------------------------------------
+// <copyright file="SatResult.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
 namespace Interpreter.Lib.Solver.defaults;
 
 /// <summary>
-/// The result of a sat solver
+/// The result of a sat solver.
 /// </summary>
-/// <param name="satisfiable">If it was satisfiable or not</param>
-/// <param name="assignments">The variable assignemnt</param>
+/// <param name="satisfiable">If it was satisfiable or not.</param>
+/// <param name="assignments">The variable assignemnt.</param>
 public class SatResult
 {
   private bool satisfiable;
   private List<int> assignments;
 
   /// <summary>
-  /// If the formular was satisfiable or not
+  /// Initializes a new instance of the <see cref="SatResult"/> class.
+  /// </summary>
+  /// <param name="satisfiable">Whether the program is satisfiable.</param>
+  /// <param name="assignments">The assigned literals.</param>
+  public SatResult(bool satisfiable, List<int> assignments)
+  {
+    this.Satisfiable = satisfiable;
+    this.Assignments = assignments;
+  }
+
+  /// <summary>
+  /// Gets a value indicating whether the formular was satisfiable or not.
   /// </summary>
   public bool Satisfiable
   {
     get
     {
-      return satisfiable;
+      return this.satisfiable;
     }
 
     private set
     {
-      satisfiable = value;
+      this.satisfiable = value;
     }
   }
 
   /// <summary>
-  /// The variable assignements
+  /// Gets the variable assignements.
   /// </summary>
   public List<int> Assignments
   {
     get
     {
-      return assignments;
+      return this.assignments;
     }
 
     private set
     {
-      assignments = value ?? throw new ArgumentNullException(nameof(Assignments), "Is not supposed to be null");
+      this.assignments = value ?? throw new ArgumentNullException(nameof(this.Assignments), "Is not supposed to be null");
     }
-  }
-
-  public SatResult(bool satisfiable, List<int> assignments)
-  {
-    Satisfiable = satisfiable;
-    Assignments = assignments;
   }
 }

@@ -1,27 +1,44 @@
-using QuickGraph;
+//-----------------------------------------------------------------------
+// <copyright file="Kosaraju.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Graph;
 
-// This alogrithm is to find the strongly connected components within a directed graph
+using QuickGraph;
+
+/// <summary>
+/// This alogrithm is to find the strongly connected components within a directed graph.
+/// </summary>
+/// <typeparam name="T">The type of the components of the adjacency graph.</typeparam>
+/// <param name="graph">The graph represented by an adjacency list.</param>
 public class Kosaraju<T>(AdjacencyGraph<T, Edge<T>> graph)
 {
+  /// <summary>
+  /// Gets the graph represented by an adjacency list where each node is connected by edges.
+  /// </summary>
   public AdjacencyGraph<T, Edge<T>> Graph { get; } = graph;
 
+  /// <summary>
+  /// Creates the Kosaraju's algorithm to find all strongly connected components in the graph.
+  /// </summary>
+  /// <returns>A list of strongly connected components.</returns>
   public List<List<T>> CreateKosaraju()
   {
     var stack = new Stack<T>();
     var visited = new HashSet<T>();
     var sccs = new List<List<T>>();
 
-    foreach (var vertex in Graph.Vertices)
+    foreach (var vertex in this.Graph.Vertices)
     {
       if (!visited.Contains(vertex))
       {
-        FillOrder(vertex, visited, stack);
+        this.FillOrder(vertex, visited, stack);
       }
     }
 
-    var transposedGraph = TransposeGraph();
+    var transposedGraph = this.TransposeGraph();
     visited.Clear();
 
     while (stack.Count != 0)
@@ -30,7 +47,7 @@ public class Kosaraju<T>(AdjacencyGraph<T, Edge<T>> graph)
       if (!visited.Contains(vertex))
       {
         var component = new List<T>();
-        DFSUtil(vertex, visited, component, transposedGraph);
+        this.DFSUtil(vertex, visited, component, transposedGraph);
         sccs.Add(component);
       }
     }
@@ -41,13 +58,14 @@ public class Kosaraju<T>(AdjacencyGraph<T, Edge<T>> graph)
   private void FillOrder(T v, HashSet<T> visited, Stack<T> stack)
   {
     visited.Add(v);
-    foreach (var edge in Graph.OutEdges(v))
+    foreach (var edge in this.Graph.OutEdges(v))
     {
       if (!visited.Contains(edge.Target))
       {
-        FillOrder(edge.Target, visited, stack);
+        this.FillOrder(edge.Target, visited, stack);
       }
     }
+
     stack.Push(v);
   }
 
@@ -63,19 +81,19 @@ public class Kosaraju<T>(AdjacencyGraph<T, Edge<T>> graph)
         continue;
       }
 
-      DFSUtil(edge.Target, visited, component, transpose);
+      this.DFSUtil(edge.Target, visited, component, transpose);
     }
   }
 
   private AdjacencyGraph<T, Edge<T>> TransposeGraph()
   {
     var transposed = new AdjacencyGraph<T, Edge<T>>();
-    foreach (var vertex in Graph.Vertices)
+    foreach (var vertex in this.Graph.Vertices)
     {
       transposed.AddVertex(vertex);
     }
 
-    foreach (var edge in Graph.Edges)
+    foreach (var edge in this.Graph.Edges)
     {
       transposed.AddEdge(new Edge<T>(edge.Target, edge.Source));
     }

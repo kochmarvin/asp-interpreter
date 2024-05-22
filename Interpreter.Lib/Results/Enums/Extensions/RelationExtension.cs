@@ -1,15 +1,21 @@
+//-----------------------------------------------------------------------
+// <copyright file="RelationExtension.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
 namespace Interpreter.Lib.Results.Enums;
 
 /// <summary>
-/// Relation extension for the Relation enum
+/// Relation extension for the Relation enum.
 /// </summary>
-public static class RelationExtensions
+public static class RelationExtension
 {
   /// <summary>
-  /// Returns the corresponding symbol of the relation
+  /// Returns the corresponding symbol of the relation.
   /// </summary>
-  /// <param name="relation">the relation you want the symbol from</param>
-  /// <returns>The relation as string</returns>
+  /// <param name="relation">the relation you want the symbol from.</param>
+  /// <returns>The relation as string.</returns>
   /// <exception cref="NotImplementedException">If you enter a relation which is not supported.</exception>
   public static string ToSymbol(this Relation relation)
   {
@@ -22,7 +28,7 @@ public static class RelationExtensions
       Relation.Unification => "=",
       Relation.Equal => "==",
       Relation.Inequal => "!=",
-      _ => throw new NotImplementedException()
+      _ => throw new NotImplementedException(),
     };
   }
 }

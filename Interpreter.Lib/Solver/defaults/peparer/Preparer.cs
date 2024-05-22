@@ -1,64 +1,78 @@
+//-----------------------------------------------------------------------
+// <copyright file="Preparer.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Interpreter.Lib.Solver.defaults;
+
 using System.Data;
 using Interpreter.Lib.Graph;
 using Interpreter.Lib.Logger;
 using Interpreter.Lib.Results.Objects.Atoms;
-using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Solver.Interfaces;
 
-namespace Interpreter.Lib.Solver.defaults;
-
 /// <summary>
 /// The preperator removes all facts from bodys we know have to be true, it also removes all facts from the program
-/// This is done to create a much smaller program for the following DPLL. Because facts have always to be true we just 
+/// This is done to create a much smaller program for the following DPLL. Because facts have always to be true we just
 /// can assume that they are true nontherless. After stating that all facts are always true we look at the bodys of the rules.
 /// because if a body is just a concatination of facts that we know are true, the rule itself also has to be true.
 /// </summary>
 public class Preparer : IPreparer
 {
-
   private IChecker checker;
   private ObjectParser parser;
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="Preparer"/> class.
+  /// </summary>
+  /// <param name="checker">The checker to check the literals of the program.</param>
+  /// <param name="parser">The parser object for parsing the program.</param>
+  public Preparer(IChecker checker, ObjectParser parser)
+  {
+    this.Checker = checker;
+    this.Parser = parser;
+  }
+
+  /// <summary>
+  /// Gets the checker needed to prepare the program.
+  /// </summary>
   public IChecker Checker
   {
     get
     {
-      return checker;
+      return this.checker;
     }
 
     private set
     {
-      checker = value ?? throw new ArgumentNullException(nameof(Checker), "Is not supposed to be null");
+      this.checker = value ?? throw new ArgumentNullException(nameof(this.Checker), "Is not supposed to be null");
     }
   }
 
+  /// <summary>
+  /// Gets the parger object needed to prepare the program.
+  /// </summary>
   public ObjectParser Parser
   {
     get
     {
-      return parser;
+      return this.parser;
     }
 
     private set
     {
-      parser = value ?? throw new ArgumentNullException(nameof(Parser), "Is not supposed to be null");
+      this.parser = value ?? throw new ArgumentNullException(nameof(this.Parser), "Is not supposed to be null");
     }
   }
 
-  public Preparer(IChecker checker, ObjectParser parser)
-  {
-    Checker = checker;
-    Parser = parser;
-  }
-
   /// <summary>
-  /// This method checks the program for facts that are definitely true and goes thru every rule to remove any facts 
-  /// that are known to be true due to these facts.
+  /// This method checks the program for facts that are definitely true and goes thru every rule to remove any facts that are known to be true due to these facts.
   /// </summary>
-  /// <param name="program">The grouned program</param>
+  /// <param name="program">The grouned program.</param>
   /// <returns>The preperation with all rules that have to get solved.</returns>
   public Preperation Prepare(List<ProgramRule> program)
   {
@@ -66,31 +80,31 @@ public class Preparer : IPreparer
 
     var watch = StopWatch.Start();
     List<ProgramRule> factuallyTrue = [];
-    List<string> _notAllowed = [];
-    List<string> _trueFacts = [];
-    List<string> _heads = [];
+    List<string> notAllowed = [];
+    List<string> trueFacts = [];
+    List<string> heads = [];
 
     foreach (var rule in program)
     {
-      // if it is a headless rule we skip 
+      // if it is a headless rule we skip.
       foreach (var atom in rule.Head.GetHeadAtoms())
       {
-        _heads.Add(atom.ToString());
+        heads.Add(atom.ToString());
       }
     }
 
     // Specificasion of all rules we cannot remove, because they are in a headless rule.
     // And this has to do the solver due to increasing complexity of the preparerer
-    foreach (var headlessRule in program.Where(rule => rule.Head.Accept(Checker.IsHeadlessVisitor)))
+    foreach (var headlessRule in program.Where(rule => rule.Head.Accept(this.Checker.IsHeadlessVisitor)))
     {
       for (int i = 0; i < headlessRule.Body.Count; i++)
       {
         var body = headlessRule.Body[i];
 
         // Removing all Comparison Literals in a rule because they are just for grounding
-        if (body.Accept(Checker.IsComparisonLiteralVisitor) || body.Accept(Checker.IsIsLiteralVisitor))
+        if (body.Accept(this.Checker.IsComparisonLiteralVisitor) || body.Accept(this.Checker.IsIsLiteralVisitor))
         {
-          Logger.Logger.Debug("Remove " + headlessRule.Body[i] + " from " + headlessRule);
+          Logger.Debug("Remove " + headlessRule.Body[i] + " from " + headlessRule);
           headlessRule.Body.RemoveAt(i);
           i--;
           continue;
@@ -99,7 +113,7 @@ public class Preparer : IPreparer
         // Add literal to the naughty list so they dont get removed
         if (body.Accept(new IsAtomLiteralVisitor()))
         {
-          _notAllowed.Add(body.ToString() ?? "");
+          notAllowed.Add(body.ToString() ?? string.Empty);
         }
       }
     }
@@ -115,27 +129,27 @@ public class Preparer : IPreparer
         var rule = program[i];
 
         // if it is a headless rule we just skip it.
-        if (rule.Head.Accept(Checker.IsHeadlessVisitor))
+        if (rule.Head.Accept(this.Checker.IsHeadlessVisitor))
         {
           continue;
         }
 
         // if it is a fact (rule without body) and does not start with a minus we have to maybe add it to the factual true
-        if (rule.Head.Accept(Checker.IsAtomHeadVisitor) && rule.Body.Count == 0)
+        if (rule.Head.Accept(this.Checker.IsAtomHeadVisitor) && rule.Body.Count == 0)
         {
-          AtomHead atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
+          AtomHead atomHead = rule.Head.Accept(this.Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
 
           if (!atomHead.Atom.Name.StartsWith("-"))
           {
             // if it is contained in a headless rule we dont touch it.
-            if (_notAllowed.Contains(atomHead.Atom.ToString()))
+            if (notAllowed.Contains(atomHead.Atom.ToString()))
             {
               continue;
             }
 
             // otherwise add it to the factually true string list (for easy comparison) and to the true facts
             factuallyTrue.Add(rule);
-            _trueFacts.Add(atomHead.Atom.ToString());
+            trueFacts.Add(atomHead.Atom.ToString());
 
             // also remove it from the program because it is always going to be true
             program.RemoveAt(i);
@@ -153,32 +167,32 @@ public class Preparer : IPreparer
 
           // If it is a Comparison Literal we just remove it because there is no logical equivalent (just neccessary for grounding)
           // TODO check if assumtion is correct
-          if (body.Accept(Checker.IsComparisonLiteralVisitor) || body.Accept(Checker.IsIsLiteralVisitor))
+          if (body.Accept(this.Checker.IsComparisonLiteralVisitor) || body.Accept(this.Checker.IsIsLiteralVisitor))
           {
-            Logger.Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
+            Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
             rule.Body.RemoveAt(j);
             changes++;
             j--;
             continue;
           }
 
-          if (body.Accept(Checker.IsAtomLiteralVisitor))
+          if (body.Accept(this.Checker.IsAtomLiteralVisitor))
           {
             // if it is contained in a headless rule we dont touch it.
-            if (_notAllowed.Contains(body.ToString() ?? ""))
+            if (notAllowed.Contains(body.ToString() ?? string.Empty))
             {
               continue;
             }
 
-            var atomLiteral = body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
+            var atomLiteral = body.Accept(this.Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
 
             // Here we look if the literal is not positive
             if (!atomLiteral.Positive)
             {
               // if it is not positive and we do not know that it exists as a fact we skip it
-              if (!_trueFacts.Contains(atomLiteral.Atom.ToString()))
+              if (!trueFacts.Contains(atomLiteral.Atom.ToString()))
               {
-                // if we know that it exists as a fact we check 
+                // if we know that it exists as a fact we check.
                 bool remove = true;
                 foreach (var head in program.Select(rule => rule.Head))
                 {
@@ -192,11 +206,11 @@ public class Preparer : IPreparer
                   }
                 }
 
-                // if the negative atom we are looking at didnt exist in any choice or atom head we can remove it 
+                // if the negative atom we are looking at didnt exist in any choice or atom head we can remove it,
                 // because we know that is is true (negation as failure)
                 if (remove)
                 {
-                  Logger.Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
+                  Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
                   rule.Body.RemoveAt(j);
                   j--;
                   changes++;
@@ -205,7 +219,7 @@ public class Preparer : IPreparer
                 continue;
               }
 
-              // If it exists we know that the rule is going to be false because of the not so remove the whole rule 
+              // If it exists we know that the rule is going to be false because of the not so remove the whole rule,
               // and watch the next rule NOT the next body element.
               program.RemoveAt(i);
               i--;
@@ -215,7 +229,7 @@ public class Preparer : IPreparer
 
             // Here we check if the current atom we look at is a trueFact which means a bodyless fact e.g person(julia).
             // If this is the case we know that this is always going to be true and we can remove it.
-            if (_trueFacts.Contains(atomLiteral.Atom.ToString()))
+            if (trueFacts.Contains(atomLiteral.Atom.ToString()))
             {
               rule.Body.RemoveAt(j);
               j--;
@@ -223,28 +237,29 @@ public class Preparer : IPreparer
               continue;
             }
           }
-
         }
       }
-    } while (changes != 0);
+    }
+    while (changes != 0);
 
-    var loopRules = FindLoopRules(program);
+    var loopRules = this.FindLoopRules(program);
 
     string rules = "Loop Rules \n--------------------------------\n";
     foreach (var rule in loopRules)
     {
       rules += rule.ToString() + "\n";
     }
-    Logger.Logger.Debug(rules + "--------------------------------");
 
-    Logger.Logger.Debug("Minimized program for solver. \n"
+    Logger.Debug(rules + "--------------------------------");
+
+    Logger.Debug("Minimized program for solver. \n"
            + "Duration was " + watch.Stop());
     return new Preperation(factuallyTrue, program, loopRules);
   }
 
   /// <summary>
-  /// This method checks for any loop rules in the program which are any amount of rules that are 
-  /// dependent on each other. 
+  /// This method checks for any loop rules in the program which are any amount of rules that are,
+  /// dependent on each other.
   /// </summary>
   /// <param name="program">The smaller programm after preparing.</param>
   /// <returns>A list of all the loop rules found in the program.</returns>
@@ -273,15 +288,15 @@ public class Preparer : IPreparer
       // Now we go through every rule and save the heads
       foreach (var rule in subGraph)
       {
-        if (rule.Head.Accept(Checker.IsChoiceHeadVisitor))
+        if (rule.Head.Accept(this.Checker.IsChoiceHeadVisitor))
         {
           headsReference.AddRange(rule.Head.GetHeadAtoms());
           rule.Head.GetHeadAtoms().ForEach(atom => heads.Add(atom.ToString()));
         }
 
-        if (rule.Head.Accept(Checker.IsAtomHeadVisitor))
+        if (rule.Head.Accept(this.Checker.IsAtomHeadVisitor))
         {
-          var atomHead = rule.Head.Accept(Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
+          var atomHead = rule.Head.Accept(this.Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
 
           // Here we add the reference for later connections
           // and the head string for easier matching
@@ -296,12 +311,11 @@ public class Preparer : IPreparer
             List<AtomLiteral> literals = [];
             rule.Body.ForEach(body =>
               {
-                if (body.Accept(Checker.IsAtomLiteralVisitor))
+                if (body.Accept(this.Checker.IsAtomLiteralVisitor))
                 {
-                  literals.Add(body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened"));
+                  literals.Add(body.Accept(this.Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened"));
                 }
-              }
-            );
+              });
 
             loop.AddBody(literals);
           }
@@ -313,9 +327,10 @@ public class Preparer : IPreparer
       {
         foreach (var body in rule.Body)
         {
-          if (body.Accept(Checker.IsAtomLiteralVisitor))
+          if (body.Accept(this.Checker.IsAtomLiteralVisitor))
           {
-            var atomLiteral = body.Accept(Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
+            var atomLiteral = body.Accept(this.Parser.ParseAtomLiteralVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
+
             // If the literal is not positiv we skip it
             if (!atomLiteral.Positive)
             {
@@ -336,7 +351,7 @@ public class Preparer : IPreparer
               loopRule.AddHead(reference);
 
               // For every string we store the loop rule for easier access later on
-              // so if the current graph is 
+              // so if the current graph is
               // x :- y.
               // y :- x
               // we add the same reference loop rule for x and y
@@ -352,7 +367,7 @@ public class Preparer : IPreparer
       loopRules.Add(pair.Value);
     }
 
-    Logger.Logger.Debug("Added looprules for solver. \n"
+    Logger.Debug("Added looprules for solver. \n"
            + "Duration was " + watch.Stop());
 
     return loopRules;

@@ -1,7 +1,13 @@
-using System.Data;
-using Interpreter.Lib.Results.Objects.Terms;
+//-----------------------------------------------------------------------
+// <copyright file="TermVisitor.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Visitors;
+
+using System.Data;
+using Interpreter.Lib.Results.Objects.Terms;
 
 /// <summary>
 /// Implementation of the Term visitor.
@@ -9,16 +15,17 @@ namespace Interpreter.Lib.Visitors;
 public class TermVisitor : LparseBaseVisitor<Term>
 {
   /// <summary>
-  /// Parses the context of a term and either returns a number an or an variable
+  /// Parses the context of a term and either returns a number an or an variable.
   /// </summary>
   /// <param name="context">The context of a term.</param>
-  /// <returns>The parsed term</returns>
+  /// <returns>The parsed term.</returns>
   public override Term VisitTerm(LparseParser.TermContext context)
   {
     // If the term has terms its a function term so call it recursivly
     if (context.terms() != null && context.ID() != null)
     {
       string name = context.ID().GetText();
+
       // the minus suggorates a classical negation
       name = context.MINUS() != null ? "-" + name : name;
       List<Term> subTerms = new TermsVisitor().Visit(context.terms());
@@ -32,7 +39,7 @@ public class TermVisitor : LparseBaseVisitor<Term>
       return new Variable(context.ID().GetText());
     }
 
-    // If number is not null its a normal number with a minus contect it is negative 
+    // If number is not null its a normal number with a minus contect it is negative.
     if (context.NUMBER() != null)
     {
       return new Number(int.Parse(context.NUMBER().GetText()) * (context.MINUS() != null ? -1 : 1));

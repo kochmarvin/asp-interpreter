@@ -1,14 +1,18 @@
-using Interpreter.Lib.Results.Objects.Terms;
+//-----------------------------------------------------------------------
+// <copyright file="IHasVariables.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Results.Interfaces;
 
 /// <summary>
-/// Interfance to check if a an object has variables
+/// Interfance to check whether an object has variables.
 /// </summary>
 public interface IHasVariables
 {
   /// <summary>
-  /// Checks if there are variables in general
+  /// Checks if there are variables in general.
   /// </summary>
   /// <returns>Either if there are variables or not.</returns>
   public bool HasVariables();

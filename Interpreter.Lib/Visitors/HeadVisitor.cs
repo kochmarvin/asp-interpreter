@@ -1,11 +1,16 @@
+//-----------------------------------------------------------------------
+// <copyright file="HeadVisitor.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Interpreter.Lib.Visitors;
+
 using System.Data;
-using Interpreter.Lib.Results;
 using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Terms;
 using static LparseParser;
-
-namespace Interpreter.Lib.Visitors;
 
 /// <summary>
 /// Implementation of the Head visitor.
@@ -20,7 +25,6 @@ public class HeadVisitor : LparseBaseVisitor<List<Head>>
   /// <exception cref="SyntaxErrorException">If there has been a head used which is not recognized.</exception>
   public override List<Head> VisitHead(LparseParser.HeadContext context)
   {
-
     // Check if it is a normal head, without choice or range
     if (context.disjunction() != null)
     {
@@ -30,6 +34,7 @@ public class HeadVisitor : LparseBaseVisitor<List<Head>>
       name = classic.MINUS() != null ? "-" + name : name;
 
       List<Term> terms = [];
+
       // Parse the terms of the head if there are any
       if (classic.terms() != null)
       {
@@ -45,6 +50,7 @@ public class HeadVisitor : LparseBaseVisitor<List<Head>>
     if (context.range() != null)
     {
       List<Head> results = [];
+
       // Add a minus "classical negation" to the name of the head if a minus is present
       string name = context.range().range_literal().ID().GetText();
       name = context.range().range_literal().MINUS() != null ? "-" + name : name;
@@ -52,8 +58,8 @@ public class HeadVisitor : LparseBaseVisitor<List<Head>>
       var rangeBinding = context.range().range_literal().range_binding();
 
       // Get the start and the end of the range
-      var start = ParseRangeNumber(rangeBinding.range_number()[0]);
-      var end = ParseRangeNumber(rangeBinding.range_number()[1]);
+      var start = this.ParseRangeNumber(rangeBinding.range_number()[0]);
+      var end = this.ParseRangeNumber(rangeBinding.range_number()[1]);
 
       // Would not make sense if start is bigger then end
       if (start > end)
@@ -74,16 +80,18 @@ public class HeadVisitor : LparseBaseVisitor<List<Head>>
     if (context.choice() != null)
     {
       List<Atom> atoms = [];
-      
+
       // Parse every choice element and add it to the atoms
       foreach (var choice in context.choice().choice_elements().choice_element())
       {
         Classical_literalContext classic = choice.classical_literal();
-         // Add a minus "classical negation" to the name of the choice if a minus is present
+
+        // Add a minus "classical negation" to the name of the choice if a minus is present
         string name = classic.ID().GetText();
         name = classic.MINUS() != null ? "-" + name : name;
-        
+
         List<Term> terms = [];
+
         // if the choice has terms parse those
         if (classic.terms() != null)
         {

@@ -1,42 +1,55 @@
-using Interpreter.Lib.Logger;
-using Interpreter.Lib.Solver.Interfaces;
-using System.Collections.Concurrent;
-using System.Diagnostics;
+//-----------------------------------------------------------------------
+// <copyright file="DPLLSolver.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Solver.defaults;
 
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using Interpreter.Lib.Solver.Interfaces;
+
 /// <summary>
-/// The default solver for the programm a DPLL
+/// The default solver for the programm a DPLL.
 /// </summary>
 public class DPLLSolver : ISolver
 {
   /// <summary>
-  /// The random instance to take a random variable
-  /// </summary>
-  private Random _random;
-
-  /// <summary>
-  /// How many duplicates a process can find until it sops
+  /// How many duplicates a process can find until it stops.
   /// </summary>
   private const int MaxDuplicates = 1;
 
+  /// <summary>
+  /// The random instance to take a random variable.
+  /// </summary>
+  private Random random;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="DPLLSolver"/> class.
+  /// </summary>
   public DPLLSolver()
   {
-    _random = new Random();
+    this.random = new Random();
   }
 
+  /// <summary>
+  /// Solves a given CNF formular with the DPLL algorithm.
+  /// </summary>
+  /// <param name="formula">The formular to be solved.</param>
+  /// <returns>The results of the solved formular.</returns>
   public SatResult Solve(List<List<int>> formula)
   {
     ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
 
-    return DPLL(formula);
+    return this.DPLL(formula);
   }
 
   /// <summary>
-  /// Start of a recursive function which will look for all solutions of a formular
+  /// Start of a recursive function which will look for all solutions of a formular.
   /// </summary>
   /// <param name="formula">The formular which should be solved.</param>
-  /// <returns>The found Results</returns>
+  /// <returns>The found Results.</returns>
   public List<SatResult> FindAllSolutions(List<List<int>> formula)
   {
     ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
@@ -45,21 +58,21 @@ public class DPLLSolver : ISolver
     var allSolutions = new ConcurrentBag<SatResult>();
     var processedFormulas = new ConcurrentDictionary<string, bool>();
     var lockObject = new object();
-    FindAllSolutionsRecursive(formula, [], allSolutions, lockObject, processedFormulas, 0);
+    this.FindAllSolutionsRecursive(formula, [], allSolutions, lockObject, processedFormulas, 0);
     Logger.Logger.Debug("Found all possible solutions. \n"
            + "Duration was " + watch.Elapsed);
     return allSolutions.ToList();
   }
 
   /// <summary>
-  /// Recursive function to find all solutios
+  /// Recursive function to find all solutios.
   /// </summary>
   /// <param name="formula">The formular which should get solved.</param>
-  /// <param name="assignments">The previous assignments</param>
+  /// <param name="assignments">The previous assignments.</param>
   /// <param name="allSolutions">All solutions which have been found.</param>
   /// <param name="lockObject">A lock object.</param>
-  /// <param name="processedFormulas">All forumulars which have been processed</param>
-  /// <param name="duplicateCount">On which duplicate state the process is</param>
+  /// <param name="processedFormulas">All forumulars which have been processed.</param>
+  /// <param name="duplicateCount">On which duplicate state the process is.</param>
   private void FindAllSolutionsRecursive(List<List<int>> formula, List<int> assignments, ConcurrentBag<SatResult> allSolutions, object lockObject, ConcurrentDictionary<string, bool> processedFormulas, int duplicateCount)
   {
     ArgumentNullException.ThrowIfNull(formula, "Is not supposed to be null");
@@ -71,7 +84,7 @@ public class DPLLSolver : ISolver
     Logger.Logger.Debug("Starting finding solutions process");
 
     // If the solver is on a formular which has already been processed it wont do it again.
-    var normalizedFormulaString = NormalizeAndStringifyFormula(formula);
+    var normalizedFormulaString = this.NormalizeAndStringifyFormula(formula);
     if (processedFormulas.ContainsKey(normalizedFormulaString))
     {
       Logger.Logger.Debug("Formula already processed, skipping.");
@@ -82,7 +95,7 @@ public class DPLLSolver : ISolver
     processedFormulas[normalizedFormulaString] = true;
 
     // solve the formualr.
-    SatResult result = DPLL(formula, []);
+    SatResult result = this.DPLL(formula, []);
     if (!result.Satisfiable)
     {
       Logger.Logger.Debug("Stopping process due to finding unsatisfiable formula");
@@ -114,7 +127,7 @@ public class DPLLSolver : ISolver
     Parallel.ForEach(result.Assignments, (literal) =>
     {
       List<List<int>> newFormula = [.. formula, [-literal]];
-      FindAllSolutionsRecursive(newFormula, [], allSolutions, lockObject, processedFormulas, duplicateCount);
+      this.FindAllSolutionsRecursive(newFormula, [], allSolutions, lockObject, processedFormulas, duplicateCount);
     });
   }
 
@@ -159,7 +172,7 @@ public class DPLLSolver : ISolver
         return new SatResult(false, []);
       }
 
-      //if there is only one varibale combine it and start a new DPLL with the new formular.
+      // if there is only one varibale combine it and start a new DPLL with the new formular.
       if (clause.Count == 1)
       {
         int literal = clause[0];
@@ -168,32 +181,32 @@ public class DPLLSolver : ISolver
           assignments.Add(literal);
         }
 
-        List<List<int>> newCNF = UnitPropagate(formula, literal);
+        List<List<int>> newCNF = this.UnitPropagate(formula, literal);
 
-        return DPLL(newCNF, [.. assignments]);
+        return this.DPLL(newCNF, [.. assignments]);
       }
     }
 
     // If there is not a single clause with only one literal take a random one and try it with the positve one
-    int randomClauseIndex = _random.Next(formula.Count);
+    int randomClauseIndex = this.random.Next(formula.Count);
     List<int> randomClause = formula[randomClauseIndex];
-    int chooseLiteral = randomClause[_random.Next(randomClause.Count)];
+    int chooseLiteral = randomClause[this.random.Next(randomClause.Count)];
 
-    SatResult resultTrue = DPLL([.. formula, [chooseLiteral]], [.. assignments, chooseLiteral]);
+    SatResult resultTrue = this.DPLL([.. formula, [chooseLiteral]], [.. assignments, chooseLiteral]);
     if (resultTrue.Satisfiable)
     {
       return resultTrue;
     }
 
     // if this has not worked try it with the negative one
-    return DPLL([.. formula, [-chooseLiteral]], [.. assignments, -chooseLiteral]);
+    return this.DPLL([.. formula, [-chooseLiteral]], [.. assignments, -chooseLiteral]);
   }
 
   /// <summary>
-  /// Removes all findings of a literal in all formualrs
+  /// Removes all findings of a literal in all formualrs.
   /// </summary>
-  /// <param name="originalFormula">The formular which should get looked at</param>
-  /// <param name="literal">The literal which should get removed</param>
+  /// <param name="originalFormula">The formular which should get looked at.</param>
+  /// <param name="literal">The literal which should get removed.</param>
   /// <returns>The new formular.</returns>
   private List<List<int>> UnitPropagate(List<List<int>> originalFormula, int literal)
   {

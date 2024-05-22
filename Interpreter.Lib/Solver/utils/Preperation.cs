@@ -1,59 +1,80 @@
-using Interpreter.Lib.Results.Objects.Rule;
+//-----------------------------------------------------------------------
+// <copyright file="Preperation.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Solver;
 
+using Interpreter.Lib.Results.Objects.Rule;
+
 /// <summary>
-/// Structrue which the preparer returns
+/// Structrue which the preparer returns.
 /// </summary>
-/// <param name="factuallyTrue">All facts which are known to be factually true.</param>
-/// <param name="remainder">The raimender which has to be solved.</param>
-/// <param name="loopRules">And the found looprules for the solver.</param>
 public class Preperation
 {
   private List<ProgramRule> factuallyTrue;
   private List<ProgramRule> remainder;
   private List<LoopRule> loopRules;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="Preperation"/> class.
+  /// </summary>
+  /// <param name="factuallyTrue">All facts which are known to be factually true.</param>
+  /// <param name="remainder">The remainder which has to be solved.</param>
+  /// <param name="loopRules">And the found looprules for the solver.</param>
+  public Preperation(List<ProgramRule> factuallyTrue, List<ProgramRule> remainder, List<LoopRule> loopRules)
+  {
+    this.FactuallyTrue = factuallyTrue;
+    this.Remainder = remainder;
+    this.LoopRules = loopRules;
+  }
+
+  /// <summary>
+  /// Gets the all the facts which are known to be factually true.
+  /// </summary>
   public List<ProgramRule> FactuallyTrue
   {
     get
     {
-      return factuallyTrue;
+      return this.factuallyTrue;
     }
 
     private set
     {
-      factuallyTrue = value ?? throw new ArgumentNullException(nameof(FactuallyTrue), "Is not supposed to be null");
+      this.factuallyTrue = value ?? throw new ArgumentNullException(nameof(this.FactuallyTrue), "Is not supposed to be null");
     }
   }
+
+  /// <summary>
+  /// Gets the remainder which has to be solved.
+  /// </summary>
   public List<ProgramRule> Remainder
   {
     get
     {
-      return remainder;
+      return this.remainder;
     }
 
     private set
     {
-      remainder = value ?? throw new ArgumentNullException(nameof(Remainder), "Is not supposed to be null");
+      this.remainder = value ?? throw new ArgumentNullException(nameof(this.Remainder), "Is not supposed to be null");
     }
   }
+
+  /// <summary>
+  /// Gets the found loop rules for the solver.
+  /// </summary>
   public List<LoopRule> LoopRules
   {
     get
     {
-      return loopRules;
+      return this.loopRules;
     }
 
     private set
     {
-      loopRules = value ?? throw new ArgumentNullException(nameof(LoopRules), "Is not supposed to be null");
+      this.loopRules = value ?? throw new ArgumentNullException(nameof(this.LoopRules), "Is not supposed to be null");
     }
-  }
-
-  public Preperation(List<ProgramRule> factuallyTrue, List<ProgramRule> remainder, List<LoopRule> loopRules)
-  {
-    FactuallyTrue = factuallyTrue;
-    Remainder = remainder;
-    LoopRules = loopRules;
   }
 }

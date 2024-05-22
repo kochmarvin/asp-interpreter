@@ -1,14 +1,16 @@
-using System.Data;
-using Interpreter.Lib.Results;
-using Interpreter.Lib.Results.Objects.Atoms;
+//-----------------------------------------------------------------------
+// <copyright file="StatementsVisitor.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Interpreter.Lib.Visitors;
+
 using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
-using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
 using static LparseParser;
-
-namespace Interpreter.Lib.Visitors;
 
 /// <summary>
 /// Implementation of the statement visitor.
@@ -18,8 +20,8 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
   /// <summary>
   /// Parses all statements of the programm context.
   /// </summary>
-  /// <param name="context">The statement context</param>
-  /// <returns>A List of parsed rules</returns>
+  /// <param name="context">The statement context.</param>
+  /// <returns>A List of parsed rules.</returns>
   public override List<ProgramRule> VisitStatements(LparseParser.StatementsContext context)
   {
     List<ProgramRule> atoms = [];
@@ -64,7 +66,7 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
           if (specials.special() != null)
           {
             bool found = false;
-            
+
             // check if the variable is arleady in it, so no duplicates get added
             for (int i = 0; i < vars.Count; i++)
             {
@@ -101,7 +103,6 @@ public class StatementsVisitor : LparseBaseVisitor<List<ProgramRule>>
       // Go thorugh each head annd add the bodies, multiple heads could be due to an range operator.
       foreach (var headLiteral in headLiterals)
       {
-
         if (bodyLiterals.Count == 0)
         {
           atoms.Add(new ProgramRule(headLiteral, []));

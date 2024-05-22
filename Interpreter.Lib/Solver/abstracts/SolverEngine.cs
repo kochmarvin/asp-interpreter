@@ -1,61 +1,90 @@
-using Interpreter.Lib.Results.Objects.Atoms;
-using Interpreter.Lib.Solver.Interfaces;
+//-----------------------------------------------------------------------
+// <copyright file="SolverEngine.cs" company="PlaceholderCompany">
+//      Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Interpreter.Lib.Solver.Abstracts;
+
+using Interpreter.Lib.Results.Objects.Atoms;
+using Interpreter.Lib.Solver.Interfaces;
 
 /// <summary>
 /// Abstract class of a solver engine.
 /// </summary>
-/// <param name="preparer">The used preparer</param>
-/// <param name="transformer">The used transformer</param>
-/// <param name="solver">The used soolver</param>
+/// <param name="preparer">The used preparer.</param>
+/// <param name="transformer">The used transformer.</param>
+/// <param name="solver">The used soolver.</param>
 public abstract class SolverEngine
 {
   private IPreparer preparer;
   private ITransformer transformer;
   private ISolver solver;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="SolverEngine"/> class.
+  /// </summary>
+  /// <param name="preparer">The preparer needed to prepare the program rules.</param>
+  /// <param name="transformer">The transformer needed to transform the program rules.</param>
+  /// <param name="solver">The solver needed to solve the program.</param>
+  public SolverEngine(IPreparer preparer, ITransformer transformer, ISolver solver)
+  {
+    this.Preparer = preparer;
+    this.Transformer = transformer;
+    this.Solver = solver;
+  }
+
+  /// <summary>
+  /// Gets the preparer interface for the solving engine.
+  /// </summary>
   public IPreparer Preparer
   {
     get
     {
-      return preparer;
+      return this.preparer;
     }
+
     private set
     {
-      preparer = value ?? throw new ArgumentNullException(nameof(Preparer), "Is not supposed to be null");
+      this.preparer = value ?? throw new ArgumentNullException(nameof(this.Preparer), "Is not supposed to be null");
     }
   }
-  
+
+  /// <summary>
+  /// Gets the transformer interface for the solver engine.
+  /// </summary>
   public ITransformer Transformer
   {
     get
     {
-      return transformer;
+      return this.transformer;
     }
+
     private set
     {
-      transformer = value ?? throw new ArgumentNullException(nameof(Transformer), "Is not supposed to be null");
+      this.transformer = value ?? throw new ArgumentNullException(nameof(this.Transformer), "Is not supposed to be null");
     }
   }
 
+  /// <summary>
+  /// Gets the solver interface for the solver engine.
+  /// </summary>
   public ISolver Solver
   {
     get
     {
-      return solver;
+      return this.solver;
     }
+
     private set
     {
-      solver = value ?? throw new ArgumentNullException(nameof(Solver), "Is not supposed to be null");
+      this.solver = value ?? throw new ArgumentNullException(nameof(this.Solver), "Is not supposed to be null");
     }
   }
 
-  public SolverEngine(IPreparer preparer, ITransformer transformer, ISolver solver)
-  {
-    Preparer = preparer;
-    Transformer = transformer;
-    Solver = solver;
-  }
-
+  /// <summary>
+  /// Execute the solving engine algorithm.
+  /// </summary>
+  /// <returns>The solved program as atoms.</returns>
   public abstract List<List<Atom>>? Execute();
 }
