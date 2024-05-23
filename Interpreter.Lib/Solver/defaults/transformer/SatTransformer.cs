@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Interpreter.Lib.Solver.defaults;
+namespace Interpreter.Lib.Solver.Defaults;
 
 using Interpreter.FunctionalLib;
 using Interpreter.Lib.Logger;

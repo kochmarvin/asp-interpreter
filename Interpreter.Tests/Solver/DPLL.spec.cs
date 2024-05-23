@@ -3,7 +3,7 @@ using Interpreter.Lib.Grounder;
 using Interpreter.Lib.Results.Objects.Rule;
 
 using Interpreter.Lib.Solver;
-using Interpreter.Lib.Solver.defaults;
+using Interpreter.Lib.Solver.Defaults;
 using Interpreter.Tests;
 using Interpreter.Tests.Parser;
 

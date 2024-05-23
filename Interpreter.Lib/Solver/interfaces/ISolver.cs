@@ -6,7 +6,7 @@
 
 namespace Interpreter.Lib.Solver.Interfaces;
 
-using Interpreter.Lib.Solver.defaults;
+using Interpreter.Lib.Solver.Defaults;
 
 /// <summary>
 /// Interface for the solver.

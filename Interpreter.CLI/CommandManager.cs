@@ -20,7 +20,7 @@ using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Solver;
-using Interpreter.Lib.Solver.defaults;
+using Interpreter.Lib.Solver.Defaults;
 using Interpreter.Lib.Visitors;
 
 /// <summary>

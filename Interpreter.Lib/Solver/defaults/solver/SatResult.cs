@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Interpreter.Lib.Solver.defaults;
+namespace Interpreter.Lib.Solver.Defaults;
 
 /// <summary>
 /// The result of a sat solver.

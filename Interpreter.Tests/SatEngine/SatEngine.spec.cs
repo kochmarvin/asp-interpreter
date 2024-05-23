@@ -4,7 +4,7 @@ using Interpreter.Lib.Results.Objects.Atoms;
 using Interpreter.Lib.Results.Objects.Rule;
 using Interpreter.Lib.Results.Objects.Terms;
 
-using Interpreter.Lib.Solver.defaults;
+using Interpreter.Lib.Solver.Defaults;
 using Interpreter.Tests;
 using Interpreter.Tests.Parser;
 

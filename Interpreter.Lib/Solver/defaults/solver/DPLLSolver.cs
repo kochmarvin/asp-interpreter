@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Interpreter.Lib.Solver.defaults;
+namespace Interpreter.Lib.Solver.Defaults;
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
