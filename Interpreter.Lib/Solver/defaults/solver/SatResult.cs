@@ -81,7 +81,7 @@ public class SatResult
   /// <returns>The hascode for the current object.</returns>
   public override int GetHashCode()
   {
-    unchecked // Overflow is fine, just wrap
+    unchecked
     {
       int hash = 19;
       foreach (var assignment in this.Assignments)

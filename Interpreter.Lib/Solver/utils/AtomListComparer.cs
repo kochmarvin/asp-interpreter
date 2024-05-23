@@ -47,7 +47,7 @@ public class AtomListComparer : IEqualityComparer<List<Atom>>
     /// <returns>A hash code for the specified list of atoms.</returns>
   public int GetHashCode(List<Atom> set)
   {
-    unchecked // Overflow is fine
+    unchecked
     {
       int hash = 19;
 
