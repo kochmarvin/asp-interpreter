@@ -242,7 +242,7 @@ public class SatEngineTests
     //   ]
     // );
 
-    // da fickt die reihenfolge der AS wieder, ab und zu kommts durch 
+    // die reihenfolge der AS nicht immer gleich, ab und zu kommts durch 
     /*
     yield return new SatEngineResult(
       "teaches.lp",
