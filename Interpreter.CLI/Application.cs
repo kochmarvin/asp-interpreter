@@ -41,7 +41,7 @@ public class Application
               new LoadFileCommand().Execute(args, manager);
           }
 
-          if (!string.IsNullOrEmpty(opts.Explain))
+          if (!string.IsNullOrEmpty(opts.Explain) && opts.FilePath != null)
           {
               if (!opts.FilePath.EndsWith(".lp"))
               {

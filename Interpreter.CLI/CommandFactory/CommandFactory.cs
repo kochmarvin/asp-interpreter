@@ -17,7 +17,7 @@ public class CommandFactory
     /// </summary>
     /// <param name="cmd">The given command as a string.</param>
     /// <returns>A new command interface.</returns>
-    public ICommand CreateCommand(string cmd)
+    public ICommand? CreateCommand(string cmd)
     {
         switch (cmd)
         {

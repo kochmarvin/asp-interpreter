@@ -15,7 +15,6 @@ using Interpreter.Lib.Logger;
 using Interpreter.Lib.Results.Enums;
 using Interpreter.Lib.Results.Objects;
 using Interpreter.Lib.Results.Objects.Atoms;
-using Interpreter.Lib.Results.Objects.BodyLiterals;
 using Interpreter.Lib.Results.Objects.HeadLiterals;
 using Interpreter.Lib.Results.Objects.Literals;
 using Interpreter.Lib.Results.Objects.Rule;
