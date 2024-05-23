@@ -25,8 +25,8 @@ public class AtomLiteralTests
     var body = (LiteralBody)_program[0].Body[0];
 
     Assert.IsInstanceOf<AtomLiteral>(body.Literal, "Body has to be a atom Literal");
-    var atomLiteral = (AtomLiteral)body.Literal;
-    Assert.That(atomLiteral.Positive, Is.EqualTo(false));
+    var atomLiteral = body.Accept(new ObjectParser().ParseAtomLiteralVisitor);
+    Assert.That(atomLiteral?.Positive, Is.EqualTo(false));
   }
 
   [Test]
@@ -35,7 +35,7 @@ public class AtomLiteralTests
     var body = (LiteralBody)_program[1].Body[0];
 
     Assert.IsInstanceOf<AtomLiteral>(body.Literal, "Body has to be a atom Literal");
-    var atomLiteral = (AtomLiteral)body.Literal;
-    Assert.That(atomLiteral.Positive, Is.EqualTo(true));
+    var atomLiteral = body.Accept(new ObjectParser().ParseAtomLiteralVisitor);
+    Assert.That(atomLiteral?.Positive, Is.EqualTo(true));
   }
 }

@@ -17,10 +17,10 @@ public class VariableTermTests
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
 
-      var head = (AtomHead)program[i].Head;
+      var head = program[i].Head.Accept(new ObjectParser().ParseAtomHeadVisitor);
 
-      Assert.That(head.Atom.Name, Is.EqualTo("mensch"));
-      Assert.That(head.Atom.Args, Has.Count.EqualTo(1));
+      Assert.That(head?.Atom.Name, Is.EqualTo("mensch"));
+      Assert.That(head?.Atom.Args, Has.Count.EqualTo(1));
       Assert.IsInstanceOf<Variable>(head.Atom.Args[0]);
     }
 
@@ -35,8 +35,8 @@ public class VariableTermTests
     for (int i = 0; i < program.Count; i++)
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
-      var head = (AtomHead)program[i].Head;
-      foreach (Term term in head.Atom.Args)
+      var head = program[i].Head.Accept(new ObjectParser().ParseAtomHeadVisitor);
+      foreach (Term term in head?.Atom.Args ?? [])
       {
         Assert.IsInstanceOf<Variable>(term);
       }

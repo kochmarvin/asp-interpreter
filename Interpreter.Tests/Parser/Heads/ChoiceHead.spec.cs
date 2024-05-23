@@ -28,8 +28,7 @@ public class ChoiceHeadTests
 
     Assert.IsInstanceOf<ChoiceHead>(program[0].Head, "Rule head has to be a Choicehead");
 
-    var head = (ChoiceHead)program[0].Head;
-    foreach (var atom in head.Atoms)
+    foreach (var atom in program[0].Head.GetHeadAtoms())
     {
       Assert.IsInstanceOf<string>(atom.Name, "Atom has to be a variable");
       Assert.That(atom.Args.Count, Is.EqualTo(0));

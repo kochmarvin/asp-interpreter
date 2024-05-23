@@ -32,9 +32,9 @@ public class GrounderTests
     var grounded = grounder.Ground();
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
 
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -59,9 +59,9 @@ public class GrounderTests
 
     var grounded = grounder.Ground();
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -82,9 +82,9 @@ public class GrounderTests
 
     var grounded = grounder.Ground();
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -106,9 +106,9 @@ public class GrounderTests
 
     var grounded = grounder.Ground();
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -150,9 +150,9 @@ public class GrounderTests
     var grounded = grounder.Ground();
 
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -174,9 +174,9 @@ public class GrounderTests
     var grounded = grounder.Ground();
 
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -196,9 +196,9 @@ public class GrounderTests
     var grounded = grounder.Ground();
 
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -221,9 +221,9 @@ public class GrounderTests
     var grounded = grounder.Ground();
 
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 
@@ -247,9 +247,9 @@ public class GrounderTests
     var grounded = grounder.Ground();
 
     Assert.That(grounded, Has.Count.EqualTo(expected.Count));
-    foreach (var r in grounded)
+    foreach (var rule in grounded)
     {
-      Assert.That(expected, Does.Contain(r.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
+      Assert.That(expected, Does.Contain(rule.ToString().Replace(" ", "")), "Generated fact not found in the expected list.");
     }
   }
 }

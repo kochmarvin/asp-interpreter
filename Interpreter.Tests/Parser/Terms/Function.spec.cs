@@ -17,17 +17,17 @@ public class FunctionTermTests
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
 
-      var head = (AtomHead)program[i].Head;
-      Assert.That(head.Atom.Name, Is.EqualTo("das"));
+      var head = program[i].Head.Accept(new ObjectParser().ParseAtomHeadVisitor);
+      Assert.That(head?.Atom.Name, Is.EqualTo("das"));
       Assert.IsInstanceOf<FunctionTerm>(head.Atom.Args[0]);
 
-      var functionTerm = (FunctionTerm)head.Atom.Args[0];
-      Assert.That(functionTerm.Name, Is.EqualTo("ein"));
+      var functionTerm = head.Atom.Args[0].Accept(new ObjectParser().ParseFunctionalVisitor);
+      Assert.That(functionTerm?.Name, Is.EqualTo("ein"));
 
       Assert.IsInstanceOf<Variable>(functionTerm.Arguments[0]);
 
-      var variable = (Variable)functionTerm.Arguments[0];
-      Assert.That(variable.Name, Is.EqualTo("test"));
+      var variable = functionTerm.Arguments[0].Accept(new ObjectParser().ParseVariableVisitor);
+      Assert.That(variable?.Name, Is.EqualTo("test"));
     }
 
     Assert.That(program, Has.Count.EqualTo(1));
@@ -41,14 +41,15 @@ public class FunctionTermTests
     for (int i = 0; i < program.Count; i++)
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
-      var head = (AtomHead)program[i].Head;
-      foreach (Term term in head.Atom.Args)
+      var head = program[i].Head.Accept(new ObjectParser().ParseAtomHeadVisitor);
+
+      foreach (Term term in head?.Atom.Args ?? [])
       {
         Assert.IsInstanceOf<FunctionTerm>(term);
 
-        var functionTerm = (FunctionTerm)term;
+        var functionTerm = term.Accept(new ObjectParser().ParseFunctionalVisitor);
 
-        Assert.IsInstanceOf<Variable>(functionTerm.Arguments[0]);
+        Assert.IsInstanceOf<Variable>(functionTerm?.Arguments[0]);
       }
     }
 

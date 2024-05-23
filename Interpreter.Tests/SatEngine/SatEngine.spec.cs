@@ -68,8 +68,13 @@ public class SatEngineTests
 
   private class ListAtomComparer : IEqualityComparer<List<Atom>>
   {
-    public bool Equals(List<Atom> x, List<Atom> y)
+    public bool Equals(List<Atom>? x, List<Atom>? y)
     {
+      if (x == null || y == null)
+      {
+        return false;
+      }
+
       return x.OrderBy(a => a.Name).SequenceEqual(y.OrderBy(a => a.Name));
     }
 

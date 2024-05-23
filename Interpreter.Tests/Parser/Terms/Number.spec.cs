@@ -20,15 +20,15 @@ public class NumberTermTests
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
 
-      var head = (AtomHead)program[i].Head;
+      var head = program[i].Head.Accept(new ObjectParser().ParseAtomHeadVisitor);
 
-      Assert.That(head.Atom.Name, Is.EqualTo("node"));
-      Assert.That(head.Atom.Args, Has.Count.EqualTo(1));
+      Assert.That(head?.Atom.Name, Is.EqualTo("node"));
+      Assert.That(head?.Atom.Args, Has.Count.EqualTo(1));
       Assert.IsInstanceOf<Number>(head.Atom.Args[0]);
 
-      var term = (Number)head.Atom.Args[0];
+      var term = head.Atom.Args[0].Accept(new ObjectParser().ParseNumberVisitor);
 
-      Assert.That(i + 1, Is.EqualTo(term.Value));
+      Assert.That(i + 1, Is.EqualTo(term?.Value));
     }
 
     Assert.That(program, Has.Count.EqualTo(7));
@@ -43,15 +43,15 @@ public class NumberTermTests
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
 
-      var head = (AtomHead)program[i].Head;
+      var head = program[i].Head.Accept(new ObjectParser().ParseAtomHeadVisitor);
 
-      Assert.That(head.Atom.Name, Is.EqualTo("node"));
-      Assert.That(head.Atom.Args, Has.Count.EqualTo(1));
+      Assert.That(head?.Atom.Name, Is.EqualTo("node"));
+      Assert.That(head?.Atom.Args, Has.Count.EqualTo(1));
       Assert.IsInstanceOf<Number>(head.Atom.Args[0]);
 
-      var term = (Number)head.Atom.Args[0];
+      var term = head.Atom.Args[0].Accept(new ObjectParser().ParseNumberVisitor);
 
-      Assert.That((i + 1) * -1, Is.EqualTo(term.Value));
+      Assert.That((i + 1) * -1, Is.EqualTo(term?.Value));
     }
 
     Assert.That(program, Has.Count.EqualTo(7));
@@ -66,9 +66,9 @@ public class NumberTermTests
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
 
-      var head = (AtomHead)program[i].Head;
+      var head = program[i].Head.Accept(new ObjectParser().ParseAtomHeadVisitor);
 
-      Assert.That(head.Atom.Name, Is.EqualTo("node"));
+      Assert.That(head?.Atom.Name, Is.EqualTo("node"));
 
       foreach (Term term in head.Atom.Args)
       {

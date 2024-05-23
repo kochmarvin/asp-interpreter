@@ -22,82 +22,83 @@ public class ComparisonBodyTests
   [Test]
   public void TestEqual()
   {
-    var body = (LiteralBody)_program[0].Body[0];
+    var body = _program[0].Body[0];
 
-    Assert.IsInstanceOf<ComparisonLiteral>(body.Literal, "Body has to be a comparison Literal");
-    var comparisonLiteral = (ComparisonLiteral)body.Literal;
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.Equal));
+    var comparisonLiteral = body.Accept(new ObjectParser().ParseComparisonLiteralVisitor);
+    Assert.IsInstanceOf<ComparisonLiteral>(comparisonLiteral, "Body has to be a comparison Literal");
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Left);
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Right);
+    Assert.That(comparisonLiteral?.TermRelation, Is.EqualTo(Relation.Equal));
   }
 
   [Test]
   public void TestGreater()
   {
-    var body = (LiteralBody)_program[1].Body[0];
+    var body = _program[1].Body[0];
 
-    Assert.IsInstanceOf<ComparisonLiteral>(body.Literal, "Body has to be a comparison Literal");
-    var comparisonLiteral = (ComparisonLiteral)body.Literal;
-    Assert.IsInstanceOf<FunctionTerm>(comparisonLiteral.Left);
-    Assert.IsInstanceOf<FunctionTerm>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.GreaterThan));
+    var comparisonLiteral = body.Accept(new ObjectParser().ParseComparisonLiteralVisitor);
+    Assert.IsInstanceOf<ComparisonLiteral>(comparisonLiteral, "Body has to be a comparison Literal");
+    Assert.IsInstanceOf<FunctionTerm>(comparisonLiteral?.Left);
+    Assert.IsInstanceOf<FunctionTerm>(comparisonLiteral?.Right);
+    Assert.That(comparisonLiteral?.TermRelation, Is.EqualTo(Relation.GreaterThan));
   }
 
   [Test]
   public void TestLess()
   {
-    var body = (LiteralBody)_program[2].Body[0];
+    var body = _program[2].Body[0];
 
-    Assert.IsInstanceOf<ComparisonLiteral>(body.Literal, "Body has to be a comparison Literal");
-    var comparisonLiteral = (ComparisonLiteral)body.Literal;
-    Assert.IsInstanceOf<Number>(comparisonLiteral.Left);
-    Assert.IsInstanceOf<Number>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.LessThan));
+    var comparisonLiteral = body.Accept(new ObjectParser().ParseComparisonLiteralVisitor);
+    Assert.IsInstanceOf<ComparisonLiteral>(comparisonLiteral, "Body has to be a comparison Literal");
+    Assert.IsInstanceOf<Number>(comparisonLiteral?.Left);
+    Assert.IsInstanceOf<Number>(comparisonLiteral?.Right);
+    Assert.That(comparisonLiteral?.TermRelation, Is.EqualTo(Relation.LessThan));
   }
 
   [Test]
   public void TestGreaterEqual()
   {
-    var body = (LiteralBody)_program[3].Body[0];
+    var body = _program[3].Body[0];
 
-    Assert.IsInstanceOf<ComparisonLiteral>(body.Literal, "Body has to be a comparison Literal");
-    var comparisonLiteral = (ComparisonLiteral)body.Literal;
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.GreaterEqual));
+    var comparisonLiteral = body.Accept(new ObjectParser().ParseComparisonLiteralVisitor);
+    Assert.IsInstanceOf<ComparisonLiteral>(comparisonLiteral, "Body has to be a comparison Literal");
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Left);
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Right);
+    Assert.That(comparisonLiteral?.TermRelation, Is.EqualTo(Relation.GreaterEqual));
   }
   [Test]
   public void TestLessEqual()
   {
-    var body = (LiteralBody)_program[4].Body[0];
+    var body = _program[4].Body[0];
 
-    Assert.IsInstanceOf<ComparisonLiteral>(body.Literal, "Body has to be a comparison Literal");
-    var comparisonLiteral = (ComparisonLiteral)body.Literal;
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.LessEqual));
+    var comparisonLiteral = body.Accept(new ObjectParser().ParseComparisonLiteralVisitor);
+    Assert.IsInstanceOf<ComparisonLiteral>(comparisonLiteral, "Body has to be a comparison Literal");
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Left);
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Right);
+    Assert.That(comparisonLiteral?.TermRelation, Is.EqualTo(Relation.LessEqual));
   }
+
   [Test]
   public void TestInEqual()
   {
-    var body = (LiteralBody)_program[5].Body[0];
+    var body = _program[5].Body[0];
 
-    Assert.IsInstanceOf<ComparisonLiteral>(body.Literal, "Body has to be a comparison Literal");
-    var comparisonLiteral = (ComparisonLiteral)body.Literal;
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.Inequal));
+    var comparisonLiteral = body.Accept(new ObjectParser().ParseComparisonLiteralVisitor);
+    Assert.IsInstanceOf<ComparisonLiteral>(comparisonLiteral, "Body has to be a comparison Literal");
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Left);
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Right);
+    Assert.That(comparisonLiteral?.TermRelation, Is.EqualTo(Relation.Inequal));
   }
 
-   [Test]
+  [Test]
   public void TestInEqual_v2()
   {
-    var body = (LiteralBody)_program[6].Body[0];
+    var body = _program[6].Body[0];
 
-    Assert.IsInstanceOf<ComparisonLiteral>(body.Literal, "Body has to be a comparison Literal");
-    var comparisonLiteral = (ComparisonLiteral)body.Literal;
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Left);
-    Assert.IsInstanceOf<Variable>(comparisonLiteral.Right);
-    Assert.That(comparisonLiteral.TermRelation, Is.EqualTo(Relation.Inequal));
+    var comparisonLiteral = body.Accept(new ObjectParser().ParseComparisonLiteralVisitor);
+    Assert.IsInstanceOf<ComparisonLiteral>(comparisonLiteral, "Body has to be a comparison Literal");
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Left);
+    Assert.IsInstanceOf<Variable>(comparisonLiteral?.Right);
+    Assert.That(comparisonLiteral?.TermRelation, Is.EqualTo(Relation.Inequal));
   }
 }

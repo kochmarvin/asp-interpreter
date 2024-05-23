@@ -30,11 +30,11 @@ public class HeadlessTests
 
     foreach (var bodyLiterl in program[0].Body)
     {
-      var literal = ((LiteralBody)bodyLiterl).Literal;
-      var atom = ((AtomLiteral)literal).Atom;
+      var literal = bodyLiterl.Accept(new ObjectParser().ParseAtomLiteralVisitor);
+      var atom = literal?.Atom;
 
-      Assert.IsInstanceOf<string>(atom.Name, "Atom has to be a variable");
-      Assert.That(atom.Args.Count, Is.EqualTo(0));
+      Assert.IsInstanceOf<string>(atom?.Name, "Atom has to be a variable");
+      Assert.That(atom?.Args.Count, Is.EqualTo(0));
     }
   }
 
@@ -47,13 +47,12 @@ public class HeadlessTests
 
     foreach (var bodyLiterl in program[1].Body)
     {
-      var literal = ((LiteralBody)bodyLiterl).Literal;
-      var atomLiteral = ((AtomLiteral)literal);
-      var atom = atomLiteral.Atom;
+      var literal = bodyLiterl.Accept(new ObjectParser().ParseAtomLiteralVisitor);
+      var atom = literal?.Atom;
 
-      Assert.That(atomLiteral.Positive, Is.EqualTo(false));
-      Assert.IsInstanceOf<string>(atom.Name, "Atom has to be a variable");
-      Assert.That(atom.Args.Count, Is.EqualTo(1));
+      Assert.That(literal?.Positive, Is.EqualTo(false));
+      Assert.IsInstanceOf<string>(atom?.Name, "Atom has to be a variable");
+      Assert.That(atom?.Args.Count, Is.EqualTo(1));
     }
   }
 }

@@ -19,12 +19,12 @@ public class AtomTests
     {
       Assert.IsInstanceOf<AtomHead>(program[i].Head, "Rule head has to be a AtomHead");
 
-      var head = (AtomHead)program[i].Head;
-      Assert.That(head.Atom.Signature, Is.EqualTo("informatiker/1"));
+      var head = program[i].Head;
+      Assert.That(head.GetHeadAtoms()[0].Signature, Is.EqualTo("informatiker/1"));
 
 
-      var body = ((AtomLiteral)((LiteralBody)program[i].Body[0]).Literal);
-      Assert.That(body.Atom.Signature, Is.EqualTo("mensch/1"));
+      var body = program[i].Body[0].Accept(new ObjectParser().ParseAtomLiteralVisitor);
+      Assert.That(body?.Atom.Signature, Is.EqualTo("mensch/1"));
     }
   }
 }
