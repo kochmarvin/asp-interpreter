@@ -59,7 +59,12 @@ public class SatResult
     }
   }
 
-  public override bool Equals(object obj)
+  /// <summary>
+  /// Checks whether the given object is equal to this object.
+  /// </summary>
+  /// <param name="obj">The object to check with the current one.</param>
+  /// <returns>Whether the objects comapared are equal.</returns>
+  public override bool Equals(object? obj)
   {
     var other = obj as SatResult;
     if (other == null)
@@ -70,6 +75,10 @@ public class SatResult
     return this.Assignments.SequenceEqual(other.Assignments);
   }
 
+  /// <summary>
+  /// A default hash function.
+  /// </summary>
+  /// <returns>The hascode for the current object.</returns>
   public override int GetHashCode()
   {
     unchecked // Overflow is fine, just wrap
