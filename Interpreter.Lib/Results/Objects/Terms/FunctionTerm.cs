@@ -137,21 +137,28 @@ public class FunctionTerm : Term
     ArgumentNullException.ThrowIfNull(other, "Is not supposed to be null");
     ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
 
-    FunctionTerm converted = other.Accept(new ParseFunctionalVisitor()) ?? throw new InvalidOperationException("Trying to compare a functional term with something else");
-    if (this.Name != converted.Name || this.Arguments.Count != converted.Arguments.Count)
+    try
     {
-      return false;
-    }
-
-    for (int i = 0; i < this.Arguments.Count; i++)
-    {
-      if (!this.Arguments[i].Match(converted.Arguments[i], substitutions))
+      FunctionTerm converted = other.Accept(new ParseFunctionalVisitor()) ?? throw new InvalidOperationException("Trying to compare a functional term with something else");
+      if (this.Name != converted.Name || this.Arguments.Count != converted.Arguments.Count)
       {
         return false;
       }
-    }
 
-    return true;
+      for (int i = 0; i < this.Arguments.Count; i++)
+      {
+        if (!this.Arguments[i].Match(converted.Arguments[i], substitutions))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+    catch (InvalidOperationException)
+    {
+      return false;
+    }
   }
 
   /// <summary>

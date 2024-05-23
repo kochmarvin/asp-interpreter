@@ -189,8 +189,8 @@ public class DPLLSolver : ISolver
 
     // If there is not a single clause with only one literal take a random one and try it with the positve one
     int randomClauseIndex = this.random.Next(formula.Count);
-    List<int> randomClause = formula[randomClauseIndex];
-    int chooseLiteral = randomClause[this.random.Next(randomClause.Count)];
+    List<int> randomClause = formula[0];
+    int chooseLiteral = randomClause[0];
 
     SatResult resultTrue = this.DPLL([.. formula, [chooseLiteral]], [.. assignments, chooseLiteral]);
     if (resultTrue.Satisfiable)

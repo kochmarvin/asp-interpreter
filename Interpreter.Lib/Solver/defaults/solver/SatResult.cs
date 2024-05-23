@@ -58,4 +58,29 @@ public class SatResult
       this.assignments = value ?? throw new ArgumentNullException(nameof(this.Assignments), "Is not supposed to be null");
     }
   }
+
+  public override bool Equals(object obj)
+  {
+    var other = obj as SatResult;
+    if (other == null)
+    {
+      return false;
+    }
+
+    return this.Assignments.SequenceEqual(other.Assignments);
+  }
+
+  public override int GetHashCode()
+  {
+    unchecked // Overflow is fine, just wrap
+    {
+      int hash = 19;
+      foreach (var assignment in this.Assignments)
+      {
+        hash = (hash * 31) + assignment.GetHashCode();
+      }
+
+      return hash;
+    }
+  }
 }

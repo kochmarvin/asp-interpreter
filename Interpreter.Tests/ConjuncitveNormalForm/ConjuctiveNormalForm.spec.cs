@@ -44,8 +44,13 @@ public class ConjunctiveNormalFormTests
 
   private class ListComparer : IEqualityComparer<List<int>>
   {
-    public bool Equals(List<int> x, List<int> y)
+    public bool Equals(List<int>? x, List<int>? y)
     {
+      if (x == null || y == null)
+      {
+        return false;
+      }
+      
       return x.SequenceEqual(y);
     }
 

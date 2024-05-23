@@ -80,9 +80,15 @@ public class Number : Term
     ArgumentNullException.ThrowIfNull(substitutions, "Is not supposed to be null");
     ArgumentNullException.ThrowIfNull(other, "Is not supposed to be null");
 
-    Number parsed = other.Accept(new ParseNumberVisitor()) ?? throw new InvalidOperationException("Trying to compare something else with a number");
-
-    return this.Value == parsed.Value;
+    try
+    {
+      Number parsed = other.Accept(new ParseNumberVisitor()) ?? throw new InvalidOperationException("Trying to compare something else with a number");
+      return this.Value == parsed.Value;
+    }
+    catch (InvalidOperationException)
+    {
+      return false;
+    }
   }
 
   /// <summary>

@@ -41,7 +41,7 @@ public class Application
               new LoadFileCommand().Execute(args, manager);
           }
 
-          if (!string.IsNullOrEmpty(opts.Explain) && opts.FilePath != null)
+          if (!string.IsNullOrEmpty(opts.FilePath) && opts.Explain)
           {
               if (!opts.FilePath.EndsWith(".lp"))
               {
@@ -49,13 +49,13 @@ public class Application
                   return;
               }
 
-              new ExplainCommand().Execute(args, manager);
+              new ExplainCommand().Execute(["explain", opts.FilePath], manager);
               return;
           }
 
           if (!string.IsNullOrEmpty(opts.Query))
           {
-              new QueryCommand().Execute(args, manager);
+              new QueryCommand().Execute(["query", opts.Query], manager);
               return;
           }
 

@@ -23,13 +23,13 @@ public class CommandLineOptions
     /// Gets or sets the query option of the executable.
     /// </summary>
     [Option('q', "query", Required = false, HelpText = "Execute a query on the loaded file")]
-    public string? Explain { get; set; }
+    public string? Query { get; set; }
 
     /// <summary>
-    /// Gets or sets the explain option of the executable.
+    /// Gets or sets a value indicating whether the the explain option of the executable.
     /// </summary>
     [Option('e', "explain", Required = false, HelpText = "Explain a programm with words")]
-    public string? Query { get; set; }
+    public bool Explain { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the verbose option of the executable is set.

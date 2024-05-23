@@ -61,7 +61,7 @@ public class CommandLineInterpreter
         var parts = command.Split(' ');
         var cmd = parts[0].ToLower();
 
-        ICommand cmdObject = this.commandFactory.CreateCommand(cmd);
+        ICommand cmdObject = this.commandFactory.CreateCommand(cmd) ?? throw new ArgumentException("The provided command does not exist");
 
         if (cmdObject != null)
         {
