@@ -58,7 +58,7 @@ public class QueryVisitor : LparseBaseVisitor<List<Query>>, IQueryVisitor<List<Q
         AtomHead head = new AtomHead(new Atom(Guid.NewGuid().ToString(), terms));
 
         // return the parsed query.
-        Query query = new Query(new ProgramRule(head, body), variablesSet);
+        Query query = new Query(new ObjectParser(), new ProgramRule(head, body), variablesSet);
         queries.Add(query);
       }
 

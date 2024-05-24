@@ -18,16 +18,19 @@ public class Query
 {
   private ProgramRule parsedQuery;
   private HashSet<string> variables;
+  private IObjectParser objectParser;
 
   /// <summary>
   /// Initializes a new instance of the <see cref="Query"/> class.
   /// </summary>
+  /// <param name="objectParser">The object parser.</param>
   /// <param name="query">The query as a program rule.</param>
   /// <param name="variables">The variables contained in the query.</param>
-  public Query(ProgramRule query, HashSet<string> variables)
+  public Query(IObjectParser objectParser, ProgramRule query, HashSet<string> variables)
   {
     this.ParsedQuery = query;
     this.Variables = variables;
+    this.ObjectParser = objectParser;
   }
 
   /// <summary>
@@ -43,6 +46,22 @@ public class Query
     private set
     {
       this.parsedQuery = value ?? throw new ArgumentNullException(nameof(this.ParsedQuery), "Is not supposed to be null");
+    }
+  }
+
+  /// <summary>
+  /// Gets the object parser.
+  /// </summary>
+  public IObjectParser ObjectParser
+  {
+    get
+    {
+      return this.objectParser;
+    }
+
+    private set
+    {
+      this.objectParser = value ?? throw new ArgumentNullException(nameof(this.ObjectParser), "Is not supposed to be null");
     }
   }
 
@@ -69,7 +88,8 @@ public class Query
   {
     get
     {
-      return ((AtomHead)this.ParsedQuery.Head).Atom.Name;
+      var atomHead = this.ParsedQuery.Head.Accept(this.ObjectParser.ParseAtomHeadVisitor) ?? throw new ArgumentNullException("Should be a reference of atomhead");
+      return atomHead.Atom.Name;
     }
   }
 }

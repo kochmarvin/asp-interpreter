@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="ANTLR\**\*.cs">
+    <Compile Update="**\ANTLR\**\*.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
   </ItemGroup>
