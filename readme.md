@@ -48,51 +48,51 @@ Durch einfaches Starten der Executable wird die implementierte CLI gestartet. Di
 
 # Zusätzliche Informationen (& Abweichungen)
 
-#### Is Operator 
+### Is Operator 
 Berechnet einen Ausdruck und speichert das Ergebnis. 
 > Beispiel: R is X + 2.
 
-#### Range Operator
+### Range Operator
 Definiert einen Bereich von Werten. 
 > Beispiel: num(1..10) erzeugt die Werte num(1) bis num(10).
 
-#### Choices 
+### Choices 
 Erlaubt, dass die Literale in den Klammern entweder true oder false sein können. 
 > Beispiel: {a, b, c}.
 
-#### ODER im Körper einer Regel 
+### ODER im Körper einer Regel 
 Ein Semikolon ; im Körper einer Regel stellt ein logisches ODER dar. 
 > Beispiel: ist_informatiker(X) :- mensch(X); alien(X), hatBeruf(X, informatiker).
 
-#### Kopflose Regeln 
+### Kopflose Regeln 
 Definiert etwas was unter keinen Umständen in einem gelten darf. 
 >Beispiel: :- ist_informatiker(nina).
 
-#### Verschachtelungen 
+### Verschachtelungen 
 Erlaubt das verschachteln von Fakten. 
 > Beispiel: ist_informatiker(frau(mensch(X))).
 
-#### Zahlen 
+### Zahlen 
 Sowohl positive als auch negative Zahlen. 
 > Beispiel: node(2.) node(-30). num(-3..7).
 
-#### Comparison 
+### Comparison 
 Vergleichsoperatoren wie ==, !=, <, >, <=, >= werden verwendet um Werte zu vergleichen. 
 > Beispiel: X == Y
 
-#### Unifikation  
+### Unifikation  
 Setzt zwei Terme gleich und prüft, auf die Struktur dieser. 
 > Beispiel: X = Y.
 
-#### Classical Negation 
+### Classical Negation 
 Stellt die Negation einer Tatsache dar. 
 > Beispiel: ¬p(X) bedeutet, dass p(X) falsch ist.
 
-#### Negation as Failure 
+### Negation as Failure 
 Stellt die Annahme dar, dass etwas nicht wahr ist, weil es nicht bewiesen werden kann. 
 > Beispiel: not p(X) bedeutet, dass p(X) nicht bewiesen werden kann.
 
-#### Anonyme Variable 
+### Anonyme Variable 
 Werden verwendet, wenn der konkrete Wert einer Variablen nicht relevant ist. 
 > Beispiel: square(X,_).
 
