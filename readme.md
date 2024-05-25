@@ -58,7 +58,7 @@ Definiert einen Bereich von Werten.
 
 ### Choices 
 Erlaubt, dass die Literale in den Klammern entweder true oder false sein können. 
-> {a, b, c}.
+> {a; b; c}.
 
 ### ODER im Körper einer Regel 
 Ein Semikolon ; im Körper einer Regel stellt ein logisches ODER dar. 
