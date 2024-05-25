@@ -124,10 +124,17 @@ public class Variable : Term
 
     if (substitutions.TryGetValue(this.Name, out Term? found))
     {
-      var parsedFound = found.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
-      var parsedOther = other.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
+      try
+      {
+        var parsedFound = found.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
+        var parsedOther = other.Accept(new ParseVariableVisitor()) ?? throw new InvalidOperationException("Trying to match a variable with somehting else");
 
-      return parsedFound.Name == parsedOther.Name;
+        return parsedFound.Name == parsedOther.Name;
+      }
+      catch (InvalidOperationException)
+      {
+        return false;
+      }
     }
 
     if (this.HasVariables())
