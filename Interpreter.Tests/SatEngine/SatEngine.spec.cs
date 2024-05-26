@@ -124,23 +124,6 @@ public class SatEngineTests
      ]
    );
 
-    // yield return new SatEngineResult(
-    //   "choice_head.lp",
-    //   [
-    //     [],
-    //     [new Atom("b", [])],
-    //     [new Atom("c", [])],
-    //     [new Atom("b", []), new Atom("c", [])],
-    //     [new Atom("a", [])],
-    //     [new Atom("a", []), new Atom("c", [])],
-    //     [new Atom("a", []), new Atom("b", [])],
-    //     [new Atom("a", []), new Atom("b", []), new Atom("c", [])],
-    //     [new Atom("a", []), new Atom("x", [])],
-    //     [new Atom("a", []), new Atom("b", []), new Atom("x", [])],
-    //     [new Atom("a", []), new Atom("b", []), new Atom("c", []), new Atom("x", [])],
-    //   ]
-    // );
-
     yield return new SatEngineResult(
       "circular.lp",
       [
@@ -220,127 +203,6 @@ public class SatEngineTests
       ]
     );
 
-    // yield return new SatEngineResult(
-    //   "multichoice_body.lp",
-    //   [
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("student", [new Variable("marvin")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("student", [new Variable("marvin")]), new Atom("informatiker", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("student", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("julia")]), new Atom("student", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("student", [new Variable("marvin")]), new Atom("student", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("student", [new Variable("marvin")]), new Atom("informatiker", [new Variable("julia")]), new Atom("student", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("student", [new Variable("marvin")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("student", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("student", [new Variable("marvin")]), new Atom("student", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("informatiker", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("informatiker", [new Variable("julia")]), new Atom("student", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("student", [new Variable("marvin")]), new Atom("informatiker", [new Variable("julia")])],
-    //     [new Atom("mensch", [new Variable("marvin")]), new Atom("mensch", [new Variable("julia")]), new Atom("informatiker", [new Variable("marvin")]), new Atom("student", [new Variable("marvin")]), new Atom("informatiker", [new Variable("julia")]), new Atom("student", [new Variable("julia")])]
-    //   ]
-    // );
-
-    // die reihenfolge der AS nicht immer gleich, ab und zu kommts durch 
-    /*
-    yield return new SatEngineResult(
-      "teaches.lp",
-      [
-        [
-        new Atom("teaches", [new Variable("tom"), new Variable("logic")]),
-        new Atom("teaches", [new Variable("sam"), new Variable("java")]),
-        new Atom("teaches", [new Variable("sam"), new Variable("c")]),
-        new Atom("teaches", [new Variable("bob"), new Variable("ai")]),
-        new Atom("some_course", [new Variable("tom")]),
-        new Atom("some_course", [new Variable("sam")]),
-        new Atom("some_course", [new Variable("bob")]),
-        new Atom("member", [new Variable("tom"), new Variable("cs")]),
-        new Atom("member", [new Variable("sam"), new Variable("cs")]),
-        new Atom("member", [new Variable("bob"), new Variable("cs")]),
-        new Atom("likes", [new Variable("tom"), new Variable("logic")]),
-        new Atom("likes", [new Variable("tom"), new Variable("ai")]),
-        new Atom("likes", [new Variable("sam"), new Variable("java")]), 
-        new Atom("likes", [new Variable("sam"), new Variable("c")]), 
-        new Atom("likes", [new Variable("bob"), new Variable("java")]),
-        new Atom("likes", [new Variable("bob"), new Variable("ai")]),
-        new Atom("course", [new Variable("logic"), new Variable("cs")]),
-        new Atom("course", [new Variable("java"), new Variable("cs")]),
-        new Atom("course", [new Variable("c"), new Variable("cs")]),
-        new Atom("course", [new Variable("ai"), new Variable("cs")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("java")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("c")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("ai")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("logic")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("ai")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("logic")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("java")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("c")]),
-        ],
-        [
-        new Atom("teaches", [new Variable("tom"), new Variable("logic")]),
-        new Atom("teaches", [new Variable("tom"), new Variable("ai")]),
-        new Atom("teaches", [new Variable("sam"), new Variable("c")]),
-        new Atom("teaches", [new Variable("bob"), new Variable("java")]),
-        new Atom("some_course", [new Variable("tom")]),
-        new Atom("some_course", [new Variable("sam")]),
-        new Atom("some_course", [new Variable("bob")]),
-        new Atom("member", [new Variable("tom"), new Variable("cs")]),
-        new Atom("member", [new Variable("sam"), new Variable("cs")]),
-        new Atom("member", [new Variable("bob"), new Variable("cs")]),
-        new Atom("likes", [new Variable("tom"), new Variable("logic")]),
-        new Atom("likes", [new Variable("tom"), new Variable("ai")]),
-        new Atom("likes", [new Variable("sam"), new Variable("java")]), 
-        new Atom("likes", [new Variable("sam"), new Variable("c")]), 
-        new Atom("likes", [new Variable("bob"), new Variable("java")]),
-        new Atom("likes", [new Variable("bob"), new Variable("ai")]),
-        new Atom("course", [new Variable("logic"), new Variable("cs")]),
-        new Atom("course", [new Variable("java"), new Variable("cs")]),
-        new Atom("course", [new Variable("c"), new Variable("cs")]),
-        new Atom("course", [new Variable("ai"), new Variable("cs")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("java")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("c")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("logic")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("java")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("ai")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("logic")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("c")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("ai")]),
-        ],
-        [
-        new Atom("teaches", [new Variable("tom"), new Variable("logic")]),
-        new Atom("teaches", [new Variable("sam"), new Variable("c")]),
-        new Atom("teaches", [new Variable("bob"), new Variable("java")]),
-        new Atom("teaches", [new Variable("bob"), new Variable("ai")]),
-        new Atom("some_course", [new Variable("tom")]),
-        new Atom("some_course", [new Variable("sam")]),
-        new Atom("some_course", [new Variable("bob")]),
-        new Atom("member", [new Variable("tom"), new Variable("cs")]),
-        new Atom("member", [new Variable("sam"), new Variable("cs")]),
-        new Atom("member", [new Variable("bob"), new Variable("cs")]),
-        new Atom("likes", [new Variable("tom"), new Variable("logic")]),
-        new Atom("likes", [new Variable("tom"), new Variable("ai")]),
-        new Atom("likes", [new Variable("sam"), new Variable("java")]), 
-        new Atom("likes", [new Variable("sam"), new Variable("c")]), 
-        new Atom("likes", [new Variable("bob"), new Variable("java")]),
-        new Atom("likes", [new Variable("bob"), new Variable("ai")]),
-        new Atom("course", [new Variable("logic"), new Variable("cs")]),
-        new Atom("course", [new Variable("java"), new Variable("cs")]),
-        new Atom("course", [new Variable("c"), new Variable("cs")]),
-        new Atom("course", [new Variable("ai"), new Variable("cs")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("java")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("c")]),
-        new Atom("-teaches", [new Variable("tom"), new Variable("ai")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("logic")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("java")]),
-        new Atom("-teaches", [new Variable("sam"), new Variable("ai")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("logic")]),
-        new Atom("-teaches", [new Variable("bob"), new Variable("c")]),
-        ]
-      ]
-    );
-    */
-
     yield return new SatEngineResult(
       "edge.lp",
       [
@@ -387,6 +249,57 @@ public class SatEngineTests
       "assign.lp",
       [
         [new Atom("sum", [new Number(1), new Number(2), new Number(3)])]
+      ]
+    );
+
+    yield return new SatEngineResult(
+      "hamilton.lp",
+      [
+        [
+          new Atom("vertex", [new Number(4)]),
+          new Atom("vertex", [new Number(3)]),
+          new Atom("vertex", [new Number(2)]),
+          new Atom("vertex", [new Number(1)]),
+          new Atom("vertex", [new Number(0)]),
+          new Atom("reachable", [new Number(4)]),
+          new Atom("reachable", [new Number(3)]),
+          new Atom("reachable", [new Number(2)]),
+          new Atom("reachable", [new Number(1)]),
+          new Atom("reachable", [new Number(0)]),
+          new Atom("other", [new Number(4), new Number(4)]),
+          new Atom("other", [new Number(4), new Number(3)]),
+          new Atom("other", [new Number(4), new Number(2)]),
+          new Atom("other", [new Number(4), new Number(1)]),
+          new Atom("other", [new Number(3), new Number(3)]),
+          new Atom("other", [new Number(3), new Number(2)]),
+          new Atom("other", [new Number(3), new Number(1)]),
+          new Atom("other", [new Number(3), new Number(0)]),
+          new Atom("other", [new Number(2), new Number(4)]),
+          new Atom("other", [new Number(2), new Number(2)]),
+          new Atom("other", [new Number(2), new Number(1)]),
+          new Atom("other", [new Number(2), new Number(0)]),
+          new Atom("other", [new Number(1), new Number(4)]),
+          new Atom("other", [new Number(1), new Number(3)]),
+          new Atom("other", [new Number(1), new Number(1)]),
+          new Atom("other", [new Number(1), new Number(0)]),
+          new Atom("other", [new Number(0), new Number(4)]),
+          new Atom("other", [new Number(0), new Number(3)]),
+          new Atom("other", [new Number(0), new Number(2)]),
+          new Atom("other", [new Number(0), new Number(0)]),
+          new Atom("edge", [new Number(4), new Number(3)]),
+          new Atom("edge", [new Number(4), new Number(2)]),
+          new Atom("edge", [new Number(4), new Number(1)]),
+          new Atom("edge", [new Number(4), new Number(0)]),
+          new Atom("edge", [new Number(3), new Number(4)]),
+          new Atom("edge", [new Number(2), new Number(3)]),
+          new Atom("edge", [new Number(1), new Number(2)]),
+          new Atom("edge", [new Number(0), new Number(1)]),
+          new Atom("chosen", [new Number(4), new Number(0)]),
+          new Atom("chosen", [new Number(3), new Number(4)]),
+          new Atom("chosen", [new Number(2), new Number(3)]),
+          new Atom("chosen", [new Number(1), new Number(2)]),
+          new Atom("chosen", [new Number(0), new Number(1)]),
+        ]
       ]
     );
 
