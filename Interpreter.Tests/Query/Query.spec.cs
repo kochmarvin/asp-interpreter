@@ -24,7 +24,6 @@ public class QueryTests
     var grounder = new Grounding(graph);
     var satEngine = new SatEngine(grounder.Ground());
     List<List<Atom>> results = satEngine.Execute();
-    Console.WriteLine(obj.Query);
 
     var inputStream = new AntlrInputStream(obj.Query + "?");
     var lexer = new LparseLexer(inputStream);
@@ -33,7 +32,6 @@ public class QueryTests
     var parser = new LparseParser(tokens);
 
     var tree = parser.program();
-
     var programVisitor = new QueryVisitor();
     List<Query> parsedQuery = programVisitor.VisitQuery(tree);
 
@@ -50,7 +48,6 @@ public class QueryTests
 
       foreach (var answer in answers)
       {
-        Console.WriteLine(obj.Expected[i]);
         Assert.That(obj.Expected[i], Is.EqualTo(answer.Head.GetHeadAtoms()[0].Args.Count == 0));
       }
     }
@@ -146,5 +143,135 @@ public class QueryTests
        true,
       ]
     );
+
+    yield return new QueryResult(
+      "faster.lp",
+      "isFaster(marvin, michi)",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+     "faster.lp",
+     "isfaster(marvin, michi)",
+     [
+      false,
+     ]
+   );
+
+    yield return new QueryResult(
+      "fastest.lp",
+      "fastest(bike)",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+      "fastest.lp",
+      "fastest(skateboard)",
+      [
+       false,
+      ]
+    );
+
+    yield return new QueryResult(
+      "fastest.lp",
+      "fastest(enterprise)",
+      [
+       false,
+      ]
+    );
+
+    yield return new QueryResult(
+      "happy.lp",
+      "sad(alice), unhappy(bob)",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+      "range_positive.lp",
+      "a(1), a(2), a(3)",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+     "range_positive.lp",
+     "3 < 2",
+     [
+      false,
+     ]
+   );
+
+    yield return new QueryResult(
+      "range_positive.lp",
+      "3 <= 3",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+      "range_positive.lp",
+      "3 > 2",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+      "range_positive.lp",
+      "3 >= 2",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+      "range_positive.lp",
+      "18 != 2",
+      [
+       true,
+      ]
+    );
+
+    yield return new QueryResult(
+      "range_positive.lp",
+      "18 <> 18",
+      [
+       false,
+      ]
+    );
+
+    yield return new QueryResult(
+     "circular.lp",
+     "single(marvin)",
+     [
+      true,
+       false,
+     ]
+   );
+
+    yield return new QueryResult(
+     "circular.lp",
+     "married(marvin)",
+     [
+      false,
+       true,
+     ]
+   );
+
+    yield return new QueryResult(
+     "books.lp",
+     "assign(bookOne, shelfTwo)",
+     [
+       true,
+     ]
+   );
   }
 }
