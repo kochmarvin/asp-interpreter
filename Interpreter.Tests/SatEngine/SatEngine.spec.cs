@@ -8,7 +8,7 @@ using Interpreter.Lib.Solver.Defaults;
 using Interpreter.Tests;
 using Interpreter.Tests.Parser;
 
-namespace Tests.Tree;
+namespace Tests.Sat;
 
 [TestFixture]
 public class SatEngineTests

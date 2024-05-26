@@ -65,7 +65,7 @@ Ein Semikolon ; im Körper einer Regel stellt ein logisches ODER dar.
 > ist_informatiker(X) :- mensch(X); alien(X), hatBeruf(X, informatiker).
 
 ### Kopflose Regeln 
-Definiert etwas was unter keinen Umständen in einem gelten darf. 
+Definiert etwas was unter keinen Umständen in einem set gelten darf. 
 > :- ist_informatiker(nina).
 
 ### Verschachtelungen 

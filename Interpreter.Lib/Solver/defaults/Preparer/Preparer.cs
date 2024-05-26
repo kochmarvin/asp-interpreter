@@ -73,8 +73,9 @@ public class Preparer : IPreparer
   /// This method checks the program for facts that are definitely true and goes thru every rule to remove any facts that are known to be true due to these facts.
   /// </summary>
   /// <param name="program">The grouned program.</param>
+  /// <param name="queryMode">Turns on query mode and prepares in another way.</param>
   /// <returns>The preperation with all rules that have to get solved.</returns>
-  public Preperation Prepare(List<ProgramRule> program)
+  public Preperation Prepare(List<ProgramRule> program, bool queryMode = false)
   {
     ArgumentNullException.ThrowIfNull(program, "Is not supposed to be null");
 
@@ -139,7 +140,7 @@ public class Preparer : IPreparer
         {
           AtomHead atomHead = rule.Head.Accept(this.Parser.ParseAtomHeadVisitor) ?? throw new InvalidOperationException("Something unecpexted happened");
 
-          if (!atomHead.Atom.Name.StartsWith("-"))
+          if (!atomHead.Atom.Name.StartsWith("-") || queryMode)
           {
             // if it is contained in a headless rule we dont touch it.
             if (notAllowed.Contains(atomHead.Atom.ToString()))

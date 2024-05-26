@@ -205,7 +205,7 @@ public class Grounding : IGrounder, IGroundMatcher
     return deduplicatedRules;
   }
 
-   /// <summary>
+  /// <summary>
   /// This function searches for all matches for an atom literal.
   /// </summary>
   /// <param name="substitutions">Possible values for the appliers.</param>
@@ -433,6 +433,11 @@ public class Grounding : IGrounder, IGroundMatcher
 
             // Now we now that we are making change, because we delete rules and modify the valid atoms
             changes++;
+
+            if (groundedProgram.Count <= i)
+            {
+              break;
+            }
 
             foreach (var atom in groundedProgram[i].Head.GetHeadAtoms())
             {

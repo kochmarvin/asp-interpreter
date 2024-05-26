@@ -17,6 +17,7 @@ public interface IPreparer
   /// Prepares a given list of program rules for the solver.
   /// </summary>
   /// <param name="program">The program that is being prepared.</param>
+  /// <param name="queryMode">Turns on query mode and prepares in another way.</param>
   /// <returns>The prepared program.</returns>
-  public Preperation Prepare(List<ProgramRule> program);
+  public Preperation Prepare(List<ProgramRule> program, bool queryMode = false);
 }

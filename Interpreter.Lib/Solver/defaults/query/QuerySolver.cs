@@ -90,8 +90,9 @@ public class QuerySolver
   /// <summary>
   /// Generates all the answers for the specified query.
   /// </summary>
+  /// <param name="noWarnings">Bool to mark if warnings get printed or not.</param>
   /// <returns>The found solutions.</returns>
-  public List<ProgramRule> Answers()
+  public List<ProgramRule> Answers(bool noWarnings = false)
   {
     List<List<ProgramRule>> results = [];
     List<ProgramRule> rules = [];
@@ -109,12 +110,15 @@ public class QuerySolver
     Grounding grounding = new Grounding(graph);
     var grounded = grounding.Ground();
 
-    foreach (var warning in grounding.Warnings)
+    if (!noWarnings)
     {
-      Logger.Logger.Warning("atom does not occur in any rule head: \n" + warning);
+      foreach (var warning in grounding.Warnings)
+      {
+        Logger.Logger.Warning("atom does not occur in any rule head: \n" + warning);
+      }
     }
 
-    var prepared = this.Preparer.Prepare(grounded);
+    var prepared = this.Preparer.Prepare(grounded, true);
 
     // Returning all the querys which are factually true and could be resolved.
     return prepared.FactuallyTrue

@@ -163,20 +163,21 @@ public class CommandManager
 
           foreach (var rule in answers)
           {
+            var head = rule.Head.GetHeadAtoms();
+
             // if the query did not have any variables just print true if it is out there
-            if (rule.Head is AtomHead atomHead && atomHead.Atom.Args.Count == 0)
+            if (head.Count > 0 && head[0].Args.Count == 0)
             {
               rules += "true. \n";
               continue;
             }
 
             // Otherwise gtet all variables and print it out.
-            AtomHead head = (AtomHead)rule.Head;
             List<string> vars = [.. currentQuery.Variables];
 
-            for (int m = 0; m < head.Atom.Args.Count; m++)
+            for (int m = 0; m < head[0].Args.Count; m++)
             {
-              rules += vars[m] + " = " + head.Atom.Args[m] + " ";
+              rules += vars[m] + " = " + head[0].Args[m] + " ";
             }
 
             rules += "\n";
