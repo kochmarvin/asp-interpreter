@@ -22,16 +22,6 @@ public class TransformerTests
 
         List<List<int>> results = new SatTransformer(new Checker(), new ObjectParser()).TransformToFormular(preperation);
 
-        // System.Console.WriteLine(obj.File);
-        // foreach (var result in results)
-        // {
-        //     foreach (var rule in result)
-        //     {
-        //         System.Console.Write(rule.ToString());
-        //     }
-        //     System.Console.WriteLine();
-        // }
-
         Assert.IsTrue(Utils.AreEqual(obj.Expected, results));
     }
 
@@ -57,6 +47,13 @@ public class TransformerTests
         );
 
         yield return new SatTransformerResult(
+            "basic.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
             "birds.lp",
             [
                 [2],
@@ -70,6 +67,21 @@ public class TransformerTests
             "blocks.lp",
             [
                 [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
+            "books.lp",
+            [
+                [2],
+                [3],
+                [-4, 2],
+                [-2, 4],
+                [-5, 3],
+                [-3, 5],
+                [-2, 6],
+                [-3, 7],
+                [-1],
             ]
         );
 
@@ -169,6 +181,13 @@ public class TransformerTests
         );
 
         yield return new SatTransformerResult(
+            "headless.lp",
+            [
+                [-1]
+            ]
+        );
+
+        yield return new SatTransformerResult(
             "multichoice_body.lp",
             [
                 [-2, -3],
@@ -218,16 +237,16 @@ public class TransformerTests
            ]
        );
 
-       yield return new SatTransformerResult(
-           "unsat_1.lp",
-           [
-                [2],
+        yield return new SatTransformerResult(
+            "unsat_1.lp",
+            [
+                 [2],
                 [-3, 2],
                 [-2, 3],
                 [-2, -3],
                 [-1]
-           ]
-       );
+            ]
+        );
 
         yield return new SatTransformerResult(
             "teaches.lp",
