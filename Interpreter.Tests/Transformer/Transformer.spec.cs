@@ -11,26 +11,37 @@ namespace Interpreter.Tests.Transformer;
 [TestFixture]
 public class TransformerTests
 {
-    [TestCaseSource(nameof(GetTestCases))]
-    public void SatTransformer(SatTransformerResult obj)
+  [TestCaseSource(nameof(GetTestCases))]
+  public void SatTransformer(SatTransformerResult obj)
+  {
+    List<ProgramRule> program = Utils.ParseProgram(obj.File);
+    var graph = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
+    var grounder = new Grounding(graph);
+    var groundedProgram = grounder.Ground();
+    var preperation = new Preparer(new Checker(), new ObjectParser()).Prepare(groundedProgram);
+
+    List<List<int>> results = new SatTransformer(new Checker(), new ObjectParser()).TransformToFormular(preperation);
+
+
+    System.Console.WriteLine("[");
+    foreach (var result in results)
     {
-        List<ProgramRule> program = Utils.ParseProgram(obj.File);
-        var graph = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
-        var grounder = new Grounding(graph);
-        var groundedProgram = grounder.Ground();
-        var preperation = new Preparer(new Checker(), new ObjectParser()).Prepare(groundedProgram);
 
         List<List<int>> results = new SatTransformer(new Checker(), new ObjectParser()).TransformToFormular(preperation);
 
         Assert.IsTrue(Utils.AreEqual(obj.Expected, results));
     }
+    System.Console.WriteLine("]");
 
-    public static IEnumerable<SatTransformerResult> GetTestCases()
-    {
-        yield return new SatTransformerResult(
-            "schraub.lp",
-            [
-                [-2, -3],
+    Assert.IsTrue(Utils.AreEqual(obj.Expected, results));
+  }
+
+  public static IEnumerable<SatTransformerResult> GetTestCases()
+  {
+    yield return new SatTransformerResult(
+        "schraub.lp",
+        [
+            [-2, -3],
                 [2, 3],
                 [-4, 2],
                 [-2, 4],
@@ -43,8 +54,8 @@ public class TransformerTests
                 [4,5,7],
                 [-5,2],
                 [-1]
-            ]
-        );
+        ]
+    );
 
         yield return new SatTransformerResult(
             "basic.lp",
@@ -60,15 +71,15 @@ public class TransformerTests
                 [-3, -2],
                 [2, 3],
                 [-1]
-            ]
-        );
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "blocks.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "blocks.lp",
+        [
+            [-1]
+        ]
+    );
 
         yield return new SatTransformerResult(
             "books.lp",
@@ -92,10 +103,10 @@ public class TransformerTests
             ]
         );
 
-        yield return new SatTransformerResult(
-            "choice_head.lp",
-            [
-                [-2, -3],
+    yield return new SatTransformerResult(
+        "choice_head.lp",
+        [
+            [-2, -3],
                 [2,3],
                 [-4, -5],
                 [4,5],
@@ -106,79 +117,79 @@ public class TransformerTests
                 [-8, 2],
                 [-2, 9, 8],
                 [-1]
-            ]
-        );
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "circular.lp",
-            [
-                [-2, -3],
+    yield return new SatTransformerResult(
+        "circular.lp",
+        [
+            [-2, -3],
                 [3, 2],
                 [-1]
-            ]
+        ]
 
-        );
+    );
 
-        yield return new SatTransformerResult(
-            "comparisson.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "comparisson.lp",
+        [
+            [-1]
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "comparison.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "comparison.lp",
+        [
+            [-1]
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "edge.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "edge.lp",
+        [
+            [-1]
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "edge_2.lp",
-            [
-                [2],
+    yield return new SatTransformerResult(
+        "edge_2.lp",
+        [
+            [2],
                 [3],
                 [4],
                 [-2, -3, -3, 5, 6],
                 [-2, -4, -4, 7, 8],
                 [-1]
-            ]
-        );
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "family_relations.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "family_relations.lp",
+        [
+            [-1]
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "faster.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "faster.lp",
+        [
+            [-1]
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "fastest.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "fastest.lp",
+        [
+            [-1]
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "happy.lp",
-            [
-                [-1]
-            ]
-        );
+    yield return new SatTransformerResult(
+        "happy.lp",
+        [
+            [-1]
+        ]
+    );
 
         yield return new SatTransformerResult(
             "headless.lp",
@@ -199,22 +210,22 @@ public class TransformerTests
                 [-8, -9],
                 [8, 9],
                 [-1]
-            ]
-        );
+        ]
+    );
 
-        yield return new SatTransformerResult(
-            "negations.lp",
-            [
-                [-2, -3],
+    yield return new SatTransformerResult(
+        "negations.lp",
+        [
+            [-2, -3],
                 [3, 2],
                 [-1]
-            ]
-        );
+        ]
+    );
 
-        yield return new SatTransformerResult(
-           "no_vars.lp",
-           [
-                [-2, -3],
+    yield return new SatTransformerResult(
+       "no_vars.lp",
+       [
+            [-2, -3],
                 [3, 2],
                 [-4, 2, 5],
                 [-2, 4],
@@ -224,18 +235,18 @@ public class TransformerTests
                 [-4, 2],
                 [-5, 2],
                 [-1]
-           ]
-       );
+       ]
+   );
 
-        yield return new SatTransformerResult(
-           "unsat_2.lp",
-           [
-                [2],
+    yield return new SatTransformerResult(
+       "unsat_2.lp",
+       [
+            [2],
                 [3],
                 [-2, -3],
                 [-1]
-           ]
-       );
+       ]
+   );
 
         yield return new SatTransformerResult(
             "unsat_1.lp",
@@ -248,10 +259,10 @@ public class TransformerTests
             ]
         );
 
-        yield return new SatTransformerResult(
-            "teaches.lp",
-            [
-                [2],
+    yield return new SatTransformerResult(
+        "teaches.lp",
+        [
+            [2],
                 [3],
                 [4],
                 [-5, 2],
@@ -328,7 +339,7 @@ public class TransformerTests
                 [-3, 22],
                 [-4, 23],
                 [-1]
-            ]
-        );
-    }
+        ]
+    );
+  }
 }
