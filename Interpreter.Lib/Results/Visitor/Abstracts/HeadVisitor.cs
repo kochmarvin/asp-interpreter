@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="HeadVisitor.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="HeadVisitor.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

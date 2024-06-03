@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="IsLiteral.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="IsLiteral.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -14,10 +14,6 @@ using Interpreter.Lib.Results.Objects.Terms;
 /// <summary>
 /// The is Literal to calculate things.
 /// </summary>
-/// <param name="newVar">The new var which will get the result.</param>
-/// <param name="left">The left side of the operation.</param>
-/// <param name="op">The operator.</param>
-/// <param name="right">The right side of the opreation.</param>
 public class IsLiteral : Literal
 {
   private Variable newVar;

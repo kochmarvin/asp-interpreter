@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="SatTransformer.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="SatTransformer.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

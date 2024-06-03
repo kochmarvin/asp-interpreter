@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="SolverEngine.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="SolverEngine.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -12,9 +12,6 @@ using Interpreter.Lib.Solver.Interfaces;
 /// <summary>
 /// Abstract class of a solver engine.
 /// </summary>
-/// <param name="preparer">The used preparer.</param>
-/// <param name="transformer">The used transformer.</param>
-/// <param name="solver">The used soolver.</param>
 public abstract class SolverEngine
 {
   private IPreparer preparer;

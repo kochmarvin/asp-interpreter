@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="IQueryVisitor.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="IQueryVisitor.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

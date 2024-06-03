@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="AtomHead.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="AtomHead.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

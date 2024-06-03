@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="Variable.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="Variable.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -70,7 +70,6 @@ public class Variable : Term
   /// <summary>
   /// Checks if the object has a specific variable.
   /// </summary>
-  /// <param name="variable">The variable to be checked.</param>
   /// <returns>Either if it includes the variable or not.</returns>
   public override List<string> GetVariables()
   {

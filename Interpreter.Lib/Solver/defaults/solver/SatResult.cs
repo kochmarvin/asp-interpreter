@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="SatResult.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="SatResult.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -9,8 +9,6 @@ namespace Interpreter.Lib.Solver.Defaults;
 /// <summary>
 /// The result of a sat solver.
 /// </summary>
-/// <param name="satisfiable">If it was satisfiable or not.</param>
-/// <param name="assignments">The variable assignemnt.</param>
 public class SatResult
 {
   private bool satisfiable;

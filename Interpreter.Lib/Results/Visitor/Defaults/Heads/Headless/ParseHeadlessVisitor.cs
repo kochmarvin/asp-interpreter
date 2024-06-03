@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="ParseHeadlessVisitor.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ParseHeadlessVisitor.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

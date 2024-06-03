@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="MatchLiteralVisitor.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="MatchLiteralVisitor.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

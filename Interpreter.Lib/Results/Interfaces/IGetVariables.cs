@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="IGetVariables.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="IGetVariables.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

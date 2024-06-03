@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="QuerySolver.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="QuerySolver.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -17,9 +17,6 @@ using Interpreter.Lib.Solver.Interfaces;
 /// <summary>
 /// The standard query solver to solve a query.
 /// </summary>
-/// <param name="query">The query which should get solved.</param>
-/// <param name="set">The found sets.</param>
-/// <param name="preparer">An instance of an preparer.</param>
 public class QuerySolver
 {
   private IPreparer preparer;

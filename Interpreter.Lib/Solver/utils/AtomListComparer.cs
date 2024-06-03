@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="AtomListComparer.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="AtomListComparer.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

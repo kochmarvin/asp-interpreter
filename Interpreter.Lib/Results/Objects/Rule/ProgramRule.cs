@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="ProgramRule.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ProgramRule.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

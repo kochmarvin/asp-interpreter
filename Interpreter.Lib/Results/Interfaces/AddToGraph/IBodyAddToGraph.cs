@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="IBodyAddToGraph.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="IBodyAddToGraph.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="Grounding.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="Grounding.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -376,6 +376,7 @@ public class Grounding : IGrounder, IGroundMatcher
   /// valid value.
   /// </summary>
   /// <param name="groundedProgram">The initial grounded Program.</param>
+  /// <param name="headNamesOnly">The available head names.</param>
   /// <returns>All heads as a string list.</returns>
   private List<string> GenerateAvailableAtoms(List<ProgramRule> groundedProgram, List<string> headNamesOnly)
   {
@@ -538,6 +539,7 @@ public class Grounding : IGrounder, IGroundMatcher
   /// <param name="left">Is the Term on the left hand side.</param>
   /// <param name="relation">Is how the Terms are connected for example =, greaterthen or lessthen.</param>
   /// <param name="right">Is the Term on the right hand side.</param>
+  /// <param name="substitutions">The found substitutions for a comparisson.</param>
   /// <returns>If the operations succeds or not.</returns>
   private bool EvaluateComparisson(Term left, Relation relation, Term right, Dictionary<string, Term> substitutions)
   {

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="Query.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="Query.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -12,8 +12,6 @@ using Interpreter.Lib.Results.Objects.Rule;
 /// <summary>
 /// The parsed query with its variables.
 /// </summary>
-/// <param name="query">tThe parsed query.</param>
-/// <param name="variables">The variables of the query.</param>
 public class Query
 {
   private ProgramRule parsedQuery;

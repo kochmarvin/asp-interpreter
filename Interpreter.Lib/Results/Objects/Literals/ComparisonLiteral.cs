@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="ComparisonLiteral.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ComparisonLiteral.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -14,9 +14,6 @@ using Interpreter.Lib.Results.Objects.Terms;
 /// <summary>
 /// Literal for a comparison or a unification.
 /// </summary>
-/// <param name="left">The left side of the compairrison.</param>
-/// <param name="relation">The relation of the comparisson.</param>
-/// <param name="right">The right side of the comparisson.</param>
 public class ComparisonLiteral : Literal
 {
   private Term left;

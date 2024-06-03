@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="StopWatch.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="StopWatch.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

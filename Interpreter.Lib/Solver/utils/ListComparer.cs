@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="ListComparer.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ListComparer.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

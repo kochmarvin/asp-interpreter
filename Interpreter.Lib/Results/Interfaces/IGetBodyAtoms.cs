@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="IGetBodyAtoms.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="IGetBodyAtoms.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

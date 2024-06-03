@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="CommentLiteral.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="CommentLiteral.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -12,8 +12,6 @@ using Interpreter.Lib.Results.Objects.Terms;
 /// <summary>
 /// The comment literal for the explanation method.
 /// </summary>
-/// <param name="vars">The variales which are inside the literal.</param>
-/// <param name="strings">The text which should get printed.</param>
 public class CommentLiteral : Literal
 {
   private List<Variable> vars;

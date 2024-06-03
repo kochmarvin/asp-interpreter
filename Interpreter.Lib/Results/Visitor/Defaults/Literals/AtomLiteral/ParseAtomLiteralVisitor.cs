@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="ParseAtomLiteralVisitor.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="ParseAtomLiteralVisitor.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 

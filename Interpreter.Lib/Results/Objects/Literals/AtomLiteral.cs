@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------
-// <copyright file="AtomLiteral.cs" company="PlaceholderCompany">
-//      Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="AtomLiteral.cs" company="FHWN">
+//      Copyright (c) FHWN. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -13,8 +13,6 @@ using Interpreter.Lib.Results.Objects.Terms;
 /// <summary>
 /// A basic Atom litereral so everything that is not hello(X) or just hello(X).
 /// </summary>
-/// <param name="positive">If the atom has a not or not a not infront of it.</param>
-/// <param name="atom">The Atom.</param>
 public class AtomLiteral : Literal
 {
   private bool positiv;
