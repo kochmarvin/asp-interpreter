@@ -135,3 +135,6 @@ $RECYCLE.BIN/
 _NCrunch*
 
 ./*.sln
+
+!Interpreter.CLI/stylecop.json
+!Interpreter.Lib/stylecop.json
