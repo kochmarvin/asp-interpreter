@@ -24,18 +24,6 @@ public class SolverTests
         List<List<int>> transformed = new SatTransformer(new Checker(), new ObjectParser()).TransformToFormular(preperation);
         var results = new DPLLSolver().FindAllSolutions(transformed);
 
-        System.Console.WriteLine(obj.File);
-        foreach (var result in results)
-        {
-            Console.Write("new SatResult(" + result.Satisfiable + ", [");
-            foreach (var rule in result.Assignments)
-            {
-                Console.Write(rule.ToString() + ", ");
-            }
-            Console.Write("]),");
-            Console.WriteLine();
-        }
-
         CollectionAssert.AreEquivalent(obj.Expected, results, "The lists of SatResults do not contain the same elements.");
     }
 
