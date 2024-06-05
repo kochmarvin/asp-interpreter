@@ -7,6 +7,7 @@
 namespace Interpreter.Lib.Grounder;
 
 using System.Data;
+using System.Reflection.Metadata;
 using Interpreter.Lib.Graph;
 using Interpreter.Lib.Logger;
 using Interpreter.Lib.Results.Enums;
@@ -22,6 +23,7 @@ using Interpreter.Lib.Results.Objects.Terms;
 /// </summary>
 public class Grounding : IGrounder, IGroundMatcher
 {
+  private readonly List<string> visitedString = [];
   private readonly List<Atom> visited = [];
   private readonly List<string> warnings = [];
   private DependencyGraph graph;
@@ -489,7 +491,11 @@ public class Grounding : IGrounder, IGroundMatcher
     {
       foreach (var atom in rule.Head.GetHeadAtoms())
       {
-        this.visited.Add(atom);
+        if (!this.visited.Contains(atom) && !this.visitedString.Contains(atom.ToString()))
+        {
+          this.visited.Add(atom);
+          this.visitedString.Add(atom.ToString());
+        }
       }
     }
 
@@ -505,6 +511,7 @@ public class Grounding : IGrounder, IGroundMatcher
   /// <returns>A grounded program rule.</returns>
   private List<ProgramRule> GroundRule(ProgramRule rule, Dictionary<string, Term>? substitutions = null, int index = 0)
   {
+    // Logger.Debug("Grounding Rule " + rule.ToString());
     ArgumentNullException.ThrowIfNull(rule, "Is not supposed to be null");
 
     // If the substitution is null the initialize it with a new dict.

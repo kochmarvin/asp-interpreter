@@ -179,6 +179,18 @@ public class Preparer : IPreparer
 
           if (body.Accept(this.Checker.IsAtomLiteralVisitor))
           {
+            List<string?> bodyElements = rule.Body.Select(b => b.ToString()).ToList();
+
+            if (bodyElements.FindAll((element) => element == body.ToString()).Count > 1)
+            {
+              Logger.Debug("Remove " + rule.Body[j] + " from " + rule);
+              rule.Body.RemoveAt(j);
+
+              j--;
+              changes++;
+              continue;
+            }
+
             // if it is contained in a headless rule we dont touch it.
             if (notAllowed.Contains(body.ToString() ?? string.Empty))
             {
