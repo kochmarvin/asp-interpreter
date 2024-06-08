@@ -30,4 +30,9 @@ public enum Operator
   /// The valid multiply operator.
   /// </summary>
   MULTIPLY,
+
+  /// <summary>
+  /// The valid multiply operator.
+  /// </summary>
+  MOD,
 }

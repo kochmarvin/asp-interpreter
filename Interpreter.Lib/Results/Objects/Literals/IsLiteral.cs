@@ -142,7 +142,7 @@ public class IsLiteral : Literal
   /// <returns>The available variables.</returns>
   public override List<string> GetVariables()
   {
-    return [.. this.Left.GetVariables(), .. this.Right.GetVariables()];
+    return [.. this.newVar.GetVariables(), .. this.Left.GetVariables(), .. this.Right.GetVariables()];
   }
 
   /// <summary>

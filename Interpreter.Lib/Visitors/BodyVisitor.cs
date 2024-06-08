@@ -75,6 +75,7 @@ public class BodyVisitor : LparseBaseVisitor<List<Body>>
           "-" => Operator.MINUS,
           "/" => Operator.DIVIDE,
           "*" => Operator.MULTIPLY,
+          "mod" => Operator.MOD,
           _ => throw new InvalidOperationException("You used a operator that is not valid!"),
         };
 

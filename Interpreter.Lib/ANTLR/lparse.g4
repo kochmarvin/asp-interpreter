@@ -3,6 +3,7 @@ grammar Lparse;
 // Lexer rules
 NAF : 'not';
 IS : 'is' ;
+MOD : 'mod' ;
 NUMBER : '0' | [1-9][0-9]* ;
 ID : [a-z][A-Za-z_]*;
 
@@ -94,4 +95,4 @@ term : ID (PAREN_OPEN terms PAREN_CLOSE)?
      | VARIABLE
      | PAREN_OPEN term PAREN_CLOSE
      ;
-arithop : PLUS | MINUS | TIMES | DIV ;
+arithop : PLUS | MINUS | TIMES | DIV | MOD ;

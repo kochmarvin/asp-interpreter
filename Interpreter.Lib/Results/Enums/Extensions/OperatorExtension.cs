@@ -25,6 +25,7 @@ public static class OperatorExtension
       Operator.MINUS => "-",
       Operator.DIVIDE => "/",
       Operator.MULTIPLY => "*",
+      Operator.MOD => "%",
       _ => throw new NotImplementedException(),
     };
   }

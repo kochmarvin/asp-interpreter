@@ -7,6 +7,7 @@
 namespace Interpreter.Lib.Grounder;
 
 using System.Data;
+using System.Diagnostics;
 using System.Reflection.Metadata;
 using Interpreter.Lib.Graph;
 using Interpreter.Lib.Logger;
@@ -315,6 +316,9 @@ public class Grounding : IGrounder, IGroundMatcher
         break;
       case Operator.MULTIPLY:
         calculated = parsedLeft.Value * parsedRight.Value;
+        break;
+      case Operator.MOD:
+        calculated = parsedLeft.Value % parsedRight.Value;
         break;
     }
 
