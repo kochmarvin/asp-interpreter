@@ -322,7 +322,11 @@ public class Grounding : IGrounder, IGroundMatcher
         break;
     }
 
-    substitutions.Add(isLiteral.New.Name, new Number(calculated));
+    if (!substitutions.TryAdd(isLiteral.New.Name, new Number(calculated)))
+    {
+      _ = substitutions[isLiteral.New.Name] == new Number(calculated);
+    }
+
     return [substitutions];
   }
 
@@ -433,6 +437,11 @@ public class Grounding : IGrounder, IGroundMatcher
             // we have to get rid of every component of the rule
             AtomLiteral atomLiteral = body.Accept(new TransformToAtomLiteralVisitor()) ?? throw new InvalidOperationException("Trying to transform wrong literal");
 
+            if (!atomLiteral.Positive)
+            {
+              continue;
+            }
+
             if (availableAtoms.Contains(atomLiteral.Atom.ToString()))
             {
               continue;
@@ -527,6 +536,12 @@ public class Grounding : IGrounder, IGroundMatcher
       var newRule = rule.Apply(substitutions);
 
       groundedRules.Add(newRule);
+
+      if (newRule.Head is AtomHead at && !this.visitedString.Contains(at.Atom.ToString()))
+      {
+        this.visited.Add(at.Atom);
+        this.visitedString.Add(at.Atom.ToString());
+      }
     }
 
     // Also change this if there is somehow a new body

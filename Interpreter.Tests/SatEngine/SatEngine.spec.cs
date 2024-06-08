@@ -20,7 +20,6 @@ public class SatEngineTests
     var graph = new MyDependencyGraph(program, new OrderVisitor(), new MyAddToGraphVisitor());
     var grounder = new Grounding(graph);
     var satEngine = new SatEngine(grounder.Ground());
-
     List<List<Atom>> results = satEngine.Execute();
 
     Assert.IsTrue(AreEqual(obj.Expected, results));

@@ -204,7 +204,7 @@ public class Preparer : IPreparer
             if (!atomLiteral.Positive)
             {
               // if it is not positive and we do not know that it exists as a fact we skip it
-              if (!trueFacts.Contains(atomLiteral.Atom.ToString()) || !notAllowed.Contains(atomLiteral.Atom.ToString()))
+              if (!trueFacts.Contains(atomLiteral.Atom.ToString()))
               {
                 // if we know that it exists as a fact we check.
                 bool remove = true;
